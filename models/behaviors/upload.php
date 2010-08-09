@@ -200,7 +200,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
- * Check that the file was successfully writen to the server
+ * Check that the file was successfully written to the server
  *
  * @param Object $model
  * @param mixed $check Value to check
