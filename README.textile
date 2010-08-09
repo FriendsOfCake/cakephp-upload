@@ -2,6 +2,14 @@ h1. Upload Plugin
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as MeioUpload, UploadPack and PHP documentation.
 
+h2. A Note on Pull Requests
+
+I will not accept any feature pull requests. They are sometimes of dubious quality and ensuring everything useful gets into the core is difficult at best. Please create a ticket for the functionality you desire and I will either extend this plugin or build it into the core.
+
+If it is a bug-fix, feel free to issue a pull request, but be aware that reviewing your submission will take time and it may not be accepted as-is.
+
+That said, I appreciate any and all feedback, especially on untested code such as this :)
+
 h2. Requirements
 
 * CakePHP 1.2/1.3
@@ -114,11 +122,11 @@ Multiple files can also be attached to a single record:
 h2. Upload options:
 
 * @randomPath@: If true, a random path is generated for each file upload. Does not persist across a record. If false, the record's primaryKey is used when creating the path for the file upload
-** Default: (boolean) true
-* @path@: A path relative to the APP_PATH
-** Default: (string) 'webroot{DS}files{DS}{model}{DS}{field}{DS}'
+** Default: (boolean) @true@
+* @path@: A path relative to the @APP_PATH@
+** Default: (string) @'webroot{DS}files{DS}{model}{DS}{field}{DS}'@
 ** Tokens:
-*** {DS}: Replaced by a DIRECTORY_SEPARATOR
+*** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
 *** {model}: Replaced by the Model Alias
 *** {field}: Replaced by the field name
 * @fields@: An array of fields to use when uploading files
@@ -132,21 +140,23 @@ h2. Upload options:
 * @extensions@: Array of extensions to use for validation
 ** Default: (array) empty
 * @maxSize@: Max filesize in bytes for validation
-** Default: (int) 2097152
+** Default: (int) @2097152@
 * @minSize@: Minimum filesize in bytes for validation
-** Default: (int) 8
+** Default: (int) @8@
 * @maxHeight@: Maximum image height for validation
-** Default: (int) 0
+** Default: (int) @0@
 * @minHeight@: Minimum image height for validation
-** Default: (int) 0
+** Default: (int) @0@
 * @maxWidth@: Maximum image width for validation
-** Default: (int) 0
+** Default: (int) @0@
+* @minWidth@: Minimum image width for validation
+** Default: (int) @0@
 * @thumbnails@: Whether to create thumbnails or not
-** Default: (boolean) true
+** Default: (boolean) @true@
 * @thumbsizes@: Array of thumbnail sizes, with the style-name mapping to a geometry
 ** Default: (array) empty
 * @thumbnailQuality@: Quality of thumbnails that will be generated, on a scale of 0-100
-** Default: (int) 75
+** Default: (int) @75@
 
 h2. Validation rules
 
