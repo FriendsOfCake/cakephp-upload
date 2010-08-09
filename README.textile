@@ -1,0 +1,174 @@
+h1. Upload Plugin
+
+h2. Validation rules
+
+
+h4. isUnderPhpSizeLimit
+
+Check that the file does not exceed the max file size specified by PHP
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isUnderPhpSizeLimit',
+		'message' => 'File exceeds upload filesize limit'
+	)
+);</code></pre>
+
+h4. isUnderFormSizeLimit
+
+Check that the file does not exceed the max file size specified in the HTML Form
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isUnderFormSizeLimit',
+		'message' => 'File exceeds form upload filesize limit'
+	)
+);</code></pre>
+
+h4. isCompletedUpload
+
+Check that the file was completely uploaded
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isCompletedUpload',
+		'message' => 'File was not successfully uploaded'
+	)
+);</code></pre>
+
+h4. isFileUpload
+
+Check that a file was uploaded
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isFileUpload',
+		'message' => 'File was missing from submission'
+	)
+);</code></pre>
+
+h4. tempDirExists
+
+Check that the PHP temporary directory is missing
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'tempDirExists',
+		'message' => 'The system temporary directory is missing'
+	)
+);</code></pre>
+
+h4. isSuccessfulWrite
+
+Check that the file was successfully written to the server
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isSuccessfulWrite',
+		'message' => 'File was unsuccessfully written to the server'
+	)
+);</code></pre>
+
+h4. noPhpExtensionErrors
+
+Check that a PHP extension did not cause an error
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'noPhpExtensionErrors',
+		'message' => 'File was not uploaded because of a faulty PHP extension'
+	)
+);</code></pre>
+
+h4. isValidMimeType
+
+Check that the file is of a valid mimetype
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isValidMimeType',
+		'message' => 'File is of an invalid mimetype'
+	)
+);</code></pre>
+
+h4. isWritable
+
+Check that the upload directory is writable
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isWritable',
+		'message' => 'File upload directory was not writable'
+	)
+);</code></pre>
+
+h4. isValidDir
+
+Check that the upload directory exists
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isValidDir',
+		'message' => 'File upload directory does not exist'
+	)
+);</code></pre>
+
+h4. isBelowMaxSize
+
+Check that the file is below the maximum file upload size
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isBelowMaxSize',
+		'message' => 'File is larger than the maximum filesize'
+	)
+);</code></pre>
+
+h4. isAboveMinSize
+
+Check that the file is above the minimum file upload size
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isAboveMinSize',
+		'message' => 'File is below the mimimum filesize'
+	)
+);</code></pre>
+
+h4. isValidExtension
+
+Check that the file has a valid extension
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isValidExtension',
+		'message' => 'File has an invalid extension'
+	)
+);</code></pre>
+
+h4. isAboveMinHeight
+
+Check that the file is above the minimum height requirement
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isAboveMinHeight',
+		'message' => 'File is below the minimum height'
+	)
+);</code></pre>
+
+h4. isBelowMaxHeight
+
+Check that the file is below the maximum height requirement
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isBelowMaxHeight',
+		'message' => 'File is above the maximum height'
+	)
+);</code></pre>
+
+h4. isAboveMinWidth
+
+Check that the file is above the minimum width requirement
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isAboveMinWidth',
+		'message' => 'File is below the minimum width'
+	)
+);</code></pre>
+
+h4. isBelowMaxWidth
+
+Check that the file is below the maximum width requirement
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => 'isBelowMaxWidth',
+		'message' => 'File is above the maximum width'
+	)
+);</code></pre>
