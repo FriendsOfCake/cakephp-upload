@@ -20,6 +20,98 @@
 
 class UploadBehavior extends ModelBehavior {
 
+	var $defaults = array(
+		'randomPath'		=> false,
+		'path'				=> 'webroot{DS}files{DS}{model}{DS}{field}{DS}',
+		'fields'			=> array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
+		'mimetypes'			=> array(),
+		'extensions'		=> array(),
+		'maxSize'			=> 2097152,
+		'minSize'			=> 8,
+		'maxHeight'			=> 0,
+		'minHeight'			=> 0,
+		'maxWidth'			=> 0,
+		'minWidth'			=> 0,
+		'thumbnails'		=> true,
+		'thumbsizes'		=> array(),
+		'thumbnailQuality'	=> 75,
+	);
+
+	var $_imageMimetypes = array(
+		'image/bmp',
+		'image/gif',
+		'image/jpeg',
+		'image/pjpeg',
+		'image/png',
+		'image/vnd.microsoft.icon',
+		'image/x-icon',
+	);
+
+/**
+ * Runtime configuration for this behavior
+ *
+ * @var array
+ **/
+	var $runtime;
+
+/**
+ * undocumented function
+ *
+ * @return void
+ * @author Jose Diaz-Gonzalez
+ **/
+	function setup(&$model, $settings = array()) {
+		if (isset($this->settings[$Model->alias])) return;
+		$this->settings[$Model->alias] = array();
+
+		foreach ($settings as $field => $options) {
+			if (!isset($this->settings[$model->alias][$field])) {
+				$options += $this->defaults;
+				$options['path'] = $this->_path($model, $field, $options['path']);
+				$this->settings[$model->alias][$field] = $options;
+			}
+		}
+	}
+
+/**
+ * undocumented function
+ *
+ * @return void
+ * @author Jose Diaz-Gonzalez
+ **/
+	function beforeSave(&$model) {
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
+			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
+				$field => $this->runtime[$model->alias][$field]['name'],
+				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
+				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
+			));
+		}
+		return true;
+	}
+
+
+	function afterSave(&$model, $created) {
+		$temp = array();
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if (!in_array($model->data[$model->alias])) continue;
+
+			$temp[$model->alias][$options['fields']['dir']] = $this->_getPath($model, $field);
+			$path = APP_PATH . $this->settings[$model->alias][$field]['path'] . $temp[$model->alias][$field]['dir'];
+			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
+			$filePath = $path . $model->data[$model->alias][$field];
+			if (!@move_uploaded_file($tmp, $filePath)) {
+				$model->invalidate($field, 'moveUploadedFile');
+			}
+
+			$this->_createThumbnails($model, $field, $path);
+		}
+		$model->updateAll($temp[$model->alias], array(
+			$model->primaryKey => $model->data[$model->alias][$model->primaryKey];
+		));
+	}
+
 /**
  * Check that the file does not exceed the max 
  * file size specified by PHP
@@ -122,9 +214,9 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isValidMimeType(&$model, $check, $mimetypes) {
-		if (empty($mimetypes)) return false;
+	function isValidMimeType(&$model, $check, $mimetypes = array()) {
 		$field = array_pop(array_keys($check));
+		if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
 
 		return in_array($check[$field]['type'], $mimetypes);
 	}
@@ -139,8 +231,10 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isWritable(&$model, $check, $path = '/webroot/files') {
-		return is_writable(APP_PATH . $path);
+	function isWritable(&$model, $check) {
+		$field = array_pop(array_keys($check));
+
+		return is_writable($this->settings[$model->alias][$field]['path']);
 	}
 
 /**
@@ -152,8 +246,10 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isValidDir(&$model, $check, $path = '/webroot/files') {
-		return is_dir(APP_PATH . $path);
+	function isValidDir(&$model, $check) {
+		$field = array_pop(array_keys($check));
+
+		return is_dir($this->settings[$model->alias][$field]['path']);
 	}
 
 /**
@@ -165,8 +261,9 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxSize(&$model, $check, $size = 2097152) {
+	function isBelowMaxSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
+		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
 		return $check[$field]['size'] <= $size;
 	}
 
@@ -179,8 +276,9 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinSize(&$model, $check, $size = 8) {
+	function isAboveMinSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
+		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
 		return $check[$field]['size'] >= $size;
 	}
 
@@ -194,8 +292,8 @@ class UploadBehavior extends ModelBehavior {
  * @access public
  */
 	function isValidExtension(&$model, $check, $extensions) {
-		if (empty($extensions)) return false;
 		$field = array_pop(array_keys($check));
+		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['mimetypes'];
 		$pathinfo = pathinfo($check[$field]['tmp_name']);
 
 		return in_array($pathinfo['extension'], $extensions);
@@ -210,11 +308,11 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinHeight(&$model, $check, $height) {
-		if ($height < 0) return false;
+	function isAboveMinHeight(&$model, $check, $height = null) {
 		$field = array_pop(array_keys($check));
+		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
 
-		return imagesy($check[$field]['tmp_name']) >= $height;
+		return $height < 0 && imagesy($check[$field]['tmp_name']) >= $height;
 	}
 
 /**
@@ -226,11 +324,11 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxHeight(&$model, $check, $height) {
-		if ($height < 0) return false;
+	function isBelowMaxHeight(&$model, $check, $height = null) {
 		$field = array_pop(array_keys($check));
+		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
 
-		return imagesy($check[$field]['tmp_name']) <= $height;
+		return $height < 0 && imagesy($check[$field]['tmp_name']) <= $height;
 	}
 
 /**
@@ -242,11 +340,11 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinWidth(&$model, $check, $width) {
-		if ($width < 0) return false;
+	function isAboveMinWidth(&$model, $check, $width = null) {
 		$field = array_pop(array_keys($check));
+		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
 
-		return imagesx($check[$field]['tmp_name']) >= $width;
+		return $width < 0 && imagesx($check[$field]['tmp_name']) >= $width;
 	}
 
 /**
@@ -258,11 +356,120 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxWidth(&$model, $check, $options) {
-		if ($width < 0) return false;
+	function isBelowMaxWidth(&$model, $check, $width = null) {
 		$field = array_pop(array_keys($check));
+		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
 
-		return imagesx($check[$field]['tmp_name']) <= $width;
+		return $width < 0 && imagesx($check[$field]['tmp_name']) <= $width;
+	}
+
+	function _resize(&$model, $field, $path, $style, $geometry) {
+		$srcFile  = $path . $model->data[$model->alias][$field];
+		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+
+		$image    = new imagick($srcFile);
+		$height   = $image->getImageHeight();
+		$width    = $image->getImageWidth();
+
+		if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
+			// resize with banding
+			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
+			$image->thumbnailImage($destW, $destH);
+		} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
+			// cropped resize (best fit)
+			list($destW, $destH) = explode('x', $geometry);
+			$image->cropThumbnailImage($destW, $destH);
+		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
+			// calculate heigh according to aspect ratio
+			$image->thumbnailImage((int)$geometry-1, 0);
+		} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
+			// calculate width according to aspect ratio
+			$image->thumbnailImage(0, (int)$geometry-1);
+		} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
+			// calculate shortest side according to aspect ratio
+			$destW = 0;
+			$destH = 0;
+			$destW = ($width > $height) ? (int)$geometry-1 : 0;
+			$destH = ($width > $height) ? 0 : (int)$geometry-1;
+
+			$image->thumbnailImage($destW, $destH, true);
+		}
+
+		$this->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
+		if (!$image->writeImage($destFile)) return false;
+
+		$image->clear();
+		$image->destroy();
+		return true;
+	}
+
+	function _getPath(&$model, $field) {
+		$path = $this->settings[$model->alias][$field]['path'];
+		if ($this->settings[$model->alias][$field]['randomPath']) {
+			return $this->_createRandomPath($model->data[$model->alias][$field], $path);
+		}
+		$destDir = APP_PATH . $path . $model->data[$model->alias][$model->primaryKey] . DIRECTORY_SEPARATOR;
+		if (!file_exists($destDir)) {
+			@mkdir($destDir, 0777, true);
+			@chmod($destDir, 0777);
+		}
+		return $model->data[$model->alias][$model->primaryKey] . DIRECTORY_SEPARATOR;
+	}
+
+	function _createRandomPath($string, $path) {
+		$endPath = null;
+		$decrement = 0;
+		$string = crc32($string . time());
+
+		for ($i = 0; $i < 3; $i++) {
+			$decrement = $decrement - 2;
+			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
+		}
+
+		$destDir = APP_PATH . $path . $endPath;
+		if (!file_exists($destDir)) {
+			@mkdir($destDir, 0777, true);
+			@chmod($destDir, 0777);
+		}
+
+		return $endPath;
+	}
+
+/**
+ * Returns a path based on settings configuration
+ *
+ * @return void
+ * @author Jose Diaz-Gonzalez
+ **/
+	function _path(&$model, $fieldName, $path) {
+		$replacements = array(
+			'{model}'	=> Inflector::underscore($model->alias),
+			'{field}'	=> $fieldName,
+			'{DS}'		=> DIRECTORY_SEPARATOR,
+			'/'			=> DIRECTORY_SEPARATOR,
+			'\\'		=> DIRECTORY_SEPARATOR,
+		);
+		return str_replace(
+			array_keys($replacements),
+			array_values($replacements),
+			$path
+		);
+	}
+
+	function _createThumbnails(&$model, $field, $path) {
+		if ($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
+		&& $this->settings[$model->alias][$field]['thumbnails']) {
+			// Create thumbnails
+			foreach ($this->settings[$model->alias][$field]['thumbsizes'] as $style => $geometry) {
+				if ($this->_resize($model, $field, $path, $style, $geometry)) {
+					$model->invalidate($field, 'resizeFail');
+				}
+			}
+		}
+	}
+
+	function _isImage(&$model, $mimetype) {
+		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
 }
