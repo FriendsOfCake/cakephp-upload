@@ -1,7 +1,156 @@
 h1. Upload Plugin
 
+The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as MeioUpload, UploadPack and PHP documentation.
+
+h2. Requirements
+
+* CakePHP 1.2/1.3
+* Imagick PHP Extension (for Thumbnail Creation)
+* PHP5 (Not really, but I'm more likely to be able to fix a PHP5 issue than a PHP4 issue)
+* Patience
+
+h2. Installation
+
+# Download this: _http://github.com/josegonzalez/upload/zipball/master_
+# Unzip that download.
+# Copy the resulting folder to _app/plugins_
+# Rename the folder you just copied to _upload_
+
+h2. Usage
+
+<pre><code>CREATE table users (
+	id int(10) unsigned NOT NULL auto_increment,
+	username varchar(20) NOT NULL,
+	photo varchar(255)
+);
+</code></pre>
+
+<pre><code><?php
+	class User extends AppModel {
+		var $name = 'User';
+		var $actsAs = array(
+			'Upload.Upload' => array(
+				'photo'
+				)
+			)
+		);
+	}
+?>
+</code></pre>
+
+Using the above setup, uploaded files cannot be delted. To do so, a field must be added to store the directory of the file as follows:
+
+<pre><code>CREATE table users (
+	id int(10) unsigned NOT NULL auto_increment,
+	username varchar(20) NOT NULL,
+	photo varchar(255)
+	photo_dir_ varchar(255)
+);
+</code></pre>
+
+<pre><code><?php
+	class User extends AppModel {
+		var $name = 'User';
+		var $actsAs = array(
+			'Upload.Upload' => array(
+				'profile_picture' => array(
+					'fields' => array(
+						'dir' => 'photo_dir'
+					))
+				)
+			)
+		);
+	}
+?>
+</code></pre>
+
+Thumbnails are not automatically created. To do so, thumbnail sizes must be defined:
+
+<pre><code><?php
+	class User extends AppModel {
+		var $name = 'User';
+		var $actsAs = array(
+			'Upload.Upload' => array(
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'photo_dir'
+					)),
+					'thumbsizes' => array(
+						'xvga' => '1024x768',
+						'vga' => '640x480',
+						'thumb' => '80x80'
+					)
+				)
+			)
+		);
+	}
+?>
+</code></pre>
+
+Multiple files can also be attached to a single record:
+
+<pre><code><?php
+	class User extends AppModel {
+		var $name = 'User';
+		var $actsAs = array(
+			'Upload.Upload' => array(
+				'resume',
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'profile_dir'
+					)),
+					'thumbsizes' => array(
+						'xvga' => '1024x768',
+						'vga' => '640x480',
+						'thumb' => '80x80'
+					)
+				)
+			)
+		);
+	}
+?>
+</code></pre>
+
+h2. Upload options:
+
+* @randomPath@: If true, a random path is generated for each file upload. Does not persist across a record. If false, the record's primaryKey is used when creating the path for the file upload
+** Default: (boolean) true
+* @path@: A path relative to the APP_PATH
+** Default: (string) 'webroot{DS}files{DS}{model}{DS}{field}{DS}'
+** Tokens:
+*** {DS}: Replaced by a DIRECTORY_SEPARATOR
+*** {model}: Replaced by the Model Alias
+*** {field}: Replaced by the field name
+* @fields@: An array of fields to use when uploading files
+** Default: (array) @array('dir' => 'dir', 'type' => 'type', 'size' => 'size')@
+** Options:
+*** dir: Field to use for storing the directory
+*** type: Field to use for storing the filetype
+*** size: Field to use for storing the filesize
+* @mimetypes@: Array of mimetypes to use for validation
+** Default: (array) empty
+* @extensions@: Array of extensions to use for validation
+** Default: (array) empty
+* @maxSize@: Max filesize in bytes for validation
+** Default: (int) 2097152
+* @minSize@: Minimum filesize in bytes for validation
+** Default: (int) 8
+* @maxHeight@: Maximum image height for validation
+** Default: (int) 0
+* @minHeight@: Minimum image height for validation
+** Default: (int) 0
+* @maxWidth@: Maximum image width for validation
+** Default: (int) 0
+* @thumbnails@: Whether to create thumbnails or not
+** Default: (boolean) true
+* @thumbsizes@: Array of thumbnail sizes, with the style-name mapping to a geometry
+** Default: (array) empty
+* @thumbnailQuality@: Quality of thumbnails that will be generated, on a scale of 0-100
+** Default: (int) 75
+
 h2. Validation rules
 
+By default, no validation rules are attached to the model. One must explicitly attach each rule if needed. Rules not referring to PHP upload errors are configurable but fallback to the behavior configuration.
 
 h4. isUnderPhpSizeLimit
 
