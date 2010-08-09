@@ -47,6 +47,8 @@ class UploadBehavior extends ModelBehavior {
 		'image/x-icon',
 	);
 
+	var $__filesToRemove = array();
+
 /**
  * Runtime configuration for this behavior
  *
@@ -91,7 +93,6 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-
 	function afterSave(&$model, $created) {
 		$temp = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
@@ -110,6 +111,25 @@ class UploadBehavior extends ModelBehavior {
 		$model->updateAll($temp[$model->alias], array(
 			$model->primaryKey => $model->data[$model->alias][$model->primaryKey];
 		));
+	}
+
+	function beforeDelete(&$model, $cascade) {
+		$data = $model->find('first', array(
+			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
+			'contain' => false,
+			'recursive' => -1,
+		));
+
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			$this->_prepareFilesForDeletion($model, $field, $data, $options);
+		}
+		return true;
+	}
+
+	function afterDelete(&$model) {
+		foreach ($this->__filesToRemove[$model->alias] as $file) {
+			@unlink($file);
+		}
 	}
 
 /**
@@ -470,6 +490,14 @@ class UploadBehavior extends ModelBehavior {
 
 	function _isImage(&$model, $mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
+	}
+
+	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
+		$this->__filesToRemove[$model->alias] = array();
+		$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $data[$model->alias][$field];
+		foreach ($options['thumbsizes'] as $style => $geometry) {
+			$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $style . '_' $data[$model->alias][$field];
+		}
 	}
 
 }
