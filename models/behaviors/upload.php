@@ -109,7 +109,7 @@ class UploadBehavior extends ModelBehavior {
 			$this->_createThumbnails($model, $field, $path);
 		}
 		$model->updateAll($temp[$model->alias], array(
-			$model->primaryKey => $model->data[$model->alias][$model->primaryKey];
+			$model->primaryKey => $model->data[$model->alias][$model->primaryKey]
 		));
 	}
 
@@ -496,7 +496,7 @@ class UploadBehavior extends ModelBehavior {
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $data[$model->alias][$field];
 		foreach ($options['thumbsizes'] as $style => $geometry) {
-			$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $style . '_' $data[$model->alias][$field];
+			$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $style . '_' . $data[$model->alias][$field];
 		}
 	}
 
