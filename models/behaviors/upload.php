@@ -241,6 +241,13 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isValidMimeType(&$model, $check, $mimetypes = array()) {
 		$field = array_pop(array_keys($check));
+		foreach ($mimetypes as $key => $value) {
+			if (!is_int($key)) {
+				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+				break;
+			}
+		}
+
 		if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
 
 		return in_array($check[$field]['type'], $mimetypes);
@@ -318,7 +325,14 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isValidExtension(&$model, $check, $extensions) {
 		$field = array_pop(array_keys($check));
-		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['mimetypes'];
+		foreach ($extensions as $key => $value) {
+			if (!is_int($key)) {
+				$extensions = $this->settings[$model->alias][$field]['extensions'];
+				break;
+			}
+		}
+
+		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
 		$pathinfo = pathinfo($check[$field]['tmp_name']);
 
 		return in_array($pathinfo['extension'], $extensions);
