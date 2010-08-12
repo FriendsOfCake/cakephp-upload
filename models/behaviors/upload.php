@@ -63,8 +63,8 @@ class UploadBehavior extends ModelBehavior {
  * @author Jose Diaz-Gonzalez
  **/
 	function setup(&$model, $settings = array()) {
-		if (isset($this->settings[$Model->alias])) return;
-		$this->settings[$Model->alias] = array();
+		if (isset($this->settings[$model->alias])) return;
+		$this->settings[$model->alias] = array();
 
 		foreach ($settings as $field => $options) {
 			if (!isset($this->settings[$model->alias][$field])) {
