@@ -132,9 +132,11 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function afterDelete(&$model) {
+		$result = array();
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			@unlink($file);
+			$result[] = @unlink($file);
 		}
+		return $result;
 	}
 
 /**
