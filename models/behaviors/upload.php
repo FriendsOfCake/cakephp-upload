@@ -67,8 +67,13 @@ class UploadBehavior extends ModelBehavior {
 		$this->settings[$model->alias] = array();
 
 		foreach ($settings as $field => $options) {
+			if (is_int($field)) {
+				$field = $options;
+				$options = array();
+			}
+
 			if (!isset($this->settings[$model->alias][$field])) {
-				$options += $this->defaults;
+				$options = array_merge($this->defaults, (array) $options);
 				$options['path'] = $this->_path($model, $field, $options['path']);
 				$this->settings[$model->alias][$field] = $options;
 			}
