@@ -500,7 +500,7 @@ class UploadBehavior extends ModelBehavior {
 		&& $this->settings[$model->alias][$field]['thumbnails']) {
 			// Create thumbnails
 			foreach ($this->settings[$model->alias][$field]['thumbsizes'] as $style => $geometry) {
-				if ($this->_resize($model, $field, $path, $style, $geometry)) {
+				if (!$this->_resize($model, $field, $path, $style, $geometry)) {
 					$model->invalidate($field, 'resizeFail');
 				}
 			}
