@@ -513,10 +513,11 @@ class UploadBehavior extends ModelBehavior {
 
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		$this->__filesToRemove[$model->alias] = array();
-		$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $data[$model->alias][$field];
+		$this->__filesToRemove[$model->alias][] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $data[$model->alias][$field];
 		foreach ($options['thumbsizes'] as $style => $geometry) {
-			$this->__filesToRemove[$model->alias] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['path']] . $style . '_' . $data[$model->alias][$field];
+			$this->__filesToRemove[$model->alias][] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $style . '_' . $data[$model->alias][$field];
 		}
+		return $this->__filesToRemove;
 	}
 
 }
