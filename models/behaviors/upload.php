@@ -99,12 +99,12 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function afterSave(&$model, $created) {
-		$temp = array();
+		$temp = array($model->alias => array());
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!in_array($field, $model->data[$model->alias])) continue;
-
+			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			$temp[$model->alias][$options['fields']['dir']] = $this->_getPath($model, $field);
-			$path = APP_PATH . $this->settings[$model->alias][$field]['path'] . $temp[$model->alias][$field]['dir'];
+			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
+			$path .= $temp[$model->alias][$options['fields']['dir']];
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!@move_uploaded_file($tmp, $filePath)) {
@@ -114,7 +114,7 @@ class UploadBehavior extends ModelBehavior {
 			$this->_createThumbnails($model, $field, $path);
 		}
 		$model->updateAll($temp[$model->alias], array(
-			$model->primaryKey => $model->data[$model->alias][$model->primaryKey]
+			$model->primaryKey => $model->id
 		));
 	}
 
@@ -261,7 +261,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Object $model
  * @param mixed $check Value to check
- * @param string $path Path relative to APP_PATH
+ * @param string $path Path relative to ROOT . DS . APP_DIR . DS
  * @return boolean Success
  * @access public
  */
@@ -276,7 +276,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Object $model
  * @param mixed $check Value to check
- * @param string $path Path relative to APP_PATH
+ * @param string $path Path relative to ROOT . DS . APP_DIR . DS
  * @return boolean Success
  * @access public
  */
@@ -449,12 +449,12 @@ class UploadBehavior extends ModelBehavior {
 		if ($this->settings[$model->alias][$field]['randomPath']) {
 			return $this->_createRandomPath($model->data[$model->alias][$field], $path);
 		}
-		$destDir = APP_PATH . $path . $model->data[$model->alias][$model->primaryKey] . DIRECTORY_SEPARATOR;
+		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
 			@chmod($destDir, 0777);
 		}
-		return $model->data[$model->alias][$model->primaryKey] . DIRECTORY_SEPARATOR;
+		return $model->id . DIRECTORY_SEPARATOR;
 	}
 
 	function _createRandomPath($string, $path) {
@@ -467,7 +467,7 @@ class UploadBehavior extends ModelBehavior {
 			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
 		}
 
-		$destDir = APP_PATH . $path . $endPath;
+		$destDir = ROOT . DS . APP_DIR . DS . $path . $endPath;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
 			@chmod($destDir, 0777);
@@ -515,9 +515,9 @@ class UploadBehavior extends ModelBehavior {
 
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		$this->__filesToRemove[$model->alias] = array();
-		$this->__filesToRemove[$model->alias][] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $data[$model->alias][$field];
+		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $data[$model->alias][$field];
 		foreach ($options['thumbsizes'] as $style => $geometry) {
-			$this->__filesToRemove[$model->alias][] = APP_PATH . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $style . '_' . $data[$model->alias][$field];
+			$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $style . '_' . $data[$model->alias][$field];
 		}
 		return $this->__filesToRemove;
 	}
