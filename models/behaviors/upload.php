@@ -101,7 +101,7 @@ class UploadBehavior extends ModelBehavior {
 	function afterSave(&$model, $created) {
 		$temp = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!in_array($model->data[$model->alias])) continue;
+			if (!in_array($field, $model->data[$model->alias])) continue;
 
 			$temp[$model->alias][$options['fields']['dir']] = $this->_getPath($model, $field);
 			$path = APP_PATH . $this->settings[$model->alias][$field]['path'] . $temp[$model->alias][$field]['dir'];
