@@ -34,93 +34,108 @@ h2. Usage
 </code></pre>
 
 <pre><code><?php
-	class User extends AppModel {
-		var $name = 'User';
-		var $actsAs = array(
-			'Upload.Upload' => array(
-				'photo'
-				)
+class User extends AppModel {
+	var $name = 'User';
+	var $actsAs = array(
+		'Upload.Upload' => array(
+			'photo'
 			)
-		);
-	}
+		)
+	);
+}
 ?>
 </code></pre>
 
-Using the above setup, uploaded files cannot be delted. To do so, a field must be added to store the directory of the file as follows:
+<pre><code><?php $this->Form->create('User', array('type' => 'file')); ?>
+	<?php $this->Form->input('User.username'); ?>
+	<?php $this->Form->input('User.photo', array('type' => 'file')); ?>
+<?php $this->Form->end(); ?>
+</code></pre>
+
+Using the above setup, uploaded files cannot be deleted. To do so, a field must be added to store the directory of the file as follows:
 
 <pre><code>CREATE table users (
 	`id` int(10) unsigned NOT NULL auto_increment,
 	`username` varchar(20) NOT NULL,
 	`photo` varchar(255) DEFAULT NULL,
-	`photo_dir_` varchar(255) DEFAULT NULL,
+	`photo_dir` varchar(255) DEFAULT NULL,
 	PRIMARY KEY (`id`)
 );
 </code></pre>
 
 <pre><code><?php
-	class User extends AppModel {
-		var $name = 'User';
-		var $actsAs = array(
-			'Upload.Upload' => array(
-				'profile_picture' => array(
-					'fields' => array(
-						'dir' => 'photo_dir'
-					))
-				)
+class User extends AppModel {
+	var $name = 'User';
+	var $actsAs = array(
+		'Upload.Upload' => array(
+			'profile_picture' => array(
+				'fields' => array(
+					'dir' => 'photo_dir'
+				))
 			)
-		);
-	}
+		)
+	);
+}
 ?>
+</code></pre>
+
+<pre><code><?php $this->Form->create('User', array('type' => 'file')); ?>
+	<?php $this->Form->input('User.username'); ?>
+	<?php $this->Form->input('User.photo', array('type' => 'file')); ?>
+	<?php $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
+<?php $this->Form->end(); ?>
 </code></pre>
 
 Thumbnails are not automatically created. To do so, thumbnail sizes must be defined:
 
 <pre><code><?php
-	class User extends AppModel {
-		var $name = 'User';
-		var $actsAs = array(
-			'Upload.Upload' => array(
-				'photo' => array(
-					'fields' => array(
-						'dir' => 'photo_dir'
-					)),
-					'thumbsizes' => array(
-						'xvga' => '1024x768',
-						'vga' => '640x480',
-						'thumb' => '80x80'
-					)
+class User extends AppModel {
+	var $name = 'User';
+	var $actsAs = array(
+		'Upload.Upload' => array(
+			'photo' => array(
+				'fields' => array(
+					'dir' => 'photo_dir'
+				)),
+				'thumbsizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
 				)
 			)
-		);
-	}
+		)
+	);
+}
 ?>
 </code></pre>
 
 Multiple files can also be attached to a single record:
 
 <pre><code><?php
-	class User extends AppModel {
-		var $name = 'User';
-		var $actsAs = array(
-			'Upload.Upload' => array(
-				'resume',
-				'photo' => array(
-					'fields' => array(
-						'dir' => 'profile_dir'
-					)),
-					'thumbsizes' => array(
-						'xvga' => '1024x768',
-						'vga' => '640x480',
-						'thumb' => '80x80'
-					)
+class User extends AppModel {
+	var $name = 'User';
+	var $actsAs = array(
+		'Upload.Upload' => array(
+			'resume',
+			'photo' => array(
+				'fields' => array(
+					'dir' => 'profile_dir'
+				)),
+				'thumbsizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
 				)
 			)
-		);
-	}
+		)
+	);
+}
 ?>
 </code></pre>
 
-h2. Upload options:
+Please read about the Behavior options for more details as to how to configure this plugin.
+
+h2. Behavior options:
 
 * @randomPath@: If true, a random path is generated for each file upload. Does not persist across a record. If false, the record's primaryKey is used when creating the path for the file upload
 ** Default: (boolean) @true@
