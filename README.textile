@@ -171,6 +171,8 @@ h2. Behavior options:
 ** Default: (int) @0@
 * @minWidth@: Minimum image width for validation
 ** Default: (int) @0@
+* @prefixStyle@: Whether to prefix or suffix the style onto thumbnails
+** Default: (boolean) @true@
 * @thumbnails@: Whether to create thumbnails or not
 ** Default: (boolean) @true@
 * @thumbsizes@: Array of thumbnail sizes, with the style-name mapping to a geometry

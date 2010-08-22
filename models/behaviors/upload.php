@@ -32,6 +32,7 @@ class UploadBehavior extends ModelBehavior {
 		'minHeight'			=> 0,
 		'maxWidth'			=> 0,
 		'minWidth'			=> 0,
+		'prefixStyle'		=> true,
 		'thumbnails'		=> true,
 		'thumbsizes'		=> array(),
 		'thumbnailQuality'	=> 75,
@@ -428,6 +429,11 @@ class UploadBehavior extends ModelBehavior {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
 
+		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
+			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
+			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
+		}
+
 		$image    = new imagick($srcFile);
 		$height   = $image->getImageHeight();
 		$width    = $image->getImageWidth();
@@ -467,6 +473,11 @@ class UploadBehavior extends ModelBehavior {
 	function _resizePhp(&$model, $field, $path, $style, $geometry) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+
+		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
+			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
+			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
+		}
 
 		copy($srcFile, $destFile);
 		$pathinfo = pathinfo($srcFile);
@@ -653,6 +664,16 @@ class UploadBehavior extends ModelBehavior {
 			$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . $style . '_' . $data[$model->alias][$field];
 		}
 		return $this->__filesToRemove;
+	}
+
+	function _pathinfo($filename) {
+		$pathinfo = pathinfo($filename);
+		// PHP < 5.2.0 doesn't include 'filename' key in pathinfo. Let's try to fix this.
+		if (empty($pathinfo['filename'])) {
+			$suffix = !empty($pathinfo['extension']) ? '.'.$pathinfo['extension'] : '';
+			$pathinfo['filename'] = basename($pathinfo['basename'], $suffix);
+		}
+		return $pathinfo;
 	}
 
 }
