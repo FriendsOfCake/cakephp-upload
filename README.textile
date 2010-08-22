@@ -157,6 +157,12 @@ h2. Upload options:
 ** Default: (array) empty
 * @thumbnailQuality@: Quality of thumbnails that will be generated, on a scale of 0-100
 ** Default: (int) @75@
+* @thumbnailMethod@: The method to use for resizing thumbnails
+** Default: (string) @imagick@
+** Options:
+*** imagick: Uses the PHP imagick extension to generate thumbnails
+*** php: Uses the built-in PHP methods to generate thumbnails
+
 
 h2. Validation rules
 
