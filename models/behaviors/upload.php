@@ -77,6 +77,7 @@ class UploadBehavior extends ModelBehavior {
 
 			if (!isset($this->settings[$model->alias][$field])) {
 				$options = array_merge($this->defaults, (array) $options);
+				$options['fields'] += $this->defaults['fields'];
 				$options['path'] = $this->_path($model, $field, $options['path']);
 				if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 					$options['thumbnailMethod'] = 'imagick';
