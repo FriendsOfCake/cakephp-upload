@@ -96,7 +96,7 @@ class User extends AppModel {
 			'photo' => array(
 				'fields' => array(
 					'dir' => 'photo_dir'
-				)),
+				),
 				'thumbsizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
@@ -120,7 +120,7 @@ class User extends AppModel {
 			'photo' => array(
 				'fields' => array(
 					'dir' => 'profile_dir'
-				)),
+				),
 				'thumbsizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
