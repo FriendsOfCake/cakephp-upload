@@ -46,10 +46,10 @@ class User extends AppModel {
 ?>
 </code></pre>
 
-<pre><code><?php $this->Form->create('User', array('type' => 'file')); ?>
-	<?php $this->Form->input('User.username'); ?>
-	<?php $this->Form->input('User.photo', array('type' => 'file')); ?>
-<?php $this->Form->end(); ?>
+<pre><code><?php echo $this->Form->create('User', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.username'); ?>
+	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
+<?php echo $this->Form->end(); ?>
 </code></pre>
 
 Using the above setup, uploaded files cannot be deleted. To do so, a field must be added to store the directory of the file as follows:
@@ -79,11 +79,11 @@ class User extends AppModel {
 ?>
 </code></pre>
 
-<pre><code><?php $this->Form->create('User', array('type' => 'file')); ?>
-	<?php $this->Form->input('User.username'); ?>
-	<?php $this->Form->input('User.photo', array('type' => 'file')); ?>
-	<?php $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
-<?php $this->Form->end(); ?>
+<pre><code><?php echo $this->Form->create('User', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.username'); ?>
+	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
+<?php echo $this->Form->end(); ?>
 </code></pre>
 
 Thumbnails are not automatically created. To do so, thumbnail sizes must be defined:
