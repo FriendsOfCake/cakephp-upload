@@ -112,20 +112,24 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			if (empty($this->runtime[$model->alias][$field])) continue;
-			$temp[$model->alias][$options['fields']['dir']] = $this->_getPath($model, $field);
+
+			$tempPath = $this->_getPath($model, $field);
 			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
-			$path .= $temp[$model->alias][$options['fields']['dir']];
+			$path .= $tempPath . DS;
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!@move_uploaded_file($tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
-
 			$this->_createThumbnails($model, $field, $path);
+			$temp[$model->alias][$options['fields']['dir']] = "\"{$tempPath}\"";
 		}
-		$model->updateAll($temp[$model->alias], array(
-			$model->primaryKey => $model->id
-		));
+
+		if (!empty($temp[$model->alias])) {
+			$model->updateAll($temp[$model->alias], array(
+				$model->primaryKey => $model->id
+			));
+		}
 	}
 
 	function beforeDelete(&$model, $cascade) {
@@ -554,7 +558,7 @@ class UploadBehavior extends ModelBehavior {
 			@mkdir($destDir, 0777, true);
 			@chmod($destDir, 0777);
 		}
-		return $model->id . DIRECTORY_SEPARATOR;
+		return $model->id;
 	}
 
 	function _createRandomPath($string, $path) {
@@ -573,7 +577,7 @@ class UploadBehavior extends ModelBehavior {
 			@chmod($destDir, 0777);
 		}
 
-		return $endPath;
+		return substr($endPath, 0, -1);
 	}
 
 /**
