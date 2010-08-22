@@ -96,6 +96,7 @@ class UploadBehavior extends ModelBehavior {
  **/
 	function beforeSave(&$model) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
+		    if (!is_array($model->data[$model->alias][$field])) continue;
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
@@ -110,6 +111,7 @@ class UploadBehavior extends ModelBehavior {
 		$temp = array($model->alias => array());
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
+			if (empty($this->runtime[$model->alias][$field])) continue;
 			$temp[$model->alias][$options['fields']['dir']] = $this->_getPath($model, $field);
 			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
 			$path .= $temp[$model->alias][$options['fields']['dir']];
