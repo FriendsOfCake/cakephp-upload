@@ -137,8 +137,12 @@ Please read about the Behavior options for more details as to how to configure t
 
 h2. Behavior options:
 
-* @randomPath@: If true, a random path is generated for each file upload. Does not persist across a record. If false, the record's primaryKey is used when creating the path for the file upload
-** Default: (boolean) @true@
+* @pathMethod@: The method to use for file paths
+** Default: (string) @primaryKey@
+** Options:
+*** flat: Does not create a path for each record. Files are moved to the value of the 'path' option
+*** primaryKey: Path based upon the record's primaryKey is generated. Persists across a record
+*** random: Random path is generated for each file upload. Does not persist across a record.
 * @path@: A path relative to the @APP_PATH@
 ** Default: (string) @'webroot{DS}files{DS}{model}{DS}{field}{DS}'@
 ** Tokens:

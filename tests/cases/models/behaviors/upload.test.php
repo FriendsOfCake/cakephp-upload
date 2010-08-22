@@ -427,8 +427,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	function testCreateRandomPath() {
-		$result = $this->TestUpload->Behaviors->Upload->_createRandomPath('string', TMP);
+	function testGetPathRandom() {
+		$result = $this->TestUpload->Behaviors->Upload->_getPathRandom('string', TMP);
 
 		$this->assertIsA($result, 'String');
 		$this->assertEqual(9, strlen($result));
