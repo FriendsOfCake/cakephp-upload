@@ -49,10 +49,11 @@ h2. Usage
 Using the above setup, uploaded files cannot be delted. To do so, a field must be added to store the directory of the file as follows:
 
 <pre><code>CREATE table users (
-	id int(10) unsigned NOT NULL auto_increment,
-	username varchar(20) NOT NULL,
-	photo varchar(255)
-	photo_dir_ varchar(255)
+	`id` int(10) unsigned NOT NULL auto_increment,
+	`username` varchar(20) NOT NULL,
+	`photo` varchar(255) DEFAULT NULL,
+	`photo_dir_` varchar(255) DEFAULT NULL,
+	PRIMARY KEY (`id`)
 );
 </code></pre>
 
