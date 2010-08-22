@@ -443,7 +443,7 @@ class UploadBehavior extends ModelBehavior {
 			$image->thumbnailImage($destW, $destH, true);
 		}
 
-		$this->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
+		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
 		if (!$image->writeImage($destFile)) return false;
 
 		$image->clear();
