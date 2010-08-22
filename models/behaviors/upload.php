@@ -35,6 +35,7 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnails'		=> true,
 		'thumbsizes'		=> array(),
 		'thumbnailQuality'	=> 75,
+		'thumbnailMethod'	=> 'imagick',
 	);
 
 	var $_imageMimetypes = array(
@@ -46,6 +47,8 @@ class UploadBehavior extends ModelBehavior {
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
 	);
+
+	var $_resizeMethods = array('imagick', 'php');
 
 	var $__filesToRemove = array();
 
@@ -75,6 +78,10 @@ class UploadBehavior extends ModelBehavior {
 			if (!isset($this->settings[$model->alias][$field])) {
 				$options = array_merge($this->defaults, (array) $options);
 				$options['path'] = $this->_path($model, $field, $options['path']);
+				if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
+					$options['thumbnailMethod'] = 'imagick';
+				}
+				$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
 				$this->settings[$model->alias][$field] = $options;
 			}
 		}
@@ -404,7 +411,7 @@ class UploadBehavior extends ModelBehavior {
 		return $width < 0 && imagesx($check[$field]['tmp_name']) <= $width;
 	}
 
-	function _resize(&$model, $field, $path, $style, $geometry) {
+	function _resizeImagick(&$model, $field, $path, $style, $geometry) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
 
@@ -442,6 +449,96 @@ class UploadBehavior extends ModelBehavior {
 		$image->clear();
 		$image->destroy();
 		return true;
+	}
+
+	function _resizePhp(&$model, $field, $path, $style, $geometry) {
+		$srcFile  = $path . $model->data[$model->alias][$field];
+		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+
+		copy($srcFile, $destFile);
+		$pathinfo = pathinfo($srcFile);
+		$src = null;
+		$createHandler = null;
+		$outputHandler = null;
+		switch (strtolower($pathinfo['extension'])) {
+			case 'gif':
+				$createHandler = 'imagecreatefromgif';
+				$outputHandler = 'imagegif';
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$createHandler = 'imagecreatefromjpeg';
+				$outputHandler = 'imagejpeg';
+				break;
+			case 'png':
+				$createHandler = 'imagecreatefrompng';
+				$outputHandler = 'imagepng';
+				break;
+			default:
+				return false;
+		}
+
+		if ($src = $createHandler($destFile)) {
+			$srcW = imagesx($src);
+			$srcH = imagesy($src);
+
+			// determine destination dimensions and resize mode from provided geometry
+			if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
+				// resize with banding
+				list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
+				$resizeMode = 'band';
+			} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
+				// cropped resize (best fit)
+				list($destW, $destH) = explode('x', $geometry);
+				$resizeMode = 'best';
+			} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
+				// calculate heigh according to aspect ratio
+				$destW = (int)$geometry-1;
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
+				// calculate width according to aspect ratio
+				$destH = (int)$geometry-1;
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
+				// calculate shortest side according to aspect ratio
+				if ($srcW > $srcH) $destW = (int)$geometry-1;
+				else $destH = (int)$geometry-1;
+				$resizeMode = false;
+			}
+			if (!isset($destW)) $destW = ($destH/$srcH) * $srcW;
+			if (!isset($destH)) $destH = ($destW/$srcW) * $srcH;
+
+			// determine resize dimensions from appropriate resize mode and ratio
+			if ($resizeMode == 'best') {
+				// "best fit" mode
+				if ($srcW > $srcH) {
+					if ($srcH/$destH > $srcW/$destW) $ratio = $destW/$srcW;
+					else $ratio = $destH/$srcH;
+				} else {
+					if ($srcH/$destH < $srcW/$destW) $ratio = $destH/$srcH;
+					else $ratio = $destW/$srcW;
+				}
+				$resizeW = $srcW*$ratio;
+				$resizeH = $srcH*$ratio;
+			} else if ($resizeMode == 'band') {
+				// "banding" mode
+				if ($srcW > $srcH) $ratio = $destW/$srcW;
+				else $ratio = $destH/$srcH;
+				$resizeW = $srcW*$ratio;
+				$resizeH = $srcH*$ratio;
+			} else {
+				// no resize ratio
+				$resizeW = $destW;
+				$resizeH = $destH;
+			}
+
+			$img = imagecreatetruecolor($destW, $destH);
+			imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
+			imagecopyresampled($img, $src, ($destW-$resizeW)/2, ($destH-$resizeH)/2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
+			$outputHandler($img, $destFile);
+			return true;
+		}
+		return false;
 	}
 
 	function _getPath(&$model, $field) {
@@ -499,10 +596,13 @@ class UploadBehavior extends ModelBehavior {
 
 	function _createThumbnails(&$model, $field, $path) {
 		if ($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
-		&& $this->settings[$model->alias][$field]['thumbnails']) {
+		&& $this->settings[$model->alias][$field]['thumbnails']
+		&& !empty($this->settings[$model->alias][$field]['thumbsizes'])) {
 			// Create thumbnails
+			$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
+
 			foreach ($this->settings[$model->alias][$field]['thumbsizes'] as $style => $geometry) {
-				if (!$this->_resize($model, $field, $path, $style, $geometry)) {
+				if (!$this->$method($model, $field, $path, $style, $geometry)) {
 					$model->invalidate($field, 'resizeFail');
 				}
 			}
