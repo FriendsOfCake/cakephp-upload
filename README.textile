@@ -1,6 +1,6 @@
 h1. Upload Plugin
 
-The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as MeioUpload, UploadPack and PHP documentation.
+The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as "MeioUpload":http://github.com/jrbasso/MeioUpload , "UploadPack":http://github.com/szajbus/uploadpack and "PHP documentation":http://php.net/manual/en/features.file-upload.php.
 
 h2. A Note on Pull Requests
 
@@ -19,7 +19,7 @@ h2. Requirements
 
 h2. Installation
 
-# Download this: _http://github.com/josegonzalez/upload/zipball/master_
+# Download this: "http://github.com/josegonzalez/upload/zipball/master":http://github.com/josegonzalez/upload/zipball/master
 # Unzip that download.
 # Copy the resulting folder to _app/plugins_
 # Rename the folder you just copied to _upload_
@@ -185,6 +185,43 @@ h2. Behavior options:
 *** imagick: Uses the PHP imagick extension to generate thumbnails
 *** php: Uses the built-in PHP methods to generate thumbnails
 
+h2. Thumbnail Sizes and Styles
+
+Styles are the definition of thumbnails that will be generated for original image. You can define as many as you want.
+
+<pre><code><?php
+class User extends AppModel {
+	var $name = 'User';
+	var $actsAs = array(
+	'Upload.Upload' => array(
+		'photo' => array(
+			'thumbsizes' => array(
+				'big' => '200x200',
+				'small' => '120x120'
+				'thumb' => '80x80'
+			)
+		)
+	)
+);
+?>
+</code></pre>
+
+Styles only apply to images of the following types:
+* image/bmp
+* image/gif
+* image/jpeg
+* image/pjpeg
+* image/png
+* image/vnd.microsoft.icon
+* image/x-icon
+
+You can specify any of the following resize modes for your styles:
+
+* *100x80* - resize for best fit into these dimensions, with overlapping edges trimmed if original aspect ratio differs
+* *[100x80]* - resize to fit these dimensions, with white banding if original aspect ratio differs
+* *100w* - maintain original aspect ratio, resize to 100 pixels wide
+* *80h* - maintain original aspect ratio, resize to 80 pixels high
+* *80l* - maintain original aspect ratio, resize so that longest side is 80 pixels
 
 h2. Validation rules
 
