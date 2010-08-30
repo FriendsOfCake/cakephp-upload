@@ -39,7 +39,6 @@ class User extends AppModel {
 	var $actsAs = array(
 		'Upload.Upload' => array(
 			'photo'
-			)
 		)
 	);
 }
@@ -71,7 +70,7 @@ class User extends AppModel {
 			'profile_picture' => array(
 				'fields' => array(
 					'dir' => 'photo_dir'
-				))
+				)
 			)
 		)
 	);
@@ -193,16 +192,16 @@ Styles are the definition of thumbnails that will be generated for original imag
 class User extends AppModel {
 	var $name = 'User';
 	var $actsAs = array(
-	'Upload.Upload' => array(
-		'photo' => array(
-			'thumbsizes' => array(
-				'big' => '200x200',
-				'small' => '120x120'
-				'thumb' => '80x80'
+		'Upload.Upload' => array(
+			'photo' => array(
+				'thumbsizes' => array(
+					'big' => '200x200',
+					'small' => '120x120'
+					'thumb' => '80x80'
+				)
 			)
 		)
-	)
-);
+	);
 ?>
 </code></pre>
 
