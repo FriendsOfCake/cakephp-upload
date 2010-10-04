@@ -569,13 +569,13 @@ class UploadBehavior extends ModelBehavior {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
 
-		if ($pathMethod = '_getPathFlat') {
+		if ($pathMethod == '_getPathFlat') {
 			return $this->_getPathFlat(&$model, $path);
 		}
-		if ($pathMethod = '_getPathRandom') {
+		if ($pathMethod == '_getPathRandom') {
 			return $this->_getPathRandom($model->data[$model->alias][$field], $path);
 		}
-		if ($pathMethod = '_getPathPrimaryKey') {
+		if ($pathMethod == '_getPathPrimaryKey') {
 			return $this->_getPathPrimaryKey(&$model, $path);
 		}
 	}
@@ -589,7 +589,7 @@ class UploadBehavior extends ModelBehavior {
 		return '';
 	}
 
-	function _getPathPrimaryKey(&$model) {
+	function _getPathPrimaryKey(&$model, $path) {
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
