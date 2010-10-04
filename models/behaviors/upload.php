@@ -134,7 +134,7 @@ class UploadBehavior extends ModelBehavior {
 
 		if (!empty($temp[$model->alias])) {
 			$model->updateAll($temp[$model->alias], array(
-				$model->primaryKey => $model->id
+				$model->alias.'.'.$model->primaryKey => $model->id
 			));
 		}
 	}
