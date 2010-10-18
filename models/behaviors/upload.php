@@ -593,13 +593,13 @@ class UploadBehavior extends ModelBehavior {
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
 
 		if ($pathMethod == '_getPathFlat') {
-			return $this->_getPathFlat(&$model, $path);
+			return $this->_getPathFlat($model, $path);
 		}
 		if ($pathMethod == '_getPathRandom') {
 			return $this->_getPathRandom($model->data[$model->alias][$field], $path);
 		}
 		if ($pathMethod == '_getPathPrimaryKey') {
-			return $this->_getPathPrimaryKey(&$model, $path);
+			return $this->_getPathPrimaryKey($model, $path);
 		}
 	}
 
