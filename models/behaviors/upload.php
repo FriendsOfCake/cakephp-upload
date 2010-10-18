@@ -104,6 +104,23 @@ class UploadBehavior extends ModelBehavior {
 	function beforeSave(&$model) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 		    if (!is_array($model->data[$model->alias][$field])) continue;
+			if (!empty($model->data[$model->alias][$field]['remove'])) {
+				//if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
+				if (!empty($model->data[$model->alias][$model->primaryKey])) {
+					$data = $model->find('first', array(
+						'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
+						'contain' => false,
+						'recursive' => -1,
+					));
+					$this->_prepareFilesForDeletion($model, $field, $data, $options);
+				}
+				$model->data[$model->alias][$field] = null;
+			} elseif (empty($model->data[$model->alias][$field]['name'])) {
+				// if field is empty, don't delete/nullify existing file
+				unset($model->data[$model->alias][$field]);
+				continue;
+			}
+				
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
@@ -137,6 +154,12 @@ class UploadBehavior extends ModelBehavior {
 				$model->alias.'.'.$model->primaryKey => $model->id
 			));
 		}
+		
+		if(empty($this->__filesToRemove[$model->alias])) return true;
+		foreach ($this->__filesToRemove[$model->alias] as $file) {
+			$result[] = @unlink($file);
+		}
+		return $result;
 	}
 
 	function beforeDelete(&$model, $cascade) {
