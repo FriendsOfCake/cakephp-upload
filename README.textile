@@ -13,7 +13,7 @@ That said, I appreciate any and all feedback, especially on untested code such a
 h2. Requirements
 
 * CakePHP 1.2/1.3
-* Imagick PHP Extension (for Thumbnail Creation)
+* Imagick/GD PHP Extension (for Thumbnail Creation)
 * PHP5 (Not really, but I'm more likely to be able to fix a PHP5 issue than a PHP4 issue)
 * Patience
 
