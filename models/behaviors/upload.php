@@ -103,7 +103,8 @@ class UploadBehavior extends ModelBehavior {
  **/
 	function beforeSave(&$model) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-		    if (!is_array($model->data[$model->alias][$field])) continue;
+			if (!isset($model->data[$model->alias][$field])) continue;
+			if (!is_array($model->data[$model->alias][$field])) continue;
 			if (!empty($model->data[$model->alias][$field]['remove'])) {
 				//if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
 				if (!empty($model->data[$model->alias][$model->primaryKey])) {
