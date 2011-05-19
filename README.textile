@@ -67,7 +67,7 @@ class User extends AppModel {
 	var $name = 'User';
 	var $actsAs = array(
 		'Upload.Upload' => array(
-			'profile_picture' => array(
+			'photo' => array(
 				'fields' => array(
 					'dir' => 'photo_dir'
 				)
@@ -136,7 +136,7 @@ Please read about the Behavior options for more details as to how to configure t
 
 h2. Behavior options:
 
-* @pathMethod@: The method to use for file paths
+* @pathMethod@: The method to use for file paths. This is appended to the @path@ option below
 ** Default: (string) @primaryKey@
 ** Options:
 *** flat: Does not create a path for each record. Files are moved to the value of the 'path' option
