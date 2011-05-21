@@ -121,7 +121,7 @@ class UploadBehavior extends ModelBehavior {
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
-				
+
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
@@ -147,7 +147,9 @@ class UploadBehavior extends ModelBehavior {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
 			$this->_createThumbnails($model, $field, $path);
-			$temp[$model->alias][$options['fields']['dir']] = "\"{$tempPath}\"";
+			if ($model->hasField($options['fields']['dir'])) {
+				$temp[$model->alias][$options['fields']['dir']] = "\"{$tempPath}\"";
+			}
 		}
 
 		if (!empty($temp[$model->alias])) {
