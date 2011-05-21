@@ -303,6 +303,12 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isValidMimeType(&$model, $check, $mimetypes = array()) {
 		$field = array_pop(array_keys($check));
+
+		// Non-file uploads also mean the mimetype is invalid
+		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
+			return false;
+		}
+
 		foreach ($mimetypes as $key => $value) {
 			if (!is_int($key)) {
 				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
@@ -373,6 +379,12 @@ class UploadBehavior extends ModelBehavior {
 	function isAboveMinSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
+
+		// Non-file uploads also mean the size is too small
+		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+			return false;
+		}
+
 		return $check[$field]['size'] >= $size;
 	}
 
@@ -387,6 +399,12 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isValidExtension(&$model, $check, $extensions) {
 		$field = array_pop(array_keys($check));
+
+		// Non-file uploads also mean the extension is invalid
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			return false;
+		}
+
 		foreach ($extensions as $key => $value) {
 			if (!is_int($key)) {
 				$extensions = $this->settings[$model->alias][$field]['extensions'];
@@ -411,6 +429,12 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isAboveMinHeight(&$model, $check, $height = null) {
 		$field = array_pop(array_keys($check));
+
+		// Non-file uploads also mean the height is too big
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			return false;
+		}
+
 		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
 
 		return $height < 0 && imagesy($check[$field]['tmp_name']) >= $height;
@@ -443,6 +467,12 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isAboveMinWidth(&$model, $check, $width = null) {
 		$field = array_pop(array_keys($check));
+
+		// Non-file uploads also mean the width is too big
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			return false;
+		}
+
 		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
 
 		return $width < 0 && imagesx($check[$field]['tmp_name']) >= $width;
