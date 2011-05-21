@@ -19,10 +19,25 @@ h2. Requirements
 
 h2. Installation
 
+_[Manual]_
+
 # Download this: "http://github.com/josegonzalez/upload/zipball/master":http://github.com/josegonzalez/upload/zipball/master
 # Unzip that download.
-# Copy the resulting folder to _app/plugins_
-# Rename the folder you just copied to _upload_
+# Copy the resulting folder to @app/plugins@
+# Rename the folder you just copied to @upload@
+
+_[GIT Submodule]_
+
+In your app directory type:
+<pre><code>git submodule add git://github.com/josegonzalez/upload.git plugins/upload
+git submodule init
+git submodule update
+</code></pre>
+
+_[GIT Clone]_
+
+In your plugin directory type
+<pre><code>git clone git://github.com/josegonzalez/upload.git upload</code></pre>
 
 h2. Usage
 
