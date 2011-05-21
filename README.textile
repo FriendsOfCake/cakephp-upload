@@ -185,6 +185,8 @@ h2. Behavior options:
 ** Default: (int) @0@
 * @minWidth@: Minimum image width for validation
 ** Default: (int) @0@
+* @deleteOnUpdate@: Whether to delete files when uploading new versions (potentially dangerous due to naming conflicts)
+** Default: (boolean) @false@
 * @prefixStyle@: Whether to prefix or suffix the style onto thumbnails
 ** Default: (boolean) @true@
 * @thumbnails@: Whether to create thumbnails or not

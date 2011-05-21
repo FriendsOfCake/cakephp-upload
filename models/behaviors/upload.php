@@ -37,6 +37,7 @@ class UploadBehavior extends ModelBehavior {
 		'thumbsizes'		=> array(),
 		'thumbnailQuality'	=> 75,
 		'thumbnailMethod'	=> 'imagick',
+		'deleteOnUpdate'	=> false,
 	);
 
 	var $_imageMimetypes = array(
@@ -105,8 +106,9 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
 			if (!is_array($model->data[$model->alias][$field])) continue;
+
 			if (!empty($model->data[$model->alias][$field]['remove'])) {
-				//if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
+				// if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
 				if (!empty($model->data[$model->alias][$model->primaryKey])) {
 					$data = $model->find('first', array(
 						'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
@@ -116,7 +118,18 @@ class UploadBehavior extends ModelBehavior {
 					$this->_prepareFilesForDeletion($model, $field, $data, $options);
 				}
 				$model->data[$model->alias][$field] = null;
-			} elseif (empty($model->data[$model->alias][$field]['name'])) {
+			} elseif ($this->settings[$model->alias][$field]['deleteOnUpdate'] && isset($model->data[$model->alias][$field]['name']) && strlen($model->data[$model->alias][$field]['name'])) {
+				// We're updating the file, remove old versions
+				if (!empty($model->data[$model->alias][$model->primaryKey])) {
+					$data = $model->find('first', array(
+						'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
+						'contain' => false,
+						'recursive' => -1,
+					));
+					$this->_prepareFilesForDeletion($model, $field, $data, $options);
+				}
+				$model->data[$model->alias][$field] = null;
+			} else {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
@@ -158,7 +171,7 @@ class UploadBehavior extends ModelBehavior {
 			));
 		}
 		
-		if(empty($this->__filesToRemove[$model->alias])) return true;
+		if (empty($this->__filesToRemove[$model->alias])) return true;
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
 			$result[] = @unlink($file);
 		}
@@ -696,6 +709,8 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
+		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
+
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $data[$model->alias][$field];
 		foreach ($options['thumbsizes'] as $style => $geometry) {
