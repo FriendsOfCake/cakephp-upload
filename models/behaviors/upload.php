@@ -309,6 +309,11 @@ class UploadBehavior extends ModelBehavior {
 			return false;
 		}
 
+		// Sometimes the user passes in a string instead of an array
+		if (is_string($mimetypes)) {
+			$mimetypes = array($mimetypes);
+		}
+
 		foreach ($mimetypes as $key => $value) {
 			if (!is_int($key)) {
 				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
@@ -405,6 +410,12 @@ class UploadBehavior extends ModelBehavior {
 			return false;
 		}
 
+		// Sometimes the user passes in a string instead of an array
+		if (is_string($extensions)) {
+			$extensions = array($extensions);
+		}
+
+		// Sometimes a user does not specify any extensions in the validation rule
 		foreach ($extensions as $key => $value) {
 			if (!is_int($key)) {
 				$extensions = $this->settings[$model->alias][$field]['extensions'];
