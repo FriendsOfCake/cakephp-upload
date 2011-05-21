@@ -431,7 +431,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->Behaviors->Upload->_getPathRandom('string', TMP);
 
 		$this->assertIsA($result, 'String');
-		$this->assertEqual(9, strlen($result));
+		$this->assertEqual(8, strlen($result));
 		$this->assertTrue(is_dir(TMP . DIRECTORY_SEPARATOR . $result));
 	}
 
