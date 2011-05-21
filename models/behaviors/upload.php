@@ -327,7 +327,6 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isWritable(&$model, $check) {
 		$field = array_pop(array_keys($check));
-
 		return is_writable($this->settings[$model->alias][$field]['path']);
 	}
 
@@ -358,6 +357,7 @@ class UploadBehavior extends ModelBehavior {
 	function isBelowMaxSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
 		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
+
 		return $check[$field]['size'] <= $size;
 	}
 
@@ -395,7 +395,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
-		$pathinfo = pathinfo($check[$field]['tmp_name']);
+		$pathinfo = $this->_pathinfo($check[$field]['tmp_name']);
 
 		return in_array($pathinfo['extension'], $extensions);
 	}
@@ -519,7 +519,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		copy($srcFile, $destFile);
-		$pathinfo = pathinfo($srcFile);
+		$pathinfo = $this->_pathinfo($srcFile);
 		$src = null;
 		$createHandler = null;
 		$outputHandler = null;
@@ -721,10 +721,14 @@ class UploadBehavior extends ModelBehavior {
 
 	function _pathinfo($filename) {
 		$pathinfo = pathinfo($filename);
+
+		if (!isset($pathinfo['extension']) || !strlen($pathinfo['extension'])) {
+			$pathinfo['extension'] = '';
+		}
+
 		// PHP < 5.2.0 doesn't include 'filename' key in pathinfo. Let's try to fix this.
 		if (empty($pathinfo['filename'])) {
-			$suffix = !empty($pathinfo['extension']) ? '.'.$pathinfo['extension'] : '';
-			$pathinfo['filename'] = basename($pathinfo['basename'], $suffix);
+			$pathinfo['filename'] = basename($pathinfo['basename'], '.' . $pathinfo['extension']);
 		}
 		return $pathinfo;
 	}
