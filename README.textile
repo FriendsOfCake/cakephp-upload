@@ -301,7 +301,7 @@ h4. isValidMimeType
 Check that the file is of a valid mimetype
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isValidMimeType',
+		'rule' => array('isValidMimeType', array('valid/mimetypes', 'array/here')),
 		'message' => 'File is of an invalid mimetype'
 	)
 );</code></pre>
@@ -328,20 +328,20 @@ Check that the upload directory exists
 
 h4. isBelowMaxSize
 
-Check that the file is below the maximum file upload size
+Check that the file is below the maximum file upload size (checked in bytes)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isBelowMaxSize',
+		'rule' => array('isBelowMaxSize', 1024),
 		'message' => 'File is larger than the maximum filesize'
 	)
 );</code></pre>
 
 h4. isAboveMinSize
 
-Check that the file is above the minimum file upload size
+Check that the file is above the minimum file upload size (checked in bytes)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isAboveMinSize',
+		'rule' => array('isAboveMinSize', 1024),
 		'message' => 'File is below the mimimum filesize'
 	)
 );</code></pre>
@@ -351,47 +351,47 @@ h4. isValidExtension
 Check that the file has a valid extension
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isValidExtension',
+		'rule' => array('isValidExtension', array('ext', 'array', 'here')),
 		'message' => 'File has an invalid extension'
 	)
 );</code></pre>
 
 h4. isAboveMinHeight
 
-Check that the file is above the minimum height requirement
+Check that the file is above the minimum height requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isAboveMinHeight',
+		'rule' => array('isAboveMinHeight' 150),
 		'message' => 'File is below the minimum height'
 	)
 );</code></pre>
 
 h4. isBelowMaxHeight
 
-Check that the file is below the maximum height requirement
+Check that the file is below the maximum height requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isBelowMaxHeight',
+		'rule' => array('isBelowMaxHeight', 150),
 		'message' => 'File is above the maximum height'
 	)
 );</code></pre>
 
 h4. isAboveMinWidth
 
-Check that the file is above the minimum width requirement
+Check that the file is above the minimum width requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isAboveMinWidth',
+		'rule' => array('isAboveMinWidth', 150),
 		'message' => 'File is below the minimum width'
 	)
 );</code></pre>
 
 h4. isBelowMaxWidth
 
-Check that the file is below the maximum width requirement
+Check that the file is below the maximum width requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isBelowMaxWidth',
+		'rule' => array('isBelowMaxWidth', 150),
 		'message' => 'File is above the maximum width'
 	)
 );</code></pre>
