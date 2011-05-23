@@ -21,6 +21,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->TestUpload = ClassRegistry::init('TestUpload');
 		$this->data['test_ok'] = array(
 			'photo' => array(
+				'name'  => 'Photo.png',
 				'tmp_name'  => 'Photo.png',
 				'dir'   => '/tmp/php/file.tmp',
 				'type'  => 'image/png',
@@ -295,7 +296,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors));
 
 		$data = $this->data['test_ok'];
-		$data['photo']['tmp_name'] = 'Photo.bmp';
+		$data['photo']['name'] = 'Photo.bmp';
 		$this->TestUpload->set($data);
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
@@ -346,7 +347,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors));
 
-		$data['photo']['tmp_name'] = 'Photo.jpg';
+		$data['photo']['name'] = 'Photo.jpg';
 		$this->TestUpload->set($this->data['test_ok']);
 		$this->assertFalse($this->TestUpload->validates());
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));

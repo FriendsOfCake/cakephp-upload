@@ -406,7 +406,7 @@ class UploadBehavior extends ModelBehavior {
 		$field = array_pop(array_keys($check));
 
 		// Non-file uploads also mean the extension is invalid
-		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+		if (!isset($check[$field]['name']) || !strlen($check[$field]['name'])) {
 			return false;
 		}
 
@@ -424,7 +424,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
-		$pathinfo = $this->_pathinfo($check[$field]['tmp_name']);
+		$pathinfo = $this->_pathinfo($check[$field]['name']);
 
 		return in_array($pathinfo['extension'], $extensions);
 	}
