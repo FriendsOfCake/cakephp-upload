@@ -117,7 +117,11 @@ class UploadBehavior extends ModelBehavior {
 					));
 					$this->_prepareFilesForDeletion($model, $field, $data, $options);
 				}
-				$model->data[$model->alias][$field] = null;
+				$model->data[$model->alias][$field] = array(
+					$field => null,
+					$options['fields']['type'] => null,
+					$options['fields']['size'] => null,
+				);
 			} elseif ($this->settings[$model->alias][$field]['deleteOnUpdate'] && isset($model->data[$model->alias][$field]['name']) && strlen($model->data[$model->alias][$field]['name'])) {
 				// We're updating the file, remove old versions
 				if (!empty($model->data[$model->alias][$model->primaryKey])) {
@@ -128,8 +132,12 @@ class UploadBehavior extends ModelBehavior {
 					));
 					$this->_prepareFilesForDeletion($model, $field, $data, $options);
 				}
-				$model->data[$model->alias][$field] = null;
-			} else {
+				$model->data[$model->alias][$field] = array(
+					$field => null,
+					$options['fields']['type'] => null,
+					$options['fields']['size'] => null,
+				);
+			} elseif (!strlen($model->data[$model->alias][$field]['name'])) {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
