@@ -5,7 +5,7 @@ class TestUpload extends CakeTestModel {
 	var $useTable = 'uploads';
 	var $actsAs = array(
 		'Upload.Upload' => array(
-			'photo'
+			'photo' => array()
 		)
 	);
 }
@@ -15,10 +15,13 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	var $fixtures = array('plugin.upload.upload');
 	var $TestUpload = null;
+	var $MockUpload = null;
 	var $data = array();
+	var $currentTestMethod;
 
-	function startTest() {
+	function startTest($method) {	
 		$this->TestUpload = ClassRegistry::init('TestUpload');
+		$this->currentTestMethod = $method;
 		$this->data['test_ok'] = array(
 			'photo' => array(
 				'name'  => 'Photo.png',
@@ -29,13 +32,58 @@ class UploadBehaviorTest extends CakeTestCase {
 				'error' => UPLOAD_ERR_OK,
 			)
 		);
+		$this->data['test_update'] = array(
+			'id' => 1,
+			'photo' => array(			
+				'name'  => 'NewPhoto.png',
+				'tmp_name'  => 'PhotoTmp.png',
+				'dir'   => '/tmp/php/file.tmp',
+				'type'  => 'image/png',
+				'size'  => 8192,
+				'error' => UPLOAD_ERR_OK,
+			)
+		);		
+		$this->data['test_update_other_field'] = array(
+			'id' => 1,
+			'other_field' => 'test',
+			'photo' => array()
+		);			
 	}
+	function mockUpload($methods) {
+		if (!is_array($methods)) $methods = array($methods);
+		$mockName = $this->currentTestMethod . '_MockUploadBehavior';
+		Mock::GeneratePartial('UploadBehavior', $mockName, $methods);
+		$this->MockUpload = new $mockName();
 
+		$this->MockUpload->setup($this->TestUpload, $this->TestUpload->actsAs['Upload.Upload']);	
+		$this->TestUpload->Behaviors->Upload = $this->MockUpload;
+	}
 	function endTest() {
 		Classregistry::flush();
 		unset($this->TestUpload);
 	}
+	function testSimpleUpload() {
+		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->MockUpload->setReturnValue('handleUploadedFile', true);
+		$this->MockUpload->setReturnValue('unlink', true);		
+		$this->MockUpload->expectNever('unlink');
+		$this->MockUpload->expectOnce('handleUploadedFile', array($this->data['test_ok']['photo']['tmp_name'], ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . 2 . DS . $this->data['test_ok']['photo']['name']));
+		$result = $this->TestUpload->save($this->data['test_ok']);
+		$this->assertTrue($result);				
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+		$expectedRecord = array(
+			'TestUpload' => array(
+				'id' => 2,
+				'photo' => 'Photo.png',
+				'dir' => 2,
+				'type' => 'image/png',
+				'size' => 8192,
+				'other_field' => null
+			)
+		);
 
+		$this->assertEqual($expectedRecord, $newRecord);
+	}
 	function testIsUnderPhpSizeLimit() {
 		$this->TestUpload->validate = array(
 			'photo' => array(
