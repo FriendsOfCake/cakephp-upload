@@ -160,11 +160,10 @@ class UploadBehavior extends ModelBehavior {
 			if (empty($this->runtime[$model->alias][$field])) continue;
 
 			$tempPath = $this->_getPath($model, $field);
-			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
-			$path .= $tempPath . DS;
+			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $tempPath . DS;
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
-			if (!@move_uploaded_file($tmp, $filePath)) {
+			if (!$this->handleUploadedFile($tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
 			$this->_createThumbnails($model, $field, $path);
@@ -181,9 +180,15 @@ class UploadBehavior extends ModelBehavior {
 		
 		if (empty($this->__filesToRemove[$model->alias])) return true;
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = @unlink($file);
+			$result[] = $this->unlink($file);
 		}
 		return $result;
+	}
+	function handleUploadedFile($tmp, $filePath) {
+		return !is_uploaded_file($tmp) || !@move_uploaded_file($tmp, $filePath);
+	}
+	function unlink($file) {
+		return @unlink($file);
 	}
 
 	function beforeDelete(&$model, $cascade) {
@@ -202,7 +207,7 @@ class UploadBehavior extends ModelBehavior {
 	function afterDelete(&$model) {
 		$result = array();
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = @unlink($file);
+			$result[] = $this->unlink($file);
 		}
 		return $result;
 	}
