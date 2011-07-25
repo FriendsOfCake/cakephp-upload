@@ -92,6 +92,27 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$this->assertEqual($expectedRecord, $newRecord);
 	}
+	function testDeleteOnUpdate() {
+		$this->TestUpload->actsAs['Upload.Upload']['photo']['deleteOnUpdate'] = true;
+		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->MockUpload->setReturnValue('handleUploadedFile', true);
+		$this->MockUpload->setReturnValue('unlink', true);		
+		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
+		$this->MockUpload->expectOnce('unlink', array(ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']));
+		$this->MockUpload->expectOnce('handleUploadedFile', array($this->data['test_update']['photo']['tmp_name'], ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $this->data['test_update']['id'] . DS . $this->data['test_update']['photo']['name']));
+		$result = $this->TestUpload->save($this->data['test_update']);
+		$this->assertTrue($result);			
+	}
+	function testDeleteOnUpdateWithoutNewUpload() {
+		$this->TestUpload->actsAs['Upload.Upload']['photo']['deleteOnUpdate'] = true;
+		$this->mockUpload(array('handleUploadedFile', 'unlink'));		
+		$this->MockUpload->expectNever('unlink');
+		$this->MockUpload->expectNever('handleUploadedFile');
+		$result = $this->TestUpload->save($this->data['test_update_other_field']);
+		$this->assertTrue($result);
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+		$this->assertEqual($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
+	}	
 	function testIsUnderPhpSizeLimit() {
 		$this->TestUpload->validate = array(
 			'photo' => array(
