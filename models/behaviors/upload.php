@@ -699,6 +699,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathFlat(&$model, $path) {
+		$path = Folder::slashTerm($path);
 		$destDir = ROOT . DS . APP_DIR . DS . $path;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -708,6 +709,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathPrimaryKey(&$model, $path) {
+		$path = Folder::slashTerm($path);
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -717,6 +719,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathRandom($string, $path) {
+		$path = Folder::slashTerm($path);
 		$endPath = null;
 		$decrement = 0;
 		$string = crc32($string . time());
@@ -749,11 +752,11 @@ class UploadBehavior extends ModelBehavior {
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
 		);
-		return str_replace(
+		return Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
 			$path
-		);
+		));
 	}
 
 	function _createThumbnails(&$model, $field, $path) {
