@@ -106,6 +106,7 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
 			if (!is_array($model->data[$model->alias][$field])) continue;
+			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			if (!empty($model->data[$model->alias][$field]['remove'])) {
 				// if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
@@ -137,13 +138,12 @@ class UploadBehavior extends ModelBehavior {
 					$options['fields']['type'] => null,
 					$options['fields']['size'] => null,
 				);
-			} elseif (!strlen($model->data[$model->alias][$field]['name'])) {
+			} elseif (!isset($model->data[$model->alias][$field]['name']) || !strlen($model->data[$model->alias][$field]['name'])) {			
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
 
-			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
