@@ -62,6 +62,14 @@ class UploadBehaviorTest extends CakeTestCase {
 		Classregistry::flush();
 		unset($this->TestUpload);
 	}
+	function testFileSize() {
+		$this->mockUpload('handleUploadedFile');
+		$this->MockUpload->setReturnValue('handleUploadedFile', true);
+		$result = $this->TestUpload->save($this->data['test_ok']);
+		$this->assertTrue($result);
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+		$this->assertEqual($this->data['test_ok']['photo']['size'], $newRecord['TestUpload']['size']);
+	}
 	function testSimpleUpload() {
 		$this->mockUpload(array('handleUploadedFile', 'unlink'));
 		$this->MockUpload->setReturnValue('handleUploadedFile', true);
