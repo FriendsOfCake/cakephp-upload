@@ -113,6 +113,15 @@ class UploadBehaviorTest extends CakeTestCase {
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$this->assertEqual($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
 	}	
+	function testUnlinkFileOnDelete() {	
+		$this->mockUpload(array('unlink'));
+		$this->MockUpload->setReturnValue('unlink', true);
+		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
+		$this->MockUpload->expectOnce('unlink', array(ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']));
+		$result = $this->TestUpload->delete($this->data['test_update']['id']);
+		$this->assertTrue($result);			
+		$this->assertFalse($this->TestUpload->findById($this->data['test_update']['id']));
+	}	
 	function testIsUnderPhpSizeLimit() {
 		$this->TestUpload->validate = array(
 			'photo' => array(
