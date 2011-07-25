@@ -447,7 +447,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testGetPathRandom() {
-		$result = $this->TestUpload->Behaviors->Upload->_getPathRandom('string', TMP . DIRECTORY_SEPARATOR . 'cache');
+		$result = $this->TestUpload->Behaviors->Upload->_getPathRandom('string', 'tmp' . DIRECTORY_SEPARATOR . 'cache');
 
 		$this->assertIsA($result, 'String');
 		$this->assertEqual(8, strlen($result));
@@ -458,7 +458,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', 'webroot{DS}files/{model}\\{field}{DS}');
 
 		$this->assertIsA($result, 'String');
-		$this->assertEqual('webroot/files/test_upload/photo/', $result);
+		$this->assertEqual('webroot' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
 	}
 
 	function testPrepareFilesForDeletion() {
