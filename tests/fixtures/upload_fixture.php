@@ -9,6 +9,7 @@ class UploadFixture extends CakeTestFixture {
 		'dir' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'type' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'size' => array('type' => 'integer', 'null' => true, 'default' => NULL),
+		'other_field' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
@@ -19,7 +20,7 @@ class UploadFixture extends CakeTestFixture {
 			'photo' => 'Photo.png',
 			'dir' => '1',
 			'type' => 'image/png',
-			'size' => 8192
+			'size' => 8192	
 		),
 	);
 }

@@ -73,6 +73,10 @@ class UploadBehavior extends ModelBehavior {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
+		if (!class_exists('Folder')) {
+			App::import('Core', 'Folder');
+		}
+		
 		foreach ($settings as $field => $options) {
 			if (is_int($field)) {
 				$field = $options;
@@ -82,7 +86,7 @@ class UploadBehavior extends ModelBehavior {
 			if (!isset($this->settings[$model->alias][$field])) {
 				$options = array_merge($this->defaults, (array) $options);
 				$options['fields'] += $this->defaults['fields'];
-				$options['path'] = $this->_path($model, $field, $options['path']);
+				$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
 				if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 					$options['thumbnailMethod'] = 'imagick';
 				}
@@ -106,6 +110,7 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
 			if (!is_array($model->data[$model->alias][$field])) continue;
+			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			if (!empty($model->data[$model->alias][$field]['remove'])) {
 				// if the record is already saved in the database, set the existing file to be removed after the save is sucessfull
@@ -137,13 +142,12 @@ class UploadBehavior extends ModelBehavior {
 					$options['fields']['type'] => null,
 					$options['fields']['size'] => null,
 				);
-			} elseif (!strlen($model->data[$model->alias][$field]['name'])) {
+			} elseif (!isset($model->data[$model->alias][$field]['name']) || !strlen($model->data[$model->alias][$field]['name'])) {			
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
 
-			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
@@ -160,11 +164,10 @@ class UploadBehavior extends ModelBehavior {
 			if (empty($this->runtime[$model->alias][$field])) continue;
 
 			$tempPath = $this->_getPath($model, $field);
-			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
-			$path .= $tempPath . DS;
+			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $tempPath . DS;
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
-			if (!@move_uploaded_file($tmp, $filePath)) {
+			if (!$this->handleUploadedFile($tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
 			$this->_createThumbnails($model, $field, $path);
@@ -181,9 +184,15 @@ class UploadBehavior extends ModelBehavior {
 		
 		if (empty($this->__filesToRemove[$model->alias])) return true;
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = @unlink($file);
+			$result[] = $this->unlink($file);
 		}
 		return $result;
+	}
+	function handleUploadedFile($tmp, $filePath) {
+		return !is_uploaded_file($tmp) || !@move_uploaded_file($tmp, $filePath);
+	}
+	function unlink($file) {
+		return @unlink($file);
 	}
 
 	function beforeDelete(&$model, $cascade) {
@@ -202,11 +211,24 @@ class UploadBehavior extends ModelBehavior {
 	function afterDelete(&$model) {
 		$result = array();
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = @unlink($file);
+			$result[] = $this->unlink($file);
 		}
 		return $result;
 	}
 
+/**
+ * Verify that the uploaded file has been moved to the
+ * destination successfully. This rule is special that it
+ * is invalidated in afterSave(). Therefore it is possible
+ * for save() to return true and this rule to fail.
+ *
+ * @param Object $model 
+ * @return boolean Always true
+ * @access public
+ */	
+	function moveUploadedFile(&$model) {
+		return true;
+	}
 /**
  * Check that the file does not exceed the max 
  * file size specified by PHP
@@ -731,11 +753,11 @@ class UploadBehavior extends ModelBehavior {
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
 		);
-		return str_replace(
+		return Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
 			$path
-		);
+		));
 	}
 
 	function _createThumbnails(&$model, $field, $path) {
