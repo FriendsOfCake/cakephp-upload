@@ -73,6 +73,10 @@ class UploadBehavior extends ModelBehavior {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
+		if (!class_exists('Folder')) {
+			App::import('Core', 'Folder');
+		}
+		
 		foreach ($settings as $field => $options) {
 			if (is_int($field)) {
 				$field = $options;
@@ -82,7 +86,7 @@ class UploadBehavior extends ModelBehavior {
 			if (!isset($this->settings[$model->alias][$field])) {
 				$options = array_merge($this->defaults, (array) $options);
 				$options['fields'] += $this->defaults['fields'];
-				$options['path'] = $this->_path($model, $field, $options['path']);
+				$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
 				if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 					$options['thumbnailMethod'] = 'imagick';
 				}
@@ -699,7 +703,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathFlat(&$model, $path) {
-		$path = Folder::slashTerm($path);
 		$destDir = ROOT . DS . APP_DIR . DS . $path;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -709,7 +712,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathPrimaryKey(&$model, $path) {
-		$path = Folder::slashTerm($path);
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -719,7 +721,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathRandom($string, $path) {
-		$path = Folder::slashTerm($path);
 		$endPath = null;
 		$decrement = 0;
 		$string = crc32($string . time());
