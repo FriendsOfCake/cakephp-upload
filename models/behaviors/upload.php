@@ -55,7 +55,7 @@ class UploadBehavior extends ModelBehavior {
 	var $_resizeMethods = array('imagick', 'php');
 
 	var $__filesToRemove = array();
-    	
+
 	var $_removingOnly = array();
 
 /**
@@ -78,7 +78,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!class_exists('Folder')) {
 			App::import('Core', 'Folder');
 		}
-		
+
 		foreach ($settings as $field => $options) {
 			if (is_int($field)) {
 				$field = $options;
@@ -109,16 +109,19 @@ class UploadBehavior extends ModelBehavior {
  * @author Jose Diaz-Gonzalez
  **/
 	function beforeSave(&$model) {
-	        $this->_removingOnly = array();
+		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
 			if (!is_array($model->data[$model->alias][$field])) continue;
+
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
-	            	$removing = isset($model->data[$model->alias][$field]['remove']);
-		        if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate'] && isset($model->data[$model->alias][$field]['name']) && strlen($model->data[$model->alias][$field]['name']))) {
-        	        	// We're updating the file, remove old versions
-		                if (!empty($model->id)) {
+			$removing = isset($model->data[$model->alias][$field]['remove']);
+			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate'] 
+			&& isset($model->data[$model->alias][$field]['name']) 
+			&& strlen($model->data[$model->alias][$field]['name']))) {
+				// We're updating the file, remove old versions
+				if (!empty($model->id)) {
 					$data = $model->find('first', array(
 						'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
 						'contain' => false,
@@ -126,26 +129,26 @@ class UploadBehavior extends ModelBehavior {
 					));
 					$this->_prepareFilesForDeletion($model, $field, $data, $options);
 				}
-        		        if ($removing) {
-		                	$model->data[$model->alias] = array(
-					$field => null,
-					$options['fields']['type'] => null,
-					$options['fields']['size'] => null,
-	                        		$options['fields']['dir'] => null,
-				);
-                    
-	                    		$this->_removingOnly[$field] = true;
-	                    		continue;
+
+				if ($removing) {
+					$model->data[$model->alias] = array(
+						$field => null,
+						$options['fields']['type'] => null,
+						$options['fields']['size'] => null,
+						$options['fields']['dir'] => null,
+					);
+
+					$this->_removingOnly[$field] = true;
+					continue;
+				} else {
+					$model->data[$model->alias][$field] = array(
+						$field => null,
+						$options['fields']['type'] => null,
+						$options['fields']['size'] => null,
+					);
 				}
-	                	else {
-				$model->data[$model->alias][$field] = array(
-					$field => null,
-					$options['fields']['type'] => null,
-					$options['fields']['size'] => null,
-				);
-	                	}
-	            	}
-	            	elseif (!isset($model->data[$model->alias][$field]['name']) || !strlen($model->data[$model->alias][$field]['name'])) {
+			} elseif (!isset($model->data[$model->alias][$field]['name'])
+			|| !strlen($model->data[$model->alias][$field]['name'])) {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
@@ -185,16 +188,18 @@ class UploadBehavior extends ModelBehavior {
 				$model->alias.'.'.$model->primaryKey => $model->id
 			));
 		}
-		
+
 		if (empty($this->__filesToRemove[$model->alias])) return true;
 		foreach ($this->__filesToRemove[$model->alias] as $file) {
 			$result[] = $this->unlink($file);
 		}
 		return $result;
 	}
+
 	function handleUploadedFile($tmp, $filePath) {
 		return !is_uploaded_file($tmp) || !@move_uploaded_file($tmp, $filePath);
 	}
+
 	function unlink($file) {
 		return @unlink($file);
 	}
@@ -226,42 +231,48 @@ class UploadBehavior extends ModelBehavior {
  * is invalidated in afterSave(). Therefore it is possible
  * for save() to return true and this rule to fail.
  *
- * @param Object $model 
+ * @param Object $model
  * @return boolean Always true
  * @access public
- */	
+ */
 	function moveUploadedFile(&$model) {
 		return true;
 	}
 /**
- * Check that the file does not exceed the max 
+ * Check that the file does not exceed the max
  * file size specified by PHP
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
  * @return boolean Success
  * @access public
  */
 	function isUnderPhpSizeLimit(&$model, $check) {
 		$field = array_pop(array_keys($check));
-        	if (!empty($check[$field]['remove']))
-            		return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_INI_SIZE;
 	}
 
 /**
- * Check that the file does not exceed the max 
+ * Check that the file does not exceed the max
  * file size specified in the HTML Form
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
  * @return boolean Success
  * @access public
  */
 	function isUnderFormSizeLimit(&$model, $check) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_FORM_SIZE;
 	}
 
@@ -275,8 +286,11 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isCompletedUpload(&$model, $check) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_PARTIAL;
 	}
 
@@ -290,8 +304,11 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isFileUpload(&$model, $check) {
 		$field = array_pop(array_keys($check));
-   	     	if (!empty($check[$field]['remove']))
-       	     		return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_NO_FILE;
 	}
 
@@ -305,8 +322,10 @@ class UploadBehavior extends ModelBehavior {
  */
 	function tempDirExists(&$model, $check) {
 		$field = array_pop(array_keys($check));
-     		if (!empty($check[$field]['remove']))
-     	       		return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
 		return $check[$field]['error'] !== UPLOAD_ERR_NO_TMP_DIR;
 	}
 
@@ -320,8 +339,10 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isSuccessfulWrite(&$model, $check) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
 		return $check[$field]['error'] !== UPLOAD_ERR_CANT_WRITE;
 	}
 
@@ -335,8 +356,10 @@ class UploadBehavior extends ModelBehavior {
  */
 	function noPhpExtensionErrors(&$model, $check) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
 		return $check[$field]['error'] !== UPLOAD_ERR_EXTENSION;
 	}
 
@@ -351,8 +374,10 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isValidMimeType(&$model, $check, $mimetypes = array()) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
 
 		// Non-file uploads also mean the mimetype is invalid
 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
@@ -388,8 +413,11 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isWritable(&$model, $check) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return is_writable($this->settings[$model->alias][$field]['path']);
 	}
 
@@ -405,8 +433,10 @@ class UploadBehavior extends ModelBehavior {
 	function isValidDir(&$model, $check) {
 		$field = array_pop(array_keys($check));
 
-	        if (!empty($check[$field]['remove']))
-	            return true;
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		return is_dir($this->settings[$model->alias][$field]['path']);
 	}
 
@@ -421,8 +451,11 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isBelowMaxSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
 
 		return $check[$field]['size'] <= $size;
@@ -439,8 +472,11 @@ class UploadBehavior extends ModelBehavior {
  */
 	function isAboveMinSize(&$model, $check, $size = null) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
 
 		// Non-file uploads also mean the size is too small
@@ -463,8 +499,10 @@ class UploadBehavior extends ModelBehavior {
 	function isValidExtension(&$model, $check, $extensions) {
 		$field = array_pop(array_keys($check));
 
-	        if (!empty($check[$field]['remove']))
-	            return true;
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		// Non-file uploads also mean the extension is invalid
 		if (!isset($check[$field]['name']) || !strlen($check[$field]['name'])) {
 			return false;
@@ -492,17 +530,19 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum height requirement
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
- * @param int $height Height of Image 
+ * @param int $height Height of Image
  * @return boolean Success
  * @access public
  */
 	function isAboveMinHeight(&$model, $check, $height = null) {
 		$field = array_pop(array_keys($check));
 
-	        if (!empty($check[$field]['remove']))
-	            return true;
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		// Non-file uploads also mean the height is too big
 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
 			return false;
@@ -510,43 +550,48 @@ class UploadBehavior extends ModelBehavior {
 
 		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
 
-	        list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-	        return $height > 0 && $imgHeight >= $height;
+		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		return $height > 0 && $imgHeight >= $height;
 	}
 
 /**
  * Check that the file is below the maximum height requirement
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
- * @param int $height Height of Image 
+ * @param int $height Height of Image
  * @return boolean Success
  * @access public
  */
 	function isBelowMaxHeight(&$model, $check, $height = null) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
 
-	        list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-	        return $height > 0 && $imgHeight <= $height;
+		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		return $height > 0 && $imgHeight <= $height;
 	}
 
 /**
  * Check that the file is above the minimum width requirement
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
- * @param int $width Width of Image 
+ * @param int $width Width of Image
  * @return boolean Success
  * @access public
  */
 	function isAboveMinWidth(&$model, $check, $width = null) {
 		$field = array_pop(array_keys($check));
 
-	        if (!empty($check[$field]['remove']))
-	            return true;
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		// Non-file uploads also mean the width is too big
 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
 			return false;
@@ -554,27 +599,30 @@ class UploadBehavior extends ModelBehavior {
 
 		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
 
-	        list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-	        return $width > 0 && $imgWidth >= $width;
+		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		return $width > 0 && $imgWidth >= $width;
 	}
 
 /**
  * Check that the file is below the maximum width requirement
  *
- * @param Object $model 
+ * @param Object $model
  * @param mixed $check Value to check
- * @param int $width Width of Image 
+ * @param int $width Width of Image
  * @return boolean Success
  * @access public
  */
 	function isBelowMaxWidth(&$model, $check, $width = null) {
 		$field = array_pop(array_keys($check));
-	        if (!empty($check[$field]['remove']))
-	            return true;
+
+		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
 		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
 
-	        list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-	        return $width > 0 && $imgWidth <= $width;
+		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		return $width > 0 && $imgWidth <= $width;
 	}
 
 	function _resizeImagick(&$model, $field, $path, $style, $geometry) {
