@@ -60,6 +60,10 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function endTest() {
+		@rmdir(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload/photo/1');
+		@rmdir(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload/photo/2');
+		@rmdir(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload/photo');
+		@rmdir(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload');
 		Classregistry::flush();
 		unset($this->TestUpload);
 	}
