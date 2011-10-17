@@ -217,7 +217,10 @@ class UploadBehavior extends ModelBehavior {
 		        if (isset($this->_removingOnly[$field])) continue;
 
 			$tempPath = $this->_getPath($model, $field);
-			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $tempPath . DS;
+			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
+			if (!empty($tempPath)) {
+				$path .= $tempPath . DS;
+			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
@@ -815,26 +818,14 @@ class UploadBehavior extends ModelBehavior {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
 
-		if (PHP5) {
-			if ($pathMethod == '_getPathFlat') {
-				return $this->_getPathFlat($model, $path);
-			}
-			if ($pathMethod == '_getPathRandom') {
-				return $this->_getPathRandom($model->data[$model->alias][$field], $path);
-			}
-			if ($pathMethod == '_getPathPrimaryKey') {
-				return $this->_getPathPrimaryKey($model, $path);
-			}
-		} else {
-			if ($pathMethod == '_getPathFlat') {
-				return $this->_getPathFlat($model, $path);
-			}
-			if ($pathMethod == '_getPathRandom') {
-				return $this->_getPathRandom($model->data[$model->alias][$field], $path);
-			}
-			if ($pathMethod == '_getPathPrimaryKey') {
-				return $this->_getPathPrimaryKey($model, $path);
-			}
+		if ($pathMethod == '_getPathFlat') {
+			return $this->_getPathFlat($model, $path);
+		}
+		if ($pathMethod == '_getPathRandom') {
+			return $this->_getPathRandom($model->data[$model->alias][$field], $path);
+		}
+		if ($pathMethod == '_getPathPrimaryKey') {
+			return $this->_getPathPrimaryKey($model, $path);
 		}
 	}
 
