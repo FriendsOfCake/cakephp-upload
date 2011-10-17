@@ -82,25 +82,38 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		foreach ($config as $field => $options) {
-			if (is_int($field)) {
-				$field = $options;
-				$options = array();
-			}
+			$this->_setupField($model, $field, $options);
+		}
+	}
 
-			if (!isset($this->settings[$model->alias][$field])) {
-				$options = array_merge($this->defaults, (array) $options);
-				$options['fields'] += $this->defaults['fields'];
-				$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
-				if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
-					$options['thumbnailMethod'] = 'imagick';
-				}
-				if (!in_array($options['pathMethod'], $this->_pathMethods)) {
-					$options['pathMethod'] = 'primaryKey';
-				}
-				$options['pathMethod'] = '_getPath' . Inflector::camelize($options['pathMethod']);
-				$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
-				$this->settings[$model->alias][$field] = $options;
+/**
+ * Setup a particular upload field
+ *
+ * @param AppModel $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $options array of configuration settings for a field
+ * @return void
+ * @author Jose Diaz-Gonzalez
+ */
+	function _setupField(&$model, $field, $options) {
+		if (is_int($field)) {
+			$field = $options;
+			$options = array();
+		}
+
+		if (!isset($this->settings[$model->alias][$field])) {
+			$options = array_merge($this->defaults, (array) $options);
+			$options['fields'] += $this->defaults['fields'];
+			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
+			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
+				$options['thumbnailMethod'] = 'imagick';
 			}
+			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
+				$options['pathMethod'] = 'primaryKey';
+			}
+			$options['pathMethod'] = '_getPath' . Inflector::camelize($options['pathMethod']);
+			$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
+			$this->settings[$model->alias][$field] = $options;
 		}
 	}
 
@@ -108,12 +121,17 @@ class UploadBehavior extends ModelBehavior {
  * Convenience method for configuring UploadBehavior settings
  *
  * @param AppModel $model Model instance
+ * @param string $field Name of field being modified
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
  *   Unused if $one is an associative array, otherwise serves as the values to $one's keys.
  * @return void
  */
-	function uploadSettings(&$model, $one, $two = null) {
+	function uploadSettings(&$model, $field, $one, $two = null) {
+		if (empty($this->settings[$model->alias][$field])) {
+			$this->_setupField($model, $field, array());
+		}
+
 		$data = array();
 
 		if (is_array($one)) {
@@ -125,7 +143,7 @@ class UploadBehavior extends ModelBehavior {
 		} else {
 			$data = array($one => $two);
 		}
-		$this->settings[$model->alias] = $data + $this->settings[$model->alias];
+		$this->settings[$model->alias][$field] = $data + $this->settings[$model->alias][$field];
 	}
 
 /**
