@@ -220,7 +220,7 @@ class UploadBehavior extends ModelBehavior {
 			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $tempPath . DS;
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
-			if (!$this->handleUploadedFile($tmp, $filePath)) {
+			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
 			$this->_createThumbnails($model, $field, $path);
@@ -242,7 +242,7 @@ class UploadBehavior extends ModelBehavior {
 		return $result;
 	}
 
-	function handleUploadedFile($tmp, $filePath) {
+	function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
 		return !is_uploaded_file($tmp) || !@move_uploaded_file($tmp, $filePath);
 	}
 
