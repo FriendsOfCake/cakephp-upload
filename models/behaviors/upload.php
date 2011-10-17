@@ -66,12 +66,14 @@ class UploadBehavior extends ModelBehavior {
 	var $runtime;
 
 /**
- * undocumented function
+ * Initiate Upload behavior
  *
+ * @param object $model instance of model
+ * @param array $config array of configuration settings.
  * @return void
- * @author Jose Diaz-Gonzalez
- **/
-	function setup(&$model, $settings = array()) {
+ * @access public
+ */
+	function setup(&$model, $config = array()) {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
@@ -79,7 +81,7 @@ class UploadBehavior extends ModelBehavior {
 			App::import('Core', 'Folder');
 		}
 
-		foreach ($settings as $field => $options) {
+		foreach ($config as $field => $options) {
 			if (is_int($field)) {
 				$field = $options;
 				$options = array();
@@ -103,11 +105,37 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
- * undocumented function
+ * Convenience method for configuring UploadBehavior settings
  *
+ * @param AppModel $model Model instance
+ * @param mixed $one A string or an array of data.
+ * @param mixed $two Value in case $one is a string (which then works as the key).
+ *   Unused if $one is an associative array, otherwise serves as the values to $one's keys.
  * @return void
- * @author Jose Diaz-Gonzalez
- **/
+ */
+	function uploadSettings(&$model, $one, $two = null) {
+		$data = array();
+
+		if (is_array($one)) {
+			if (is_array($two)) {
+				$data = array_combine($one, $two);
+			} else {
+				$data = $one;
+			}
+		} else {
+			$data = array($one => $two);
+		}
+		$this->settings[$model->alias] = $data + $this->settings[$model->alias];
+	}
+
+/**
+ * Before save method. Called before all saves
+ *
+ * Handles setup of file uploads
+ *
+ * @param AppModel $model Model instance
+ * @return boolean
+ */
 	function beforeSave(&$model) {
 		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
@@ -833,7 +861,6 @@ class UploadBehavior extends ModelBehavior {
  * Returns a path based on settings configuration
  *
  * @return void
- * @author Jose Diaz-Gonzalez
  **/
 	function _path(&$model, $fieldName, $path) {
 		$replacements = array(
