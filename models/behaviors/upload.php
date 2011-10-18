@@ -708,7 +708,7 @@ class UploadBehavior extends ModelBehavior {
 			$destW = ($width > $height) ? (int)$geometry-1 : 0;
 			$destH = ($width > $height) ? 0 : (int)$geometry-1;
 
-			$image->thumbnailImage($destW, $destH, true);
+			$image->thumbnailImage($destW, $destH);
 		}
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
