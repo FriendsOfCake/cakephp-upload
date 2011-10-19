@@ -38,6 +38,7 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnailQuality'	=> 75,
 		'thumbnailMethod'	=> 'imagick',
 		'deleteOnUpdate'	=> false,
+		'thumbnailType'		=> false
 	);
 
 	var $_imageMimetypes = array(
@@ -722,9 +723,13 @@ class UploadBehavior extends ModelBehavior {
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
 		
+
 		if ($isPdf) {
-			$image->setImageFormat('png');
-			$destFile = preg_replace('/.pdf$/', '.png', $destFile);
+			$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+			$thumbnailType = (is_string($thumbnailType)) ? $thumbnailType : 'png';
+			
+			$image->setImageFormat($thumbnailType);
+			$destFile = preg_replace('/.pdf$/', '.'.$thumbnailType, $destFile);
 		}
 		
 		if (!$image->writeImage($destFile)) return false;
