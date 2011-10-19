@@ -708,7 +708,8 @@ class UploadBehavior extends ModelBehavior {
 			$destW = ($width > $height) ? (int)$geometry-1 : 0;
 			$destH = ($width > $height) ? 0 : (int)$geometry-1;
 
-			$image->thumbnailImage($destW, $destH, !(preg_match('/^3.[\d].[\d]{1,2}/', phpversion('imagick'))));
+			$imagickVersion = phpversion('imagick');
+			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
 		}
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
