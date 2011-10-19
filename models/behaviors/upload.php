@@ -48,6 +48,7 @@ class UploadBehavior extends ModelBehavior {
 		'image/png',
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
+		'application/pdf',
 	);
 
 	var $_pathMethods = array('flat', 'primaryKey', 'random');
@@ -677,13 +678,21 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $style, $geometry) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+		
+		$isPdf = preg_match('/.pdf$/', $destFile);
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
 			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
 
-		$image    = new imagick($srcFile);
+		$image    = new imagick();
+
+		if ($isPdf) {
+			$image->setResolution(300, 300);
+		}
+
+		$image->readImage($srcFile);
 		$height   = $image->getImageHeight();
 		$width    = $image->getImageWidth();
 
@@ -712,6 +721,12 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
+		
+		if ($isPdf) {
+			$image->setImageFormat('png');
+			$destFile = preg_replace('/.pdf$/', '.png', $destFile);
+		}
+		
 		if (!$image->writeImage($destFile)) return false;
 
 		$image->clear();
