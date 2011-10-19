@@ -1,4 +1,4 @@
-h1. Upload Plugin
+h1. Upload Plugin 2.0
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as "MeioUpload":http://github.com/jrbasso/MeioUpload , "UploadPack":http://github.com/szajbus/uploadpack and "PHP documentation":http://php.net/manual/en/features.file-upload.php.
 
@@ -12,7 +12,7 @@ That said, I appreciate any and all feedback, especially on untested code such a
 
 h2. Requirements
 
-* CakePHP 1.2/1.3
+* CakePHP 2.0
 * Imagick/GD PHP Extension (for Thumbnail Creation)
 * PHP5 (Not really, but I'm more likely to be able to fix a PHP5 issue than a PHP4 issue)
 * Patience
@@ -23,21 +23,21 @@ _[Manual]_
 
 # Download this: "http://github.com/josegonzalez/upload/zipball/master":http://github.com/josegonzalez/upload/zipball/master
 # Unzip that download.
-# Copy the resulting folder to @app/plugins@
-# Rename the folder you just copied to @upload@
+# Copy the resulting folder to @app/Plugin@
+# Rename the folder you just copied to @Upload@
 
 _[GIT Submodule]_
 
 In your app directory type:
-<pre><code>git submodule add git://github.com/josegonzalez/upload.git plugins/upload
+<pre><code>git submodule add git://github.com/josegonzalez/upload.git Plugin/Upload
 git submodule init
 git submodule update
 </code></pre>
 
 _[GIT Clone]_
 
-In your plugin directory type
-<pre><code>git clone git://github.com/josegonzalez/upload.git upload</code></pre>
+In your `Plugin` directory type
+<pre><code>git clone git://github.com/josegonzalez/upload.git Upload</code></pre>
 
 h2. Usage
 
