@@ -17,7 +17,7 @@
  * @link          http://github.com/josegonzalez/upload
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('Folder', 'Utility');
 class UploadBehavior extends ModelBehavior {
 
 	var $defaults = array(
@@ -76,10 +76,6 @@ class UploadBehavior extends ModelBehavior {
 	function setup(&$model, $config = array()) {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
-
-		if (!class_exists('Folder')) {
-			App::import('Core', 'Folder');
-		}
 
 		foreach ($config as $field => $options) {
 			$this->_setupField($model, $field, $options);
