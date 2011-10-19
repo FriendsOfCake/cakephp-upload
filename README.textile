@@ -39,6 +39,14 @@ _[GIT Clone]_
 In your `Plugin` directory type
 <pre><code>git clone git://github.com/josegonzalez/upload.git Upload</code></pre>
 
+h3. Enable plugin
+
+In 2.0 you need to enable the plugin your `app/Config/bootstrap.php` file:
+
+<pre><code>CakePlugin::load('Upload');</code></pre>
+
+If you are already using `CakePlugin::loadAll();`, then this is not necessary.
+
 h2. Usage
 
 <pre><code>CREATE table users (
