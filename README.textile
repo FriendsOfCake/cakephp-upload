@@ -147,6 +147,10 @@ class User extends AppModel {
 ?>
 </code></pre>
 
+_[PDF Support]_
+
+Now it is possible to generate a thumbnail for the first page in a PDF file. (Only works with 'imagick' thumbnailMethod.)
+
 Please read about the Behavior options for more details as to how to configure this plugin.
 
 h2. Behavior options:
