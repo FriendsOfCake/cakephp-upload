@@ -200,6 +200,9 @@ h2. Behavior options:
 ** Options:
 *** imagick: Uses the PHP imagick extension to generate thumbnails
 *** php: Uses the built-in PHP methods to generate thumbnails
+* @thumbnailType@: The type of image to generate thumbnails as
+** Default: (string) @png@
+
 
 h2. Thumbnail Sizes and Styles
 
