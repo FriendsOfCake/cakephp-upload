@@ -42,6 +42,7 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate'	=> false,
 		'thumbnailType'		=> false,
 		'mediaThumbnailType'=> 'png',
+		'saveDir'			=> true,
 	);
 
 	var $_imageMimetypes = array(
@@ -229,7 +230,10 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$this->_createThumbnails($model, $field, $path);
 			if ($model->hasField($options['fields']['dir'])) {
-				$temp[$model->alias][$options['fields']['dir']] = "\"{$tempPath}\"";
+				if ($created && $options['pathMethod'] == '_getPathFlat') {
+				} else if ($options['saveDir']) {
+					$temp[$model->alias][$options['fields']['dir']] = "\"{$tempPath}\"";
+				}
 			}
 		}
 
