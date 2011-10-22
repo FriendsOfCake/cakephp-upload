@@ -691,6 +691,7 @@ class UploadBehavior extends ModelBehavior {
 
 		if ($isPdf) {
 			$image->setResolution(300, 300);
+			$srcFile = $srcFile.'[0]';
 		}
 
 		$image->readImage($srcFile);
