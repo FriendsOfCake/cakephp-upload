@@ -768,6 +768,11 @@ class UploadBehavior extends ModelBehavior {
 
 	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
+
+		if (is_string($thumbnailPath)) {
+			$path = $thumbnailPath;
+		}
+
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
