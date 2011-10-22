@@ -155,6 +155,10 @@ class User extends AppModel {
 ?>
 </code></pre>
 
+h3. PDF Support
+
+It is now possible to generate a thumbnail for the first page of a PDF file. (Only works with 'imagick' thumbnailMethod.)
+
 Please read about the Behavior options for more details as to how to configure this plugin.
 
 h2. Behavior options:
@@ -208,6 +212,14 @@ h2. Behavior options:
 ** Options:
 *** imagick: Uses the PHP imagick extension to generate thumbnails
 *** php: Uses the built-in PHP methods to generate thumbnails
+* @thumbnailType@: Override the type of the generated thumbnail
+** Default: (mixed) @false@ or @png@ when the upload is a PDF
+** Options:
+*** Any valid image type
+* @mediaThumbnailType@: Override the type of the generated thumbnail for a PDF
+** Default: (mixed) @png@
+** Options:
+*** Any valid image type
 
 h2. Thumbnail Sizes and Styles
 
