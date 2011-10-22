@@ -40,7 +40,8 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnailQuality'	=> 75,
 		'thumbnailMethod'	=> 'imagick',
 		'deleteOnUpdate'	=> false,
-		'thumbnailType'		=> false
+		'thumbnailType'		=> false,
+		'mediaThumbnailType'=> 'png',
 	);
 
 	var $_imageMimetypes = array(
@@ -163,8 +164,8 @@ class UploadBehavior extends ModelBehavior {
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			$removing = isset($model->data[$model->alias][$field]['remove']);
-			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate'] 
-			&& isset($model->data[$model->alias][$field]['name']) 
+			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
+			&& isset($model->data[$model->alias][$field]['name'])
 			&& strlen($model->data[$model->alias][$field]['name']))) {
 				// We're updating the file, remove old versions
 				if (!empty($model->id)) {
@@ -677,7 +678,7 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $style, $geometry) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
-		
+
 		$isPdf = preg_match('/.pdf$/', $destFile);
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
@@ -721,16 +722,25 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
-		
+
+		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+		if ($thumbnailType && is_string($thumbnailType)) {
+			$image->setImageFormat($thumbnailType);
+		}
 
 		if ($isPdf) {
-			$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
-			$thumbnailType = (is_string($thumbnailType)) ? $thumbnailType : 'png';
-			
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
+			}
+
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				$thumbnailType = 'png';
+			}
+
 			$image->setImageFormat($thumbnailType);
-			$destFile = preg_replace('/.pdf$/', '.'.$thumbnailType, $destFile);
+			$destFile = preg_replace('/.pdf$/', ".{$thumbnailType}", $destFile);
 		}
-		
+
 		if (!$image->writeImage($destFile)) return false;
 
 		$image->clear();
