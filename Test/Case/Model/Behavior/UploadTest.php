@@ -59,7 +59,12 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 	}
 	function mockUpload($methods = array()) {
-		if (!is_array($methods)) $methods = array($methods);
+		if (!is_array($methods)) {
+			$methods = (array) $methods;
+		}
+		if (empty($methods)) {
+			$methods = array('handleUploadedFile', 'unlink');
+		}
 		$this->MockUpload = $this->getMock('UploadBehavior', $methods);
 
 		$this->MockUpload->setup($this->TestUpload, $this->TestUpload->actsAs['Upload.Upload']);
@@ -103,7 +108,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testFileSize() {
-		$this->mockUpload('handleUploadedFile');
+		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
 		$result = $this->TestUpload->save($this->data['test_ok']);
 		$this->assertType('array', $result);
@@ -112,7 +117,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testSimpleUpload() {
-		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->with(
@@ -140,7 +145,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	function testDeleteOnUpdate() {
 		$this->TestUpload->actsAs['Upload.Upload']['photo']['deleteOnUpdate'] = true;
-		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
 		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
 		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
@@ -159,7 +164,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	function testDeleteOnUpdateWithoutNewUpload() {
 		$this->TestUpload->actsAs['Upload.Upload']['photo']['deleteOnUpdate'] = true;
-		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
@@ -169,7 +174,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testUpdateWithoutNewUpload() {
-		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
@@ -179,7 +184,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testUnlinkFileOnDelete() {
-		$this->mockUpload(array('unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
 		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
 		$this->MockUpload->expects($this->once())->method('unlink')->with(
@@ -191,7 +196,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testDeleteFileOnRemoveSave() {
-		$this->mockUpload(array('handleUploadedFile', 'unlink'));
+		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
 
 		$data = array(
