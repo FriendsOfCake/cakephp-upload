@@ -17,7 +17,9 @@
  * @link          http://github.com/josegonzalez/upload
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+if (!class_exists('Folder')) {
+	App::import('Core', 'Folder');
+}
 class UploadBehavior extends ModelBehavior {
 
 	var $defaults = array(
@@ -78,10 +80,6 @@ class UploadBehavior extends ModelBehavior {
 	function setup(&$model, $config = array()) {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
-
-		if (!class_exists('Folder')) {
-			App::import('Core', 'Folder');
-		}
 
 		foreach ($config as $field => $options) {
 			$this->_setupField($model, $field, $options);
@@ -839,18 +837,14 @@ class UploadBehavior extends ModelBehavior {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
 
-		if ($pathMethod == '_getPathFlat') {
-			return $this->_getPathFlat($model, $path);
+		if (method_exists($this, $pathMethod)) {
+			return $this->$pathMethod($model, $field, $path);
 		}
-		if ($pathMethod == '_getPathRandom') {
-			return $this->_getPathRandom($model->data[$model->alias][$field], $path);
-		}
-		if ($pathMethod == '_getPathPrimaryKey') {
-			return $this->_getPathPrimaryKey($model, $path);
-		}
+
+		return $this->_getPathPrimaryKey($model, $field, $path);
 	}
 
-	function _getPathFlat(&$model, $path) {
+	function _getPathFlat(&$model, $field, $path) {
 		$destDir = ROOT . DS . APP_DIR . DS . $path;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -859,7 +853,7 @@ class UploadBehavior extends ModelBehavior {
 		return '';
 	}
 
-	function _getPathPrimaryKey(&$model, $path) {
+	function _getPathPrimaryKey(&$model, $field, $path) {
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -868,10 +862,10 @@ class UploadBehavior extends ModelBehavior {
 		return $model->id;
 	}
 
-	function _getPathRandom($string, $path) {
+	function _getPathRandom(&$model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
-		$string = crc32($string . time());
+		$string = crc32($field . time());
 
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
