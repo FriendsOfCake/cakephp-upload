@@ -967,7 +967,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
 		$this->__filesToRemove[$model->alias] = array();
-		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $data[$model->alias][$field];
+		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $data[$model->alias][$field];
 
 		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
 
