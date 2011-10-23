@@ -952,6 +952,10 @@ class UploadBehavior extends ModelBehavior {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
+	function _isMedia(&$model, $mimetype) {
+		return in_array($mimetype, $this->_mediaMimetypes);
+	}
+
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
