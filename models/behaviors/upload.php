@@ -734,9 +734,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if ($isPdf) {
-			if (!$thumbnailType || !is_string($thumbnailType)) {
-				$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
-			}
+			$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 
 			if (!$thumbnailType || !is_string($thumbnailType)) {
 				$thumbnailType = 'png';
