@@ -692,8 +692,9 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
+		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
-		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+		$destFile = $thumbnailPath . $style . '_' . $model->data[$model->alias][$field];
 
 		$isPdf = preg_match('/.pdf$/', $destFile);
 
@@ -764,8 +765,9 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
+		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
-		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
+		$destFile = $thumbnailPath . $style . '_' . $model->data[$model->alias][$field];
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
 			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
@@ -871,19 +873,13 @@ class UploadBehavior extends ModelBehavior {
 
 	function _getPathFlat(&$model, $field, $path) {
 		$destDir = ROOT . DS . APP_DIR . DS . $path;
-		if (!file_exists($destDir)) {
-			@mkdir($destDir, 0777, true);
-			@chmod($destDir, 0777);
-		}
+		$this->_mkPath($destDir);
 		return '';
 	}
 
 	function _getPathPrimaryKey(&$model, $field, $path) {
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
-		if (!file_exists($destDir)) {
-			@mkdir($destDir, 0777, true);
-			@chmod($destDir, 0777);
-		}
+		$this->_mkPath($destDir);
 		return $model->id;
 	}
 
@@ -898,12 +894,17 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$destDir = ROOT . DS . APP_DIR . DS . $path . $endPath;
+		$this->_mkPath($destDir);
+
+		return substr($endPath, 0, -1);
+	}
+
+	function _mkPath($destDir) {
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
 			@chmod($destDir, 0777);
 		}
-
-		return substr($endPath, 0, -1);
+		return true;
 	}
 
 /**
