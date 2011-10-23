@@ -43,6 +43,7 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnailType'		=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
+		'thumbnailPath'		=> false,
 	);
 
 	var $_imageMimetypes = array(
@@ -107,6 +108,8 @@ class UploadBehavior extends ModelBehavior {
 			$options = array_merge($this->defaults, (array) $options);
 			$options['fields'] += $this->defaults['fields'];
 			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
+			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, $options['thumbnailPath']));
+
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
 			}
@@ -219,16 +222,24 @@ class UploadBehavior extends ModelBehavior {
 		        if (isset($this->_removingOnly[$field])) continue;
 
 			$tempPath = $this->_getPath($model, $field);
+
+			$thumbnailPath = $this->settings[$model->alias][$field]['thumbnailPath'];
+			if (is_string($thumbnailPath)) {
+				$thumbnailPath = ROOT . DS . APP_DIR . DS . $thumbnailPath;
+			}
+
 			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
+
 			if (!empty($tempPath)) {
 				$path .= $tempPath . DS;
+				$thumbnailPath .= $tempPath . DS;
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
-			$this->_createThumbnails($model, $field, $path);
+			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
 				if ($created && $options['pathMethod'] == '_getPathFlat') {
 				} else if ($options['saveDir']) {
@@ -679,8 +690,12 @@ class UploadBehavior extends ModelBehavior {
 		return $width > 0 && $imgWidth <= $width;
 	}
 
-	function _resizeImagick(&$model, $field, $path, $style, $geometry) {
+	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
+
+		if (is_string($thumbnailPath)) {
+			$path = $thumbnailPath;
+		}
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
 
 		$isPdf = preg_match('/.pdf$/', $destFile);
@@ -751,8 +766,13 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-	function _resizePhp(&$model, $field, $path, $style, $geometry) {
+	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
+
+		if (is_string($thumbnailPath)) {
+			$path = $thumbnailPath;
+		}
+
 		$destFile = $path . $style . '_' . $model->data[$model->alias][$field];
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
@@ -914,7 +934,7 @@ class UploadBehavior extends ModelBehavior {
 		));
 	}
 
-	function _createThumbnails(&$model, $field, $path) {
+	function _createThumbnails(&$model, $field, $path, $thumbnailPath) {
 		if ($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
 		&& $this->settings[$model->alias][$field]['thumbnails']
 		&& !empty($this->settings[$model->alias][$field]['thumbsizes'])) {
@@ -922,7 +942,7 @@ class UploadBehavior extends ModelBehavior {
 			$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
 
 			foreach ($this->settings[$model->alias][$field]['thumbsizes'] as $style => $geometry) {
-				if (!$this->$method($model, $field, $path, $style, $geometry)) {
+				if (!$this->$method($model, $field, $path, $style, $geometry, $thumbnailPath)) {
 					$model->invalidate($field, 'resizeFail');
 				}
 			}
