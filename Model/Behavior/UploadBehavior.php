@@ -106,6 +106,9 @@ class UploadBehavior extends ModelBehavior {
 			$options = array_merge($this->defaults, (array) $options);
 			$options['fields'] += $this->defaults['fields'];
 			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
+			if (empty($options['thumbnailPath'])) {
+				$options['thumbnailPath'] = $options['path'];
+			}
 			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, $options['thumbnailPath']));
 
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
