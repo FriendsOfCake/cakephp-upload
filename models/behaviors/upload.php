@@ -968,8 +968,24 @@ class UploadBehavior extends ModelBehavior {
 
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $data[$model->alias][$field];
+
+		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
+
 		foreach ($options['thumbsizes'] as $style => $geometry) {
-			$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_' . $data[$model->alias][$field];
+
+			$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+
+			if ($isMedia) {
+				$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
+
+				if (!$thumbnailType || !is_string($thumbnailType)) {
+					$thumbnailType = 'png';
+				}
+			}
+
+			$filePath = ROOT . DS . APP_DIR . $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_' . $data[$model->alias][$field];
+			$this->__filesToRemove[$model->alias][] = $filePath.".{$thumbnailType}";
+
 		}
 		return $this->__filesToRemove;
 	}
