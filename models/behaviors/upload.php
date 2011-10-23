@@ -700,12 +700,11 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
-		$destFile = $thumbnailPath . $style . '_' . $model->data[$model->alias][$field];
 
 		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
 
+		$pathInfo = $this->_pathinfo($srcFile);
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
-			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
 
@@ -760,9 +759,10 @@ class UploadBehavior extends ModelBehavior {
 			}
 
 			$image->setImageFormat($thumbnailType);
-			$destFile = preg_replace('/.pdf$/', ".{$thumbnailType}", $destFile);
 		}
 
+		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
+		
 		if (!$image->writeImage($destFile)) return false;
 
 		$image->clear();
@@ -773,15 +773,21 @@ class UploadBehavior extends ModelBehavior {
 	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
-		$destFile = $thumbnailPath . $style . '_' . $model->data[$model->alias][$field];
+
+		$pathInfo = $this->_pathinfo($srcFile);
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
-			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
 
+		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+		if ($thumbnailType && is_string($thumbnailType)) {
+			$image->setImageFormat($thumbnailType);
+		}
+
+		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
+
 		copy($srcFile, $destFile);
-		$pathinfo = $this->_pathinfo($srcFile);
 		$src = null;
 		$createHandler = null;
 		$outputHandler = null;
