@@ -246,6 +246,8 @@ class UploadBehavior extends ModelBehavior {
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
+
+			$this->_mkPath($thumbnailPath);
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
 				if ($created && $options['pathMethod'] == '_getPathFlat') {
@@ -698,7 +700,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
-		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
 
 		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
@@ -772,7 +773,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
-		$this->_mkPath($thumbnailPath);
 		$srcFile  = $path . $model->data[$model->alias][$field];
 
 		$pathInfo = $this->_pathinfo($srcFile);
