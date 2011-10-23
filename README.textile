@@ -206,7 +206,7 @@ h2. Behavior options:
 *** imagick: Uses the PHP `imagick` extension to generate thumbnails
 *** php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails
 * @thumbnailType@: Override the type of the generated thumbnail
-** Default: (mixed) @false@ or @png@ when the upload is a PDF
+** Default: (mixed) @false@ or @png@ when the upload is a Media file
 ** Options:
 *** Any valid image type
 * @mediaThumbnailType@: Override the type of the generated thumbnail for a non-image media (@pdfs@). Overrides @thumbnailType@
