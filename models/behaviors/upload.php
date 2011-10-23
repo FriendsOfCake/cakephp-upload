@@ -704,6 +704,7 @@ class UploadBehavior extends ModelBehavior {
 		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
 
 		$pathInfo = $this->_pathinfo($srcFile);
+
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
@@ -966,10 +967,17 @@ class UploadBehavior extends ModelBehavior {
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
+		$filePathDir = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS;
+		$filePath = $filePathDir.$data[$model->alias][$field];
+		$pathInfo = pathinfo($filePath);
+	
 		$this->__filesToRemove[$model->alias] = array();
-		$this->__filesToRemove[$model->alias][] = ROOT . DS . APP_DIR . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS . $data[$model->alias][$field];
+		$this->__filesToRemove[$model->alias][] = $filePath;
 
-		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
+		$finfo = new finfo(FILEINFO_MIME_TYPE);
+		$mimeType = $finfo->file($filePath);
+
+		$isMedia = $this->_isMedia($model, $mimeType);
 
 		foreach ($options['thumbsizes'] as $style => $geometry) {
 
@@ -983,8 +991,9 @@ class UploadBehavior extends ModelBehavior {
 				}
 			}
 
-			$filePath = ROOT . DS . APP_DIR . $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_' . $data[$model->alias][$field];
-			$this->__filesToRemove[$model->alias][] = $filePath.".{$thumbnailType}";
+			$filePath = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_';
+			
+			$this->__filesToRemove[$model->alias][] = $filePath.$pathInfo['filename'].".{$thumbnailType}";
 
 		}
 		return $this->__filesToRemove;
