@@ -217,13 +217,19 @@ h2. Behavior options:
 ** Default: (mixed) @false@ or @png@ when the upload is a PDF
 ** Options:
 *** Any valid image type
-* @mediaThumbnailType@: Override the type of the generated thumbnail for a PDF
+* @mediaThumbnailType@: Override the type of the generated thumbnail for a non-image media (@pdfs@). Overrides @thumbnailType@
 ** Default: (mixed) @png@
 ** Options:
 *** Any valid image type
 * @saveDir@: Can be used to turn off saving the directory
 ** Default: (boolean) @true@
 ** Note: Because of the way in which the directory is saved, if you are using a @pathMethod@ other than flat and you set @saveDir@ to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a @pathMethod@ of @random@ than @primaryKey@, but keep this in mind when fiddling with this option
+* @thumbnailPath@: A path relative to the @APP_PATH@ where thumbnails will be saved. Should end in @{DS}@. If not set, thumbnails will be saved at @path@.
+** Default: (boolean) @false@
+** Tokens:
+*** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
+*** {model}: Replaced by the Model Alias
+*** {field}: Replaced by the field name
 
 h2. Thumbnail Sizes and Styles
 
