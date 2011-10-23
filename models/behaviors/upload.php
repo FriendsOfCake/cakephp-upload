@@ -54,7 +54,11 @@ class UploadBehavior extends ModelBehavior {
 		'image/png',
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
+	);
+
+	var $_mediaMimetypes = array(
 		'application/pdf',
+		'application/postscript',
 	);
 
 	var $_pathMethods = array('flat', 'primaryKey', 'random');
