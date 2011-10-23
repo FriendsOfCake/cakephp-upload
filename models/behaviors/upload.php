@@ -934,7 +934,8 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _createThumbnails(&$model, $field, $path, $thumbnailPath) {
-		if ($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
+		if (($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
+		|| $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']))
 		&& $this->settings[$model->alias][$field]['thumbnails']
 		&& !empty($this->settings[$model->alias][$field]['thumbsizes'])) {
 			// Create thumbnails
