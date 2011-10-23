@@ -702,7 +702,7 @@ class UploadBehavior extends ModelBehavior {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$destFile = $thumbnailPath . $style . '_' . $model->data[$model->alias][$field];
 
-		$isPdf = preg_match('/.pdf$/', $destFile);
+		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
 
 		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
 			$pathInfo = $this->_pathinfo($path . $model->data[$model->alias][$field]);
@@ -711,7 +711,7 @@ class UploadBehavior extends ModelBehavior {
 
 		$image    = new imagick();
 
-		if ($isPdf) {
+		if ($isMedia) {
 			$image->setResolution(300, 300);
 			$srcFile = $srcFile.'[0]';
 		}
@@ -752,7 +752,7 @@ class UploadBehavior extends ModelBehavior {
 			$image->setImageFormat($thumbnailType);
 		}
 
-		if ($isPdf) {
+		if ($isMedia) {
 			$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 
 			if (!$thumbnailType || !is_string($thumbnailType)) {
