@@ -969,7 +969,7 @@ class UploadBehavior extends ModelBehavior {
 
 		$filePathDir = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
-		$pathInfo = pathinfo($filePath);
+		$pathInfo = $this->_pathinfo($filePath);
 	
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = $filePath;
