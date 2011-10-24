@@ -996,8 +996,13 @@ $mimeType = $this->_getMimeType($filePath);
 			}
 
 			$filePath = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_';
-			
-			$this->__filesToRemove[$model->alias][] = $filePath.$pathInfo['filename'].".{$thumbnailType}";
+			if ($thumbnailType) {
+				$filename = $pathInfo['filename'].".{$thumbnailType}";
+			} else {
+				$filename = $pathInfo['basename'];
+			}
+
+			$this->__filesToRemove[$model->alias][] = $filePath.$filename;
 
 		}
 		return $this->__filesToRemove;
