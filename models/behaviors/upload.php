@@ -964,6 +964,11 @@ class UploadBehavior extends ModelBehavior {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
+	function _getMimeType($filePath) {
+		$finfo = new finfo(FILEINFO_MIME_TYPE);
+		return $finfo->file($filePath);
+	}
+
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
@@ -974,8 +979,7 @@ class UploadBehavior extends ModelBehavior {
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = $filePath;
 
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		$mimeType = $finfo->file($filePath);
+$mimeType = $this->_getMimeType($filePath);
 
 		$isMedia = $this->_isMedia($model, $mimeType);
 
