@@ -63,7 +63,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$methods = (array) $methods;
 		}
 		if (empty($methods)) {
-			$methods = array('handleUploadedFile', 'unlink');
+			$methods = array('handleUploadedFile', 'unlink', '_getMimeType');
 		}
 		$mockName = $this->currentTestMethod . '_MockUploadBehavior';
 		Mock::GeneratePartial('UploadBehavior', $mockName, $methods);
@@ -151,6 +151,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->mockUpload();
 		$this->MockUpload->setReturnValue('handleUploadedFile', true);
 		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'image/png');
+
 		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
 		$this->MockUpload->expectOnce('unlink', array(
 			ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
@@ -720,8 +722,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testPrepareFilesForDeletion() {
-		$this->TestUpload->Behaviors->detach('Upload.Upload');
-		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
 				'thumbsizes' => array(
 					'xvga' => '1024x768',
@@ -732,7 +733,10 @@ class UploadBehaviorTest extends CakeTestCase {
 					'dir' => 'dir'
 				)
 			)
-		));
+		);
+		$this->mockUpload();
+		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'image/png');
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
