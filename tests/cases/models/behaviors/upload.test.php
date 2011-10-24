@@ -63,7 +63,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$methods = (array) $methods;
 		}
 		if (empty($methods)) {
-			$methods = array('handleUploadedFile', 'unlink');
+			$methods = array('handleUploadedFile', 'unlink', '_getMimeType');
 		}
 		$mockName = $this->currentTestMethod . '_MockUploadBehavior';
 		Mock::GeneratePartial('UploadBehavior', $mockName, $methods);
@@ -151,6 +151,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->mockUpload();
 		$this->MockUpload->setReturnValue('handleUploadedFile', true);
 		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'image/png');
+
 		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
 		$this->MockUpload->expectOnce('unlink', array(
 			ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
@@ -684,6 +686,27 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
+	function testIsMedia() {
+		$this->TestUpload->Behaviors->detach('Upload.Upload');
+		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
+			'pdf_file' => array(
+				'mimetypes' => array('application/pdf', 'application/postscript')
+			)
+		));
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/pdf');
+		$this->assertTrue($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/postscript');
+		$this->assertTrue($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/zip');
+		$this->assertFalse($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'image/jpeg');
+		$this->assertFalse($result);
+	}
+
 	function testGetPathFlat() {
 		$basePath = 'tests' . DS . 'path' . DS . 'flat' . DS;
 		$result = $this->TestUpload->Behaviors->Upload->_getPathFlat($this->TestUpload, 'photo', 'tmp' . DS . $basePath);
@@ -720,8 +743,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testPrepareFilesForDeletion() {
-		$this->TestUpload->Behaviors->detach('Upload.Upload');
-		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
 				'thumbsizes' => array(
 					'xvga' => '1024x768',
@@ -732,11 +754,100 @@ class UploadBehaviorTest extends CakeTestCase {
 					'dir' => 'dir'
 				)
 			)
-		));
+		);
+		$this->mockUpload();
+		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'image/png');
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
 			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.png')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		);
+
+		$this->assertIsA($result, 'Array');
+		$this->assertEqual(1,count($result));
+		$this->assertEqual(4, count($result['TestUpload']));
+	}
+
+	function testPrepareFilesForDeletionWithThumbnailType() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'thumbsizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
+				),
+				'fields' => array(
+					'dir' => 'dir'
+				),
+				'thumbnailType' => 'jpg'
+			)
+		);
+		$this->mockUpload();
+		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'image/png');
+
+		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.png')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		);
+
+		$this->assertIsA($result, 'Array');
+		$this->assertEqual(1,count($result));
+		$this->assertEqual(4, count($result['TestUpload']));
+	}
+
+	function testPrepareFilesForDeletionWithMediaFileAndFalseThumbnailType() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'thumbsizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
+				),
+				'fields' => array(
+					'dir' => 'dir'
+				),
+				'thumbnailType' => false
+			)
+		);
+		$this->mockUpload();
+		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'application/pdf');
+
+		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.pdf')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		);
+
+		$this->assertIsA($result, 'Array');
+		$this->assertEqual(1,count($result));
+		$this->assertEqual(4, count($result['TestUpload']));
+	}
+
+	function testPrepareFilesForDeletionWithMediaFile() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'thumbsizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
+				),
+				'fields' => array(
+					'dir' => 'dir'
+				)
+			)
+		);
+		$this->mockUpload();
+		$this->MockUpload->setReturnValue('unlink', true);
+		$this->MockUpload->setReturnValue('_getMimeType', 'application/pdf');
+
+		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.pdf')),
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
