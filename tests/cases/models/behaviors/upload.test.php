@@ -686,6 +686,27 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
+	function testIsMedia() {
+		$this->TestUpload->Behaviors->detach('Upload.Upload');
+		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
+			'pdf_file' => array(
+				'mimetypes' => array('application/pdf', 'application/postscript')
+			)
+		));
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/pdf');
+		$this->assertTrue($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/postscript');
+		$this->assertTrue($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'application/zip');
+		$this->assertFalse($result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_isMedia($this->TestUpload, 'image/jpeg');
+		$this->assertFalse($result);
+	}
+
 	function testGetPathFlat() {
 		$basePath = 'tests' . DS . 'path' . DS . 'flat' . DS;
 		$result = $this->TestUpload->Behaviors->Upload->_getPathFlat($this->TestUpload, 'photo', 'tmp' . DS . $basePath);
