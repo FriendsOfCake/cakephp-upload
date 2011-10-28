@@ -596,9 +596,9 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
-		$pathinfo = $this->_pathinfo($check[$field]['name']);
+		$pathInfo = $this->_pathinfo($check[$field]['name']);
 
-		return in_array($pathinfo['extension'], $extensions);
+		return in_array($pathInfo['extension'], $extensions);
 	}
 
 /**
@@ -792,7 +792,7 @@ class UploadBehavior extends ModelBehavior {
 		$src = null;
 		$createHandler = null;
 		$outputHandler = null;
-		switch (strtolower($pathinfo['extension'])) {
+		switch (strtolower($pathInfo['extension'])) {
 			case 'gif':
 				$createHandler = 'imagecreatefromgif';
 				$outputHandler = 'imagegif';
@@ -1009,17 +1009,17 @@ $mimeType = $this->_getMimeType($filePath);
 	}
 
 	function _pathinfo($filename) {
-		$pathinfo = pathinfo($filename);
+		$pathInfo = pathinfo($filename);
 
-		if (!isset($pathinfo['extension']) || !strlen($pathinfo['extension'])) {
-			$pathinfo['extension'] = '';
+		if (!isset($pathInfo['extension']) || !strlen($pathInfo['extension'])) {
+			$pathInfo['extension'] = '';
 		}
 
 		// PHP < 5.2.0 doesn't include 'filename' key in pathinfo. Let's try to fix this.
-		if (empty($pathinfo['filename'])) {
-			$pathinfo['filename'] = basename($pathinfo['basename'], '.' . $pathinfo['extension']);
+		if (empty($pathInfo['filename'])) {
+			$pathInfo['filename'] = basename($pathInfo['basename'], '.' . $pathInfo['extension']);
 		}
-		return $pathinfo;
+		return $pathInfo;
 	}
 
 }
