@@ -781,10 +781,10 @@ class UploadBehavior extends ModelBehavior {
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
 
-		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
-		if ($thumbnailType && is_string($thumbnailType)) {
-			$image->setImageFormat($thumbnailType);
-		}
+		$thumbnailType = is_string($this->settings[$model->alias][$field]['thumbnailType']) 
+					? $this->settings[$model->alias][$field]['thumbnailType']
+					: $pathInfo['extension'];
+		
 
 		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
 
