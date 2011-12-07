@@ -492,7 +492,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return is_writable($this->settings[$model->alias][$field]['path']);
+		return is_writable(ROOT . DS . APP_DIR . DS. $this->settings[$model->alias][$field]['path']);
 	}
 
 /**
@@ -511,7 +511,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return is_dir($this->settings[$model->alias][$field]['path']);
+		return is_dir(ROOT . DS . APP_DIR . DS. $this->settings[$model->alias][$field]['path']);
 	}
 
 /**
