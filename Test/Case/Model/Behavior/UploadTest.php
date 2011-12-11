@@ -111,7 +111,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
 		$result = $this->TestUpload->save($this->data['test_ok']);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$this->assertEquals($this->data['test_ok']['photo']['size'], $newRecord['TestUpload']['size']);
 	}
@@ -127,7 +127,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . 2 . DS . $this->data['test_ok']['photo']['name']
 		);
 		$result = $this->TestUpload->save($this->data['test_ok']);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$expectedRecord = array(
 			'TestUpload' => array(
@@ -161,7 +161,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $this->data['test_update']['id'] . DS . $this->data['test_update']['photo']['name']
 		);
 		$result = $this->TestUpload->save($this->data['test_update']);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 	}
 
 	function testDeleteOnUpdateWithoutNewUpload() {
@@ -170,7 +170,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$this->assertEquals($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
@@ -180,7 +180,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$this->assertEquals($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
@@ -213,7 +213,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			ROOT . DS . APP_DIR . DS . $this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
 		);
 		$result = $this->TestUpload->save($data);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 	}
 
 	function testIsUnderPhpSizeLimit() {
@@ -708,7 +708,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$basePath = 'tests' . DS . 'path' . DS . 'flat' . DS;
 		$result = $this->TestUpload->Behaviors->Upload->_getPathFlat($this->TestUpload, 'photo', 'tmp' . DS . $basePath);
 
-		$this->assertType('string', $result);
+		$this->assertInternalType('string', $result);
 		$this->assertEqual(0, strlen($result));
 	}
 
@@ -717,7 +717,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$basePath = 'tests' . DS . 'path' . DS . 'primaryKey' . DS;
 		$result = $this->TestUpload->Behaviors->Upload->_getPathPrimaryKey($this->TestUpload, 'photo', 'tmp' . DS . $basePath);
 
-		$this->assertType('integer', $result);
+		$this->assertInternalType('integer', $result);
 		$this->assertEqual(1, strlen($result));
 		$this->assertEqual($result, $this->TestUpload->id);
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
@@ -727,7 +727,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$basePath = 'tests' . DS . 'path' . DS . 'random' . DS;
 		$result = $this->TestUpload->Behaviors->Upload->_getPathRandom($this->TestUpload, 'photo', 'tmp' . DS . $basePath);
 
-		$this->assertType('string', $result);
+		$this->assertInternalType('string', $result);
 		$this->assertEquals(8, strlen($result));
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
@@ -735,7 +735,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	function testReplacePath() {
 		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', 'webroot{DS}files/{model}\\{field}{DS}');
 
-		$this->assertType('string', $result);
+		$this->assertInternalType('string', $result);
 		$this->assertEquals('webroot' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
 	}
 
@@ -761,7 +761,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(1,count($result));
 		$this->assertEquals(4, count($result['TestUpload']));
 	}
@@ -789,7 +789,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEqual(1,count($result));
 		$this->assertEqual(4, count($result['TestUpload']));
 	}
@@ -817,7 +817,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEqual(1,count($result));
 		$this->assertEqual(4, count($result['TestUpload']));
 	}
@@ -844,7 +844,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEqual(1,count($result));
 		$this->assertEqual(4, count($result['TestUpload']));
 	}
