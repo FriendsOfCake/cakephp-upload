@@ -163,8 +163,9 @@ h2. Behavior options:
 *** primaryKey: Path based upon the record's primaryKey is generated. Persists across a record
 *** random: Random path is generated for each file upload. Does not persist across a record.
 * @path@: A path relative to the @APP_PATH@. Should end in @{DS}@
-** Default: (string) @'webroot{DS}files{DS}{model}{DS}{field}{DS}'@
+** Default: (string) @'{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}'@
 ** Tokens:
+*** {ROOT}: Replaced by a @rootDir@ option
 *** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
 *** {model}: Replaced by the Model Alias
 *** {field}: Replaced by the field name
@@ -174,6 +175,8 @@ h2. Behavior options:
 *** dir: Field to use for storing the directory
 *** type: Field to use for storing the filetype
 *** size: Field to use for storing the filesize
+* @rootDir@: Root directory for moving images. Auto-prepended to @path@ and @thumbnailPath@ where necessary
+** Default (string) @ROOT . DS . APP_DIR . DS@
 * @mimetypes@: Array of mimetypes to use for validation
 ** Default: (array) empty
 * @extensions@: Array of extensions to use for validation
@@ -216,9 +219,10 @@ h2. Behavior options:
 * @saveDir@: Can be used to turn off saving the directory
 ** Default: (boolean) @true@
 ** Note: Because of the way in which the directory is saved, if you are using a @pathMethod@ other than flat and you set @saveDir@ to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a @pathMethod@ of @random@ than @primaryKey@, but keep this in mind when fiddling with this option
-* @thumbnailPath@: A path relative to the @APP_PATH@ where thumbnails will be saved. Should end in @{DS}@. If not set, thumbnails will be saved at @path@.
+* @thumbnailPath@: A path relative to the @rootDir@ where thumbnails will be saved. Should end in @{DS}@. If not set, thumbnails will be saved at @path@.
 ** Default: (boolean) @false@
 ** Tokens:
+*** {ROOT}: Replaced by a @rootDir@ option
 *** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
 *** {model}: Replaced by the Model Alias
 *** {field}: Replaced by the field name
