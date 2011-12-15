@@ -21,7 +21,7 @@ h2. Installation
 
 _[Manual]_
 
-# Download this: "http://github.com/josegonzalez/upload/zipball/master":http://github.com/josegonzalez/upload/zipball/master
+# Download this: "http://github.com/josegonzalez/upload/zipball/2.0":http://github.com/josegonzalez/upload/zipball/2.0
 # Unzip that download.
 # Copy the resulting folder to @app/Plugin@
 # Rename the folder you just copied to @Upload@
@@ -29,7 +29,7 @@ _[Manual]_
 _[GIT Submodule]_
 
 In your app directory type:
-<pre><code>git submodule add git://github.com/josegonzalez/upload.git Plugin/Upload
+<pre><code>git submodule add -b 2.0 git://github.com/josegonzalez/upload.git Plugin/Upload
 git submodule init
 git submodule update
 </code></pre>
@@ -37,7 +37,7 @@ git submodule update
 _[GIT Clone]_
 
 In your `Plugin` directory type
-<pre><code>git clone git://github.com/josegonzalez/upload.git Upload</code></pre>
+<pre><code>git clone -b 2.0 git://github.com/josegonzalez/upload.git Upload</code></pre>
 
 h3. Enable plugin
 
