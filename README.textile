@@ -319,12 +319,28 @@ Check that the PHP temporary directory is missing
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('tempDirExists', false),
+		'message' => 'The system temporary directory is missing'
+	)
+);</code></pre>
+
 h4. isSuccessfulWrite
 
 Check that the file was successfully written to the server
 <pre><code>var $validate = array(
 	'photo' => array(
 		'rule' => 'isSuccessfulWrite',
+		'message' => 'File was unsuccessfully written to the server'
+	)
+);</code></pre>
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isSuccessfulWrite', false),
 		'message' => 'File was unsuccessfully written to the server'
 	)
 );</code></pre>
@@ -339,6 +355,14 @@ Check that a PHP extension did not cause an error
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('noPhpExtensionErrors', 1024, false),
+		'message' => 'File was not uploaded because of a faulty PHP extension'
+	)
+);</code></pre>
+
 h4. isValidMimeType
 
 Check that the file is of a valid mimetype
@@ -349,25 +373,51 @@ Check that the file is of a valid mimetype
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isValidMimeType', array('valid/mimetypes', 'array/here'), false),
+		'message' => 'File is of an invalid mimetype'
+	)
+);</code></pre>
+
 h4. isWritable
 
 Check that the upload directory is writable
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isWritable',
+		'rule' => array('isWritable'),
 		'message' => 'File upload directory was not writable'
 	)
 );</code></pre>
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isWritable', false),
+		'message' => 'File upload directory was not writable'
+	)
+);</code></pre>
+
 
 h4. isValidDir
 
 Check that the upload directory exists
 <pre><code>var $validate = array(
 	'photo' => array(
-		'rule' => 'isValidDir',
+		'rule' => array('isValidDir'),
 		'message' => 'File upload directory does not exist'
 	)
 );</code></pre>
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isValidDir', false),
+		'message' => 'File upload directory does not exist'
+	)
+);</code></pre>
+
 
 h4. isBelowMaxSize
 
@@ -379,12 +429,30 @@ Check that the file is below the maximum file upload size (checked in bytes)
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxSize', 1024, false),
+		'message' => 'File is larger than the maximum filesize'
+	)
+);</code></pre>
+
+
 h4. isAboveMinSize
 
 Check that the file is above the minimum file upload size (checked in bytes)
 <pre><code>var $validate = array(
 	'photo' => array(
 		'rule' => array('isAboveMinSize', 1024),
+		'message' => 'File is below the mimimum filesize'
+	)
+);</code></pre>
+
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinSize', 1024, false),
 		'message' => 'File is below the mimimum filesize'
 	)
 );</code></pre>
@@ -399,12 +467,28 @@ Check that the file has a valid extension
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isValidExtension', array('ext', 'array', 'here'), false),
+		'message' => 'File has an invalid extension'
+	)
+);</code></pre>
+
 h4. isAboveMinHeight
 
 Check that the file is above the minimum height requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
 		'rule' => array('isAboveMinHeight' 150),
+		'message' => 'File is below the minimum height'
+	)
+);</code></pre>
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinHeight', 150, false),
 		'message' => 'File is below the minimum height'
 	)
 );</code></pre>
@@ -419,6 +503,14 @@ Check that the file is below the maximum height requirement (checked in pixels)
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxHeight', 150, false),
+		'message' => 'File is above the maximum height'
+	)
+);</code></pre>
+
 h4. isAboveMinWidth
 
 Check that the file is above the minimum width requirement (checked in pixels)
@@ -429,12 +521,28 @@ Check that the file is above the minimum width requirement (checked in pixels)
 	)
 );</code></pre>
 
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinWidth', 150, false),
+		'message' => 'File is below the minimum width'
+	)
+);</code></pre>
+
 h4. isBelowMaxWidth
 
 Check that the file is below the maximum width requirement (checked in pixels)
 <pre><code>var $validate = array(
 	'photo' => array(
 		'rule' => array('isBelowMaxWidth', 150),
+		'message' => 'File is above the maximum width'
+	)
+);</code></pre>
+
+If the argument @$requireUpload@ is passed, we can skip this check when a file is not uploaded:
+<pre><code>var $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxWidth', 150, false),
 		'message' => 'File is above the maximum width'
 	)
 );</code></pre>
