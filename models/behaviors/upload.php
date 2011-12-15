@@ -447,13 +447,10 @@ class UploadBehavior extends ModelBehavior {
 	function isValidMimeType(&$model, $check, $mimetypes = array()) {
 		$field = array_pop(array_keys($check));
 
-		if (!empty($check[$field]['remove'])) {
-			return true;
-		}
-
 		// Non-file uploads also mean the mimetype is invalid
 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
-			return false;
+			//return false;
+			return true;//Allow no file upload
 		}
 
 		// Sometimes the user passes in a string instead of an array
