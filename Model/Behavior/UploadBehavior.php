@@ -22,7 +22,7 @@ class UploadBehavior extends ModelBehavior {
 
 	var $defaults = array(
 		'pathMethod'		=> 'primaryKey',
-		'path'				=> 'webroot{DS}files{DS}{model}{DS}{field}{DS}',
+		'path'				=> '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
 		'fields'			=> array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
 		'mimetypes'			=> array(),
 		'extensions'		=> array(),
@@ -106,14 +106,16 @@ class UploadBehavior extends ModelBehavior {
 			$options = array();
 		}
 
+		$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
+
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array) $options);
 			$options['fields'] += $this->defaults['fields'];
-			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path']));
+			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path'], $options['rootDir']));
 			if (empty($options['thumbnailPath'])) {
 				$options['thumbnailPath'] = $options['path'];
 			}
-			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, $options['thumbnailPath']));
+			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, $options['thumbnailPath'], $options['rootDir']));
 
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
@@ -228,12 +230,8 @@ class UploadBehavior extends ModelBehavior {
 
 			$tempPath = $this->_getPath($model, $field);
 
+			$path = $this->settings[$model->alias][$field]['path'];
 			$thumbnailPath = $this->settings[$model->alias][$field]['thumbnailPath'];
-			if (is_string($thumbnailPath)) {
-				$thumbnailPath = ROOT . DS . APP_DIR . DS . $thumbnailPath;
-			}
-
-			$path = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'];
 
 			if (!empty($tempPath)) {
 				$path .= $tempPath . DS;
@@ -479,7 +477,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Object $model
  * @param mixed $check Value to check
- * @param string $path Path relative to ROOT . DS . APP_DIR . DS
+ * @param string $path Full upload path
  * @return boolean Success
  * @access public
  */
@@ -498,7 +496,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Object $model
  * @param mixed $check Value to check
- * @param string $path Path relative to ROOT . DS . APP_DIR . DS
+ * @param string $path Full upload path
  * @return boolean Success
  * @access public
  */
@@ -896,13 +894,13 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getPathFlat(&$model, $field, $path) {
-		$destDir = ROOT . DS . APP_DIR . DS . $path;
+		$destDir = $path;
 		$this->_mkPath($destDir);
 		return '';
 	}
 
 	function _getPathPrimaryKey(&$model, $field, $path) {
-		$destDir = ROOT . DS . APP_DIR . DS . $path . $model->id . DIRECTORY_SEPARATOR;
+		$destDir = $path . $model->id . DIRECTORY_SEPARATOR;
 		$this->_mkPath($destDir);
 		return $model->id;
 	}
@@ -917,7 +915,7 @@ class UploadBehavior extends ModelBehavior {
 			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
 		}
 
-		$destDir = ROOT . DS . APP_DIR . DS . $path . $endPath;
+		$destDir = $path . $endPath;
 		$this->_mkPath($destDir);
 
 		return substr($endPath, 0, -1);
@@ -936,19 +934,30 @@ class UploadBehavior extends ModelBehavior {
  *
  * @return void
  **/
-	function _path(&$model, $fieldName, $path) {
+	function _path(&$model, $fieldName, $path, $rootDir = null) {
+		if (!$rootDir) {
+			 $rootDir = $this->defaults['rootDir'];
+		}
+
 		$replacements = array(
+			'{ROOT}'	=> $rootDir,
 			'{model}'	=> Inflector::underscore($model->alias),
 			'{field}'	=> $fieldName,
 			'{DS}'		=> DIRECTORY_SEPARATOR,
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
 		);
-		return Folder::slashTerm(str_replace(
+		$newPath = Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
 			$path
 		));
+
+		if ($newPath[0] !== DS) {
+			$newPath = $rootDir . $newPath;
+		}
+
+		return $newPath;
 	}
 
 	function _createThumbnails(&$model, $field, $path, $thumbnailPath) {
@@ -983,7 +992,7 @@ class UploadBehavior extends ModelBehavior {
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
-		$filePathDir = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS;
+		$filePathDir = $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
 	
@@ -1006,7 +1015,7 @@ $mimeType = $this->_getMimeType($filePath);
 				}
 			}
 
-			$filePath = ROOT . DS . APP_DIR . DS . $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_';
+			$filePath = $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_';
 			if ($thumbnailType) {
 				$filename = $pathInfo['filename'].".{$thumbnailType}";
 			} else {
