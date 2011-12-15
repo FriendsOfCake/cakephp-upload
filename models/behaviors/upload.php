@@ -796,15 +796,27 @@ class UploadBehavior extends ModelBehavior {
 		switch (strtolower($pathInfo['extension'])) {
 			case 'gif':
 				$createHandler = 'imagecreatefromgif';
-				$outputHandler = 'imagegif';
 				break;
 			case 'jpg':
 			case 'jpeg':
 				$createHandler = 'imagecreatefromjpeg';
-				$outputHandler = 'imagejpeg';
 				break;
 			case 'png':
 				$createHandler = 'imagecreatefrompng';
+				break;
+			default:
+				return false;
+		}
+
+		switch (strtolower($thumbnailType)) {
+			case 'gif':
+				$outputHandler = 'imagegif';
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$outputHandler = 'imagejpeg';
+				break;
+			case 'png':
 				$outputHandler = 'imagepng';
 				break;
 			default:
