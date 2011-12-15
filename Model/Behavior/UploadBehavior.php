@@ -700,7 +700,7 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 
-		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
 
 		$pathInfo = $this->_pathinfo($srcFile);
 
@@ -747,22 +747,22 @@ class UploadBehavior extends ModelBehavior {
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
 
 		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
-		if ($thumbnailType && is_string($thumbnailType)) {
-			$image->setImageFormat($thumbnailType);
-		}
 
 		if ($isMedia) {
 			$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
-
-			if (!$thumbnailType || !is_string($thumbnailType)) {
-				$thumbnailType = 'png';
-			}
-
-			$image->setImageFormat($thumbnailType);
 		}
 
+		if (!$thumbnailType || !is_string($thumbnailType)) {
+			try {
+				$thumbnailType = $image->getImageFormat();
+			} catch (Exception $e) {
+				$thumbnailType = 'png';
+			}
+		}
+
+		$image->setImageFormat($thumbnailType);
 		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
-		
+
 		if (!$image->writeImage($destFile)) return false;
 
 		$image->clear();
@@ -779,10 +779,11 @@ class UploadBehavior extends ModelBehavior {
 			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
 		}
 
-		$thumbnailType = is_string($this->settings[$model->alias][$field]['thumbnailType']) 
-					? $this->settings[$model->alias][$field]['thumbnailType']
-					: $pathInfo['extension'];
-		
+		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+
+		if (!$thumbnailType || !is_string($thumbnailType)) {
+			$thumbnailType = $pathInfo['extension'];
+		}
 
 		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
 
@@ -793,15 +794,27 @@ class UploadBehavior extends ModelBehavior {
 		switch (strtolower($pathInfo['extension'])) {
 			case 'gif':
 				$createHandler = 'imagecreatefromgif';
-				$outputHandler = 'imagegif';
 				break;
 			case 'jpg':
 			case 'jpeg':
 				$createHandler = 'imagecreatefromjpeg';
-				$outputHandler = 'imagejpeg';
 				break;
 			case 'png':
 				$createHandler = 'imagecreatefrompng';
+				break;
+			default:
+				return false;
+		}
+
+		switch (strtolower($thumbnailType)) {
+			case 'gif':
+				$outputHandler = 'imagegif';
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$outputHandler = 'imagejpeg';
+				break;
+			case 'png':
 				$outputHandler = 'imagepng';
 				break;
 			default:
