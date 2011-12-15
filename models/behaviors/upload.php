@@ -702,7 +702,7 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 
-		$isMedia = $this->_isMedia(&$model, $this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
 
 		$pathInfo = $this->_pathinfo($srcFile);
 
