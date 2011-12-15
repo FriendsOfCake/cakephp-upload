@@ -390,12 +390,18 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function tempDirExists(&$model, $check) {
+	function tempDirExists(&$model, $check, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
 		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_NO_TMP_DIR;
 	}
 
@@ -407,12 +413,18 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isSuccessfulWrite(&$model, $check) {
+	function isSuccessfulWrite(&$model, $check, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
 		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_CANT_WRITE;
 	}
 
@@ -424,12 +436,18 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function noPhpExtensionErrors(&$model, $check) {
+	function noPhpExtensionErrors(&$model, $check, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
 		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
 		return $check[$field]['error'] !== UPLOAD_ERR_EXTENSION;
 	}
 
@@ -442,10 +460,15 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isValidMimeType(&$model, $check, $mimetypes = array()) {
+	function isValidMimeType(&$model, $check, $mimetypes = array(), $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -481,10 +504,15 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isWritable(&$model, $check) {
+	function isWritable(&$model, $check, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -500,10 +528,15 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isValidDir(&$model, $check) {
+	function isValidDir(&$model, $check, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -519,11 +552,21 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxSize(&$model, $check, $size = null) {
+	function isBelowMaxSize(&$model, $check, $size = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
+		// Non-file uploads also mean the size is too small
+		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+			return false;
 		}
 
 		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
@@ -540,19 +583,24 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinSize(&$model, $check, $size = null) {
+	function isAboveMinSize(&$model, $check, $size = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
 		}
 
-		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
 
 		// Non-file uploads also mean the size is too small
 		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
 			return false;
 		}
+
+		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
 
 		return $check[$field]['size'] >= $size;
 	}
@@ -566,10 +614,15 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isValidExtension(&$model, $check, $extensions) {
+	function isValidExtension(&$model, $check, $extensions = array(), $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -606,10 +659,15 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinHeight(&$model, $check, $height = null) {
+	function isAboveMinHeight(&$model, $check, $height = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
+			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -633,11 +691,21 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxHeight(&$model, $check, $height = null) {
+	function isBelowMaxHeight(&$model, $check, $height = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
+		// Non-file uploads also mean the height is too big
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			return false;
 		}
 
 		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
@@ -655,14 +723,19 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isAboveMinWidth(&$model, $check, $width = null) {
+	function isAboveMinWidth(&$model, $check, $width = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
 		}
 
-		// Non-file uploads also mean the width is too big
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
+		// Non-file uploads also mean the height is too big
 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
 			return false;
 		}
@@ -682,11 +755,21 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	function isBelowMaxWidth(&$model, $check, $width = null) {
+	function isBelowMaxWidth(&$model, $check, $width = null, $requireUpload = true) {
 		$field = array_pop(array_keys($check));
 
 		if (!empty($check[$field]['remove'])) {
 			return true;
+		}
+
+		// Allow circumvention of this rule if uploads is not required
+		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+			return true;
+		}
+
+		// Non-file uploads also mean the height is too big
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			return false;
 		}
 
 		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
