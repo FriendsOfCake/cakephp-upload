@@ -763,7 +763,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	function testPrepareFilesForDeletion() {
 		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
@@ -791,7 +791,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	function testPrepareFilesForDeletionWithThumbnailType() {
 		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
@@ -820,7 +820,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	function testPrepareFilesForDeletionWithMediaFileAndFalseThumbnailType() {
 		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
@@ -849,7 +849,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	function testPrepareFilesForDeletionWithMediaFile() {
 		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
