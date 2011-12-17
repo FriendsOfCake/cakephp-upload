@@ -733,7 +733,25 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 	function testReplacePath() {
-		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', 'webroot{DS}files/{model}\\{field}{DS}');
+		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', array(
+			'path' => 'webroot{DS}files/{model}\\{field}{DS}',
+		));
+
+		$this->assertIsA($result, 'String');
+		$this->assertEqual(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
+
+		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', array(
+			'path' => 'webroot{DS}files//{size}/{model}\\{field}{DS}{geometry}///',
+		));
+
+		$this->assertIsA($result, 'String');
+		$this->assertEqual(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . '{size}' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR . '{geometry}' . DIRECTORY_SEPARATOR, $result);
+
+
+		$result = $this->TestUpload->Behaviors->Upload->_path($this->TestUpload, 'photo', array(
+			'isThumbnail' => false,
+			'path' => 'webroot{DS}files//{size}/{model}\\\\{field}{DS}{geometry}///',
+		));
 
 		$this->assertInternalType('string', $result);
 		$this->assertEquals(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
@@ -757,7 +775,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
-			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.png')),
+			array('TestUpload' => array('id' => 1, 'dir' => '1', 'photo' => 'Photo.png')),
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
@@ -785,7 +803,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
-			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.png')),
+			array('TestUpload' => array('id' => 1, 'dir' => '1', 'photo' => 'Photo.png')),
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
@@ -813,7 +831,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
-			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.pdf')),
+			array('TestUpload' => array('id' => 1, 'dir' => '1', 'photo' => 'Photo.pdf')),
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 
@@ -840,7 +858,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
 			$this->TestUpload, 'photo',
-			array('TestUpload' => array('dir' => '1/', 'photo' => 'Photo.pdf')),
+			array('TestUpload' => array('id' => 1, 'dir' => '1', 'photo' => 'Photo.pdf')),
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		);
 

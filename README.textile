@@ -120,7 +120,7 @@ class User extends AppModel {
 				'fields' => array(
 					'dir' => 'photo_dir'
 				),
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
@@ -144,7 +144,7 @@ class User extends AppModel {
 				'fields' => array(
 					'dir' => 'profile_dir'
 				),
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'xvga' => '1024x768',
 					'vga' => '640x480',
 					'thumb' => '80x80'
@@ -177,6 +177,8 @@ h2. Behavior options:
 *** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
 *** {model}: Replaced by the Model Alias
 *** {field}: Replaced by the field name
+*** {size}: Replaced by a zero-length string (the empty string) when used for the regular file upload path
+*** {geometry}: Replaced by a zero-length string (the empty string) when used for the regular file upload path
 * @fields@: An array of fields to use when uploading files
 ** Default: (array) @array('dir' => 'dir', 'type' => 'type', 'size' => 'size')@
 ** Options:
@@ -203,19 +205,34 @@ h2. Behavior options:
 ** Default: (int) @0@
 * @deleteOnUpdate@: Whether to delete files when uploading new versions (potentially dangerous due to naming conflicts)
 ** Default: (boolean) @false@
-* @prefixStyle@: Whether to prefix or suffix the style onto thumbnails
-** Default: (boolean) @true@
 * @thumbnails@: Whether to create thumbnails or not
 ** Default: (boolean) @true@
-* @thumbsizes@: Array of thumbnail sizes, with the style-name mapping to a geometry
-** Default: (array) empty
-* @thumbnailQuality@: Quality of thumbnails that will be generated, on a scale of 0-100
-** Default: (int) @75@
 * @thumbnailMethod@: The method to use for resizing thumbnails
 ** Default: (string) @imagick@
 ** Options:
 *** imagick: Uses the PHP `imagick` extension to generate thumbnails
 *** php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails
+* @thumbnailName@: Naming style for a thumbnail
+** Default: @NULL@
+** Note: The tokens @{size}@ and @{filename}@ are both valid for naming and will be auto-replaced with the actual terms.
+** Note: As well, the extension of the file will be automatically added.
+** Note: When left unspecified, will be set to @{size}_{filename}@ or @{filename}_{size}@ depending upon the value of @thumbnailPrefixStyle@
+* @thumbnailPath@: A path relative to the @rootDir@ where thumbnails will be saved. Should end in @{DS}@. If not set, thumbnails will be saved at @path@.
+** Default: @NULL@
+** Tokens:
+*** {ROOT}: Replaced by a @rootDir@ option
+*** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
+*** {model}: Replaced by the Model Alias
+*** {field}: Replaced by the field name
+*** {size}: Replaced by the size key specified by a given @thumbnailSize@
+*** {geometry}: Replaced by the geometry value specified by a given @thumbnailSize@
+* @thumbnailPrefixStyle@: Whether to prefix or suffix the style onto thumbnails
+** Default: (boolean) @true@ prefix the thumbnail
+** Note that this overrides @thumbnailName@ when @thumbnailName@ is not specified in your config
+* @thumbnailQuality@: Quality of thumbnails that will be generated, on a scale of 0-100
+** Default: (int) @75@
+* @thumbnailSizes@: Array of thumbnail sizes, with the size-name mapping to a geometry
+** Default: (array) empty
 * @thumbnailType@: Override the type of the generated thumbnail
 ** Default: (mixed) @false@ or @png@ when the upload is a Media file
 ** Options:
@@ -227,13 +244,6 @@ h2. Behavior options:
 * @saveDir@: Can be used to turn off saving the directory
 ** Default: (boolean) @true@
 ** Note: Because of the way in which the directory is saved, if you are using a @pathMethod@ other than flat and you set @saveDir@ to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a @pathMethod@ of @random@ than @primaryKey@, but keep this in mind when fiddling with this option
-* @thumbnailPath@: A path relative to the @rootDir@ where thumbnails will be saved. Should end in @{DS}@. If not set, thumbnails will be saved at @path@.
-** Default: (boolean) @false@
-** Tokens:
-*** {ROOT}: Replaced by a @rootDir@ option
-*** {DS}: Replaced by a @DIRECTORY_SEPARATOR@
-*** {model}: Replaced by the Model Alias
-*** {field}: Replaced by the field name
 
 h2. Thumbnail Sizes and Styles
 
@@ -245,7 +255,7 @@ class User extends AppModel {
 	var $actsAs = array(
 		'Upload.Upload' => array(
 			'photo' => array(
-				'thumbsizes' => array(
+				'thumbnailSizes' => array(
 					'big' => '200x200',
 					'small' => '120x120'
 					'thumb' => '80x80'
@@ -265,7 +275,7 @@ Styles only apply to images of the following types:
 * image/vnd.microsoft.icon
 * image/x-icon
 
-You can specify any of the following resize modes for your styles:
+You can specify any of the following resize modes for your sizes:
 
 * *100x80* - resize for best fit into these dimensions, with overlapping edges trimmed if original aspect ratio differs
 * *[100x80]* - resize to fit these dimensions, with white banding if original aspect ratio differs
