@@ -23,6 +23,7 @@ if (!class_exists('Folder')) {
 class UploadBehavior extends ModelBehavior {
 
 	var $defaults = array(
+		'rootDir'			=> null,
 		'pathMethod'		=> 'primaryKey',
 		'path'				=> '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
 		'fields'			=> array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
@@ -34,16 +35,17 @@ class UploadBehavior extends ModelBehavior {
 		'minHeight'			=> 0,
 		'maxWidth'			=> 0,
 		'minWidth'			=> 0,
-		'prefixStyle'		=> true,
 		'thumbnails'		=> true,
-		'thumbsizes'		=> array(),
-		'thumbnailQuality'	=> 75,
 		'thumbnailMethod'	=> 'imagick',
-		'deleteOnUpdate'	=> false,
+		'thumbnailName'		=> null,
+		'thumbnailPath'		=> null,
+		'thumbnailPrefixStyle'=> true,
+		'thumbnailQuality'	=> 75,
+		'thumbnailSizes'	=> array(),
 		'thumbnailType'		=> false,
+		'deleteOnUpdate'	=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
-		'thumbnailPath'		=> false,
 	);
 
 	var $_imageMimetypes = array(
@@ -109,15 +111,51 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
-
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array) $options);
-			$options['fields'] += $this->defaults['fields'];
-			$options['path'] = Folder::slashTerm($this->_path($model, $field, $options['path'], $options['rootDir']));
-			if (empty($options['thumbnailPath'])) {
-				$options['thumbnailPath'] = $options['path'];
+
+			// HACK: Remove me in next major version
+			if (!empty($options['thumbsizes'])) {
+				$options['thumbnailSizes'] = $options['thumbsizes'];
 			}
-			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, $options['thumbnailPath'], $options['rootDir']));
+
+			if (!empty($options['prefixStyle'])) {
+				$options['thumbnailPrefixStyle'] = $options['prefixStyle'];
+			}
+			// ENDHACK
+
+			$options['fields'] += $this->defaults['fields'];
+			if ($options['rootDir'] === null) {
+				$options['rootDir'] = $this->defaults['rootDir'];
+			}
+
+			if ($options['thumbnailName'] === null) {
+				if ($options['thumbnailPrefixStyle']) {
+					$options['thumbnailName'] = '{size}_{filename}';
+				} else {
+					$options['thumbnailName'] = '{filename}_{size}';
+				}
+			}
+
+			if ($options['thumbnailPath'] === null) {
+				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
+					'isThumbnail' => true,
+					'path' => $options['path'],
+					'rootDir' => $options['rootDir']
+				)));
+			} else {
+				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
+					'isThumbnail' => true,
+					'path' => $options['thumbnailPath'],
+					'rootDir' => $options['rootDir']
+				)));
+			}
+
+			$options['path'] = Folder::slashTerm($this->_path($model, $field, array(
+				'isThumbnail' => false,
+				'path' => $options['path'],
+				'rootDir' => $options['rootDir']
+			)));
 
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
@@ -245,7 +283,6 @@ class UploadBehavior extends ModelBehavior {
 				$model->invalidate($field, 'moveUploadedFile');
 			}
 
-			$this->_mkPath($thumbnailPath);
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
 				if ($created && $options['pathMethod'] == '_getPathFlat') {
@@ -780,17 +817,12 @@ class UploadBehavior extends ModelBehavior {
 		return $width > 0 && $imgWidth <= $width;
 	}
 
-	function _resizeImagick(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
+	function _resizeImagick(&$model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
+		$pathInfo = $this->_pathinfo($srcFile);
+		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
 
 		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
-
-		$pathInfo = $this->_pathinfo($srcFile);
-
-		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
-			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
-		}
-
 		$image    = new imagick();
 
 		if ($isMedia) {
@@ -827,10 +859,6 @@ class UploadBehavior extends ModelBehavior {
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
 		}
 
-		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
-
-		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
-
 		if ($isMedia) {
 			$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 		}
@@ -843,32 +871,45 @@ class UploadBehavior extends ModelBehavior {
 			}
 		}
 
-		$image->setImageFormat($thumbnailType);
-		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
+		$fileName = str_replace(
+			array('{size}', '{filename}'),
+			array($size, $pathInfo['filename']),
+			$this->settings[$model->alias][$field]['thumbnailName']
+		);
 
-		if (!$image->writeImage($destFile)) return false;
+		$destFile = "{$thumbnailPath}{$fileName}.{$thumbnailType}";
+
+		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
+		$image->setImageFormat($thumbnailType);
+		if (!$image->writeImage($destFile)) {
+			return false;
+		}
 
 		$image->clear();
 		$image->destroy();
 		return true;
 	}
 
-	function _resizePhp(&$model, $field, $path, $style, $geometry, $thumbnailPath) {
+	function _resizePhp(&$model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
-
 		$pathInfo = $this->_pathinfo($srcFile);
-
-		if (!$this->settings[$model->alias][$field]['prefixStyle']) {
-			$destFile = $path . $pathInfo['filename'] . '_' . $style . '.' . $pathInfo['extension'];
-		}
-
 		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
 
 		if (!$thumbnailType || !is_string($thumbnailType)) {
 			$thumbnailType = $pathInfo['extension'];
 		}
 
-		$destFile = $thumbnailPath.$style . '_'.$pathInfo['filename'].".{$thumbnailType}";
+		if (!$thumbnailType) {
+			$thumbnailType = 'png';
+		}
+
+		$fileName = str_replace(
+			array('{size}', '{filename}'),
+			array($size, $pathInfo['filename']),
+			$this->settings[$model->alias][$field]['thumbnailName']
+		);
+
+		$destFile = "{$thumbnailPath}{$fileName}.{$thumbnailType}";
 
 		copy($srcFile, $destFile);
 		$src = null;
@@ -1019,42 +1060,84 @@ class UploadBehavior extends ModelBehavior {
  *
  * @return void
  **/
-	function _path(&$model, $fieldName, $path, $rootDir = null) {
-		if (!$rootDir) {
-			 $rootDir = $this->defaults['rootDir'];
+	function _path(&$model, $fieldName, $options = array()) {
+		$defaults = array(
+			'isThumbnail' => true,
+			'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
+			'rootDir' => $this->defaults['rootDir'],
+		);
+
+		$options = array_merge($defaults, $options);
+
+		foreach ($options as $key => $value) {
+			if ($value === null) {
+				$options[$key] = $defaults[$key];
+			}
+		}
+
+		if (!$options['isThumbnail']) {
+			$options['path'] = str_replace(array('{size}', '{geometry}'), '', $options['path']);
 		}
 
 		$replacements = array(
-			'{ROOT}'	=> $rootDir,
+			'{ROOT}'	=> $options['rootDir'],
 			'{model}'	=> Inflector::underscore($model->alias),
 			'{field}'	=> $fieldName,
 			'{DS}'		=> DIRECTORY_SEPARATOR,
+			'//'		=> DIRECTORY_SEPARATOR,
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
 		);
+
 		$newPath = Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
-			$path
+			$options['path']
 		));
 
-		if ($newPath[0] !== DS) {
-			$newPath = $rootDir . $newPath;
+		if ($newPath[0] !== DIRECTORY_SEPARATOR) {
+			$newPath = $options['rootDir'] . $newPath;
+		}
+
+		$pastPath = $newPath;
+		while (true) {
+			$pastPath = $newPath;
+			$newPath = str_replace(array(
+				'//',
+				'\\',
+				DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR
+			), DIRECTORY_SEPARATOR, $newPath);
+			if ($pastPath == $newPath) {
+				break;
+			}
 		}
 
 		return $newPath;
 	}
 
+	function _pathThumbnail(&$model, $field, $params = array()) {
+		return str_replace(
+			array('{size}', '{geometry}'),
+			array($params['size'], $params['geometry']),
+			$params['thumbnailPath']
+		);
+	}
+
 	function _createThumbnails(&$model, $field, $path, $thumbnailPath) {
-		if (($this->_isImage($model, $this->runtime[$model->alias][$field]['type'])
-		|| $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']))
-		&& $this->settings[$model->alias][$field]['thumbnails']
-		&& !empty($this->settings[$model->alias][$field]['thumbsizes'])) {
-			// Create thumbnails
+		$isImage = $this->_isImage($model, $this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
+		$createThumbnails = $this->settings[$model->alias][$field]['thumbnails'];
+		$hasThumbnails = !empty($this->settings[$model->alias][$field]['thumbnailSizes']);
+
+		if (($isImage || $isMedia) && $createThumbnails && $hasThumbnails) {
 			$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
 
-			foreach ($this->settings[$model->alias][$field]['thumbsizes'] as $style => $geometry) {
-				if (!$this->$method($model, $field, $path, $style, $geometry, $thumbnailPath)) {
+			foreach ($this->settings[$model->alias][$field]['thumbnailSizes'] as $size => $geometry) {
+				$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
+					'geometry', 'size', 'thumbnailPath'
+				));
+				$this->_mkPath($thumbnailPathSized);
+				if (!$this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized)) {
 					$model->invalidate($field, 'resizeFail');
 				}
 			}
@@ -1077,38 +1160,71 @@ class UploadBehavior extends ModelBehavior {
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
-		$filePathDir = $this->settings[$model->alias][$field]['path'] . $data[$model->alias][$options['fields']['dir']] . DS;
+		$dir = $data[$model->alias][$options['fields']['dir']];
+		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
 	
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = $filePath;
 
-$mimeType = $this->_getMimeType($filePath);
+		$createThumbnails = $options['thumbnails'];
+		$hasThumbnails = !empty($options['thumbnailSizes']);
 
+		if (!$createThumbnails || !$hasThumbnails) {
+			return $this->__filesToRemove;
+		}
+
+		$DS = DIRECTORY_SEPARATOR;
+		$mimeType = $this->_getMimeType($filePath);
 		$isMedia = $this->_isMedia($model, $mimeType);
+		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
+		$thumbnailType = $options['thumbnailType'];
 
-		foreach ($options['thumbsizes'] as $style => $geometry) {
-
-			$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
-
+		if ($isImagickResize) {
 			if ($isMedia) {
-				$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
+				$thumbnailType = $options['mediaThumbnailType'];
+			}
 
-				if (!$thumbnailType || !is_string($thumbnailType)) {
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				try {
+					$srcFile = $filePath;
+					$image    = new imagick();
+					if ($isMedia) {
+						$image->setResolution(300, 300);
+						$srcFile = $srcFile.'[0]';
+					}
+
+					$image->readImage($srcFile);
+					$thumbnailType = $image->getImageFormat();
+				} catch (Exception $e) {
 					$thumbnailType = 'png';
 				}
 			}
-
-			$filePath = $this->settings[$model->alias][$field]['thumbnailPath'] . $data[$model->alias][$options['fields']['dir']] . DS . $style . '_';
-			if ($thumbnailType) {
-				$filename = $pathInfo['filename'].".{$thumbnailType}";
-			} else {
-				$filename = $pathInfo['basename'];
+		} else {
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				$thumbnailType = $pathInfo['extension'];
 			}
 
-			$this->__filesToRemove[$model->alias][] = $filePath.$filename;
+			if (!$thumbnailType) {
+				$thumbnailType = 'png';
+			}
+		}
 
+		foreach ($options['thumbnailSizes'] as $size => $geometry) {
+			$fileName = str_replace(
+				array('{size}', '{filename}'),
+				array($size, $pathInfo['filename']),
+				$options['thumbnailName']
+			);
+
+			$thumbnailPath = $options['thumbnailPath'];
+			$thumbnailPath = $this->_pathThumbnail($model, $field, compact(
+				'geometry', 'size', 'thumbnailPath'
+			));
+
+			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DS}{$fileName}.{$thumbnailType}";
+			$this->__filesToRemove[$model->alias][] = $thumbnailFilePath;
 		}
 		return $this->__filesToRemove;
 	}
