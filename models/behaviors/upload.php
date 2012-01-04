@@ -1153,7 +1153,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getMimeType($filePath) {
-		if (class_exists('finfo') {
+		if (class_exists('finfo')) {
 			$finfo = new finfo(FILEINFO_MIME_TYPE);
 			return $finfo->file($filePath);
 		} else {
