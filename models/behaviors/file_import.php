@@ -5,7 +5,7 @@ if (!class_exists('UploadBehavior')) {
 class FileImportBehavior extends UploadBehavior {
 
 	function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
-			return !rename($tmp, $filePath);
+		return !rename($tmp, $filePath);
 	}
+
 }
-?>
