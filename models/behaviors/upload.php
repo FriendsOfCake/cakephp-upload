@@ -820,7 +820,7 @@ class UploadBehavior extends ModelBehavior {
 	function _resizeImagick(&$model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
-		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
+		$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['thumbnailType'];
 
 		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
 		$image    = new imagick();
@@ -860,14 +860,42 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if ($isMedia) {
-			$thumbnailType = $this->settings[$model->alias][$field]['mediaThumbnailType'];
+			$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 		}
 
 		if (!$thumbnailType || !is_string($thumbnailType)) {
 			try {
-				$thumbnailType = $image->getImageFormat();
-			} catch (Exception $e) {
-				$thumbnailType = 'png';
+				$thumbnailType = $imageFormat = $image->getImageFormat();
+				// Fix file casing
+				while (true) {
+					$ext = false;
+					$pieces = explode('.', $srcFile);
+					if (count($pieces) > 1) {
+						$ext = end($pieces);
+					}
+
+					if (!$ext || !strlen($ext)) {
+						break;
+					}
+
+					$low = array(
+						'ext' => strtolower($ext),
+						'thumbnailType' => strtolower($thumbnailType),
+					);
+
+					if ($low['ext'] == 'jpg' && $low['thumbnailType'] == 'jpeg') {
+						$thumbnailType = $ext;
+						break;
+					}
+
+					if ($low['ext'] == $low['thumbnailType']) {
+						$thumbnailType = $ext;
+					}
+
+					break;
+				}
+			} catch (Exception $e) {$this->log($e->getMessage(), 'upload');
+				$thumbnailType = $imageFormat = 'png';
 			}
 		}
 
@@ -880,7 +908,7 @@ class UploadBehavior extends ModelBehavior {
 		$destFile = "{$thumbnailPath}{$fileName}.{$thumbnailType}";
 
 		$image->setImageCompressionQuality($this->settings[$model->alias][$field]['thumbnailQuality']);
-		$image->setImageFormat($thumbnailType);
+		$image->setImageFormat($imageFormat);
 		if (!$image->writeImage($destFile)) {
 			return false;
 		}
