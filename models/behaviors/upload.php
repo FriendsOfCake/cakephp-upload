@@ -1181,8 +1181,12 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	function _getMimeType($filePath) {
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		return $finfo->file($filePath);
+		if (class_exists('finfo')) {
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			return $finfo->file($filePath);
+		}
+
+		return mime_content_type($filePath);
 	}
 
 	function _prepareFilesForDeletion(&$model, $field, $data, $options) {
