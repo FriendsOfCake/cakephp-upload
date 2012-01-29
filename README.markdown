@@ -248,6 +248,36 @@ We would also need a similar relationship in our `Message` model:
 
 Please note that this is not the only way to represent file uploads, but it is documented here for reference.
 
+### Alternative Behaviors
+
+The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` behavior.
+
+#### FileImportBehavior
+
+`FileImportBehavior` may be used to import files directly from the disk. This is useful in importing from a directory already on the filesystem.
+
+#### FileGrabberBehavior
+
+`FileGrabberBehavior` may be used to retrieve files from a remote http structure.
+
+Attach on your model Upload.FileGrabber behaviors:
+
+	<?php
+	class User extends AppModel {
+		public $actsAs = array(
+			'Upload.FileGrabber' => array('gravatar')
+		);
+	}
+
+Add in your view the form:
+
+	<?php echo $this->Form->create('User', array('type' => 'file')); ?>
+		<?php echo $this->Form->input('User.username'); ?>
+		<?php echo $this->Form->input('User.gravatar'); ?>
+	<?php echo $this->Form->end(); ?>
+
+Please note: FileGrabber input field does not need to have `'type' => 'file'` set as an option.
+
 ## Behavior options:
 
 * `pathMethod`: The method to use for file paths. This is appended to the `path` option below
