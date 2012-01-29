@@ -10,7 +10,7 @@ class FileGrabberBehavior extends UploadBehavior {
     * @author	Mirko 'hiryu' Chialastri
     */ 
     function _grab(&$model, $field, $uri) {
-	debug('Grabbing file: '.$uri);
+	// debug('Grabbing file: '.$uri);
 	App::import('HttpSocket');
 
 	$socket = new HttpSocket();
@@ -50,8 +50,9 @@ class FileGrabberBehavior extends UploadBehavior {
        foreach($this->settings[$model->alias] as $field => $options) {
 	    $uri = $model->data[$model->alias][$field];
 	    if ($this->_grab($model, $field, $uri) !== TRUE) {
-		$this->invalidate($field, __d('photo_gallery', 'Photo not downloaded..', true));
-		return false;
+			// Invalidate $field			
+			$this->invalidate($field, __d('upload', 'File was not downloaded,.', true));  
+			return false;
 	    }
        }
 	return true;
