@@ -328,8 +328,10 @@ class UploadBehavior extends ModelBehavior {
 
 	function afterDelete(&$model) {
 		$result = array();
-		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = $this->unlink($file);
+		if(!empty($this->__filesToRemove[$model->alias])) {
+			foreach ($this->__filesToRemove[$model->alias] as $file) {
+				$result[] = $this->unlink($file);
+			}
 		}
 		return $result;
 	}
