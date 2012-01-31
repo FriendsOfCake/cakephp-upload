@@ -77,7 +77,6 @@ class ThumbnailHelper extends AppHelper {
         $_src = "{$basePath}/{$thumbnailSizeName}_{$thumbName}";
         return $this->output( $this->Html->image($_src, $htmlAttributes) );        
     }
-
 /**
  *  Get Upload's plugin path from Model
  *
@@ -86,7 +85,7 @@ class ThumbnailHelper extends AppHelper {
  *
  *  @param  string  Field name where get the thumb name (in format: Model.name)
  *  @param  array   Model row
- *  @return mixed   String path or null on fail
+ *  @return string
  */
     protected function _getPath($model, $data) {
         list($model, $field) = explode('.', $model);
@@ -105,7 +104,6 @@ class ThumbnailHelper extends AppHelper {
         
         $Upload = $Model->Behaviors->Upload;            
         $uploadSettings = $Upload->settings[$model][$field];
-<<<<<<< HEAD
         $uploadPath = $uploadSettings['path'];
         $uploadDir = $Upload->_path(&$Model, $field, $uploadPath);
         $uploadDirMethodField = $uploadSettings['fields']['dir'];
@@ -113,18 +111,10 @@ class ThumbnailHelper extends AppHelper {
         // Get methodDir from $data                  
         if (Set::check($data, "{$model}.{$uploadDirMethodField}")) {
             $tmp = Set::extract("/{$model}/{$uploadDirMethodField}", $data );
-=======
-        $uploadDir = $Upload->_path(&$Model, $field, $uploadSettings['path']);
-        $uploadDirPathMethodField = $uploadSettings['fields']['dir'];
-
-        if (Set::check($data, "{$model}.{$uploadDirPathMethodField}")) {
-            // Upload pathMethod is in $data
-            $tmp = Set::extract("/{$model}/{$uploadDirPathMethodField}", $data );
->>>>>>> 9c673ed... Refactory helper
             $uploadDirMethod = $tmp[0];
-        } elseif (Set::check($data, "{$model}.{$Model->primaryKey}") && $uploadSettings['pathMethod'] == '_getPathPrimaryKey') { 
+        } else {
+            $primaryKeyField = $Model->primaryKey;
             // Triying to get Upload's methodPath from Model id (if is set) and the methodPath is set
-<<<<<<< HEAD
             // to "primaryKey".
             if (Set::check($data, "{$model}.[$primaryKeyField}") && $uploadSettings['methodPath'] == 'primaryKey') {
                 $uploadDirMethod = $data[$model][$primaryKeyField];
@@ -135,20 +125,9 @@ class ThumbnailHelper extends AppHelper {
                 return null;
             }
         }
-=======
-            // to "primaryKey".            
-            $uploadDirMethod = $data[$model][$Model->primaryKey];
-        } else {
-            $errmsg = __d('upload', 'I could not find the thumb of %s. Be sure to enter the field in your table
-                      that is referenced UploadBehavior->settings[%s][%s][\'fields\'][\'dir\'] .', true);
-            $this->__error(sprintf($errmsg, $model, $model, $field));
-            return null;
-        }  
->>>>>>> 9c673ed... Refactory helper
         return str_replace(array('webroot', '\\'), array('', '/'), "{$uploadDir}{$uploadDirMethod}");
     }
     
-
     private function __error($errmsg) { 
         if ($this->settings['warnings']) {
             trigger_error($errmsg);
