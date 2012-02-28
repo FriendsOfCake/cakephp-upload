@@ -158,9 +158,104 @@ class User extends AppModel {
 
 h3. PDF Support
 
-It is now possible to generate a thumbnail for the first page of a PDF file. (Only works with 'imagick' thumbnailMethod.)
+It is now possible to generate a thumbnail for the first page of a PDF file. (Only works with 'imagick' @thumbnailMethod@.)
 
 Please read about the Behavior options for more details as to how to configure this plugin.
+
+h3. Using a Polymorphic Attachment Model for File Storage
+
+In some cases you will want to store multiple file uploads for a multiple models, but will not want to use multiple tables for some reason. For example, we might have a @Post@ model that can have many images for a gallery, and a @Message@ model that has many videos. In this case, we would use an @Attachment@ model:
+
+@Post hasMany Attachment@
+
+We could use the following database schema for the @Attachment@ model:
+
+<pre><code>CREATE table attachments (
+	`id` int(10) unsigned NOT NULL auto_increment,
+	`model` varchar(20) NOT NULL,
+	`foreign_key` int(11) NOT NULL,
+	`name` varchar(32) NOT NULL,
+	`attachment` varchar(255) NOT NULL,
+	`dir` varchar(255) DEFAULT NULL,
+	`type` varchar(255) DEFAULT NULL,
+	`size` int(11) DEFAULT 0,
+	`active` tinyint(1) DEFAULT 1,
+	PRIMARY KEY (`id`)
+);
+</code></pre>
+
+Our attachment records would thus be able to have a name and be activated/de-activated on the fly. The schema is simply an example, and such functionality would need to be implemented within your application.
+
+Once the @attachments@ table has been created, we would create the following model:
+
+<pre><code><?php
+class Attachment extends AppModel {
+	var $name = 'Attachment';
+	var $actsAs = array(
+		'Upload.Upload' => array(
+			'attachment' => array(
+				'thumbnailSizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80',
+				),
+			),
+		),
+	);
+
+	var $belongsTo = array(
+		'Post' => array(
+			'className' => 'Post',
+			'foreignKey' => 'foreign_key',
+		),
+		'Message' => array(
+			'className' => 'Post',
+			'foreignKey' => 'foreign_key',
+		),
+	);
+}
+?>
+</code></pre>
+
+We would also need to present a valid counter-relationship in the @Post@ model:
+
+<pre><code><?php
+class Post extends AppModel {
+	var $name = 'Post';
+	var $hasMany = array(
+		'Image' => array(
+			'className' => 'Attachment',
+			'foreignKey' => 'foreign_key',
+			'conditions' => array(
+				'Attachment.model' => 'Post',
+			),
+		),
+	);
+}
+?>
+</code></pre>
+
+The key thing to note here is the @Post@ model has some conditions on the relationship to the @Attachment@ model, where the @Attachment.model@ has to be @Post@. Remember to set the @model@ field to @Post@, or whatever model it is you'd like to attach it to, otherwise you may get incorrect relationship results when performing find queries.
+
+We would also need a similar relationship in our @Message@ model:
+
+<pre><code><?php
+class Message extends AppModel {
+	var $name = 'Message';
+	var $hasMany = array(
+		'Video' => array(
+			'className' => 'Attachment',
+			'foreignKey' => 'foreign_key',
+			'conditions' => array(
+				'Attachment.model' => 'Message',
+			),
+		),
+	);
+}
+?>
+</code></pre>
+
+Please note that this is not the only way to represent file uploads, but it is documented here for reference.
 
 h2. Behavior options:
 
