@@ -328,7 +328,7 @@ class UploadBehavior extends ModelBehavior {
 
 	function afterDelete(&$model) {
 		$result = array();
-		if(!empty($this->__filesToRemove[$model->alias])) {
+		if (!empty($this->__filesToRemove[$model->alias])) {
 			foreach ($this->__filesToRemove[$model->alias] as $file) {
 				$result[] = $this->unlink($file);
 			}
@@ -1198,7 +1198,7 @@ class UploadBehavior extends ModelBehavior {
 		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
-	
+
 		$this->__filesToRemove[$model->alias] = array();
 		$this->__filesToRemove[$model->alias][] = $filePath;
 
