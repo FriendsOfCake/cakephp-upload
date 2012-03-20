@@ -434,3 +434,27 @@ Check that the file is below the maximum width requirement (checked in pixels)
 		'message' => 'File is above the maximum width'
 	)
 );</code></pre>
+
+
+
+
+h2. Upload Behaviors
+h4. FileGrabber - "Upload file as remote url"
+
+Attach on your model Upload.FileGrabber behaviors:
+<pre><code>class User extends AppModel {
+   var $actsAs = array(
+           'Upload.FileGrabber' => array(
+              'gravatar' => array(
+		UPLOAD_PLUGIN_OPTIONS_FOR_THIS_FIELD
+              )
+   );</code></pre>
+
+Add in your view the form:
+<pre>
+ <code><?php echo $this->Form->create('User', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.username'); ?>
+	<?php echo $this->Form->input('User.gravatar'); ?>
+<?php echo $this->Form->end(); ?></code></pre>
+
+N.B: FileGrabber input field can be type="file" or not.
