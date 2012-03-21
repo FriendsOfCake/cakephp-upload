@@ -439,6 +439,7 @@ Check that the file is below the maximum width requirement (checked in pixels)
 
 
 h2. Upload Behaviors
+
 h4. FileGrabber - "Upload file as remote url"
 
 Attach on your model Upload.FileGrabber behaviors:
