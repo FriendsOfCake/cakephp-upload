@@ -2,14 +2,6 @@ h1. Upload Plugin 2.0
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as "MeioUpload":http://github.com/jrbasso/MeioUpload , "UploadPack":http://github.com/szajbus/uploadpack and "PHP documentation":http://php.net/manual/en/features.file-upload.php.
 
-h2. A Note on Pull Requests
-
-I will not accept any feature pull requests. They are sometimes of dubious quality and ensuring everything useful gets into the core is difficult at best. Please create a ticket for the functionality you desire and I will either extend this plugin or build it into the core.
-
-If it is a bug-fix, feel free to issue a pull request, but be aware that reviewing your submission will take time and it may not be accepted as-is.
-
-That said, I appreciate any and all feedback, especially on untested code such as this :)
-
 h2. Requirements
 
 * CakePHP 2.0
@@ -18,6 +10,8 @@ h2. Requirements
 * Patience
 
 h2. Installation
+
+For 1.3 support, please see the "1.3 branch":https://github.com/josegonzalez/upload/tree/1.3.
 
 _[Manual]_
 
