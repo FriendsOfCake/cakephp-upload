@@ -84,7 +84,7 @@ class UploadBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	public function setup(&$model, $config = array()) {
+	public function setup(Model $model, $config = array()) {
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
@@ -204,7 +204,7 @@ class UploadBehavior extends ModelBehavior {
  * @param AppModel $model Model instance
  * @return boolean
  */
-	public function beforeSave(&$model) {
+	public function beforeSave(Model $model) {
 		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
@@ -259,7 +259,7 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-	public function afterSave(&$model, $created) {
+	public function afterSave(Model $model, $created) {
 		$temp = array($model->alias => array());
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
@@ -311,7 +311,7 @@ class UploadBehavior extends ModelBehavior {
 		return @unlink($file);
 	}
 
-	public function beforeDelete(&$model, $cascade) {
+	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
 			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
 			'contain' => false,
@@ -324,7 +324,7 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-	public function afterDelete(&$model) {
+	public function afterDelete(Model $model) {
 		$result = array();
 		if (!empty($this->__filesToRemove[$model->alias])) {
 			foreach ($this->__filesToRemove[$model->alias] as $file) {
