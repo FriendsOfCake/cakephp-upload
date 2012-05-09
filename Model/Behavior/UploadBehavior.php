@@ -1245,8 +1245,8 @@ class UploadBehavior extends ModelBehavior {
 
 		foreach ($options['thumbnailSizes'] as $size => $geometry) {
 			$fileName = str_replace(
-				array('{size}', '{filename}'),
-				array($size, $pathInfo['filename']),
+				array('{size}', '{filename}', '{primaryKey}'),
+				array($size, $pathInfo['filename'], $model->id),
 				$options['thumbnailName']
 			);
 
