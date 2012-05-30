@@ -1123,9 +1123,18 @@ class UploadBehavior extends ModelBehavior {
 			$options['path']
 		));
 
-		if ($newPath[0] !== DIRECTORY_SEPARATOR) {
-			$newPath = $options['rootDir'] . $newPath;
+		//Root directory is a letter in windows, not a directory slash
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			if (!preg_match('/[a-zA-Z]/', $newPath[0])) {
+				$newPath = $options['rootDir'] . $newPath;
+			}
+				
+		} else {
+			if ($newPath[0] !== DIRECTORY_SEPARATOR) {
+				$newPath = $options['rootDir'] . $newPath;
+			}
 		}
+		
 
 		$pastPath = $newPath;
 		while (true) {
@@ -1139,7 +1148,6 @@ class UploadBehavior extends ModelBehavior {
 				break;
 			}
 		}
-
 		return $newPath;
 	}
 
@@ -1182,7 +1190,7 @@ class UploadBehavior extends ModelBehavior {
 
 	public function _getMimeType($filePath) {
 		if (class_exists('finfo')) {
-			$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
 			return $finfo->file($filePath);
 		}
 
