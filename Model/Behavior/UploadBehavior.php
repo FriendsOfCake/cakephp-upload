@@ -1086,7 +1086,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Returns a path based on settings configuration
  *
- * @return void
+ * @return string
  **/
 	public function _path(&$model, $fieldName, $options = array()) {
 		$defaults = array(
@@ -1123,7 +1123,11 @@ class UploadBehavior extends ModelBehavior {
 			$options['path']
 		));
 
-		if ($newPath[0] !== DIRECTORY_SEPARATOR) {
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			if (!preg_match('/^([a-zA-Z]:\\|\\\\)/', $newPath)) {
+				$newPath = $options['rootDir'] . $newPath;
+			}
+		} elseif ($newPath[0] !== DIRECTORY_SEPARATOR) {
 			$newPath = $options['rootDir'] . $newPath;
 		}
 
