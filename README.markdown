@@ -661,7 +661,7 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 
 ## License
 
-Copyright (c) 2010-2011 Jose Diaz-Gonzalez
+Copyright (c) 2010-2012 Jose Diaz-Gonzalez
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
