@@ -10,16 +10,16 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 
 * CakePHP 2.x
 * Imagick/GD PHP Extension (for Thumbnail Creation)
-* PHP5 (Not really, but I'm more likely to be able to fix a PHP5 issue than a PHP4 issue)
+* PHP5
 * Patience
 
 ## Installation
 
-For 1.3 support, please see the [1.3 branch](https://github.com/josegonzalez/upload/tree/1.3).
+For CakePHP 1.3 support, please see the [1.3 branch](https://github.com/josegonzalez/upload/tree/1.3).
 
 _[Manual]_
 
-* Download this: [http://github.com/josegonzalez/upload/zipball/2.0](http://github.com/josegonzalez/upload/zipball/2.0)
+* Download this: [http://github.com/josegonzalez/upload/zipball/master](http://github.com/josegonzalez/upload/zipball/master)
 * Unzip that download.
 * Copy the resulting folder to `app/Plugin`
 * Rename the folder you just copied to `Upload`
@@ -28,7 +28,7 @@ _[GIT Submodule]_
 
 In your app directory type:
 
-	git submodule add -b 2.0 git://github.com/josegonzalez/upload.git Plugin/Upload
+	git submodule add -b master git://github.com/josegonzalez/upload.git Plugin/Upload
 	git submodule init
 	git submodule update
 
@@ -36,7 +36,7 @@ _[GIT Clone]_
 
 In your `Plugin` directory type:
 
-	git clone -b 2.0 git://github.com/josegonzalez/upload.git Upload
+	git clone -b master git://github.com/josegonzalez/upload.git Upload
 
 ### Enable plugin
 
