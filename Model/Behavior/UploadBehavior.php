@@ -1124,7 +1124,7 @@ class UploadBehavior extends ModelBehavior {
 		));
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			if (!preg_match('/^([a-zA-Z]:\\|\\\\)/', $newPath)) {
+			if (!preg_match('/^([a-zA-Z]:\\\|\\\\)/', $newPath)) {
 				$newPath = $options['rootDir'] . $newPath;
 			}
 		} elseif ($newPath[0] !== DIRECTORY_SEPARATOR) {
