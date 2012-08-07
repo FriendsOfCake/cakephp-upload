@@ -686,7 +686,8 @@ class UploadBehavior extends ModelBehavior {
 		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
 		$pathInfo = $this->_pathinfo($check[$field]['name']);
 
-		return in_array($pathInfo['extension'], $extensions);
+		$extensions = array_map('strtolower', $extensions);
+		return in_array(strtolower($pathInfo['extension']), $extensions);
 	}
 
 /**
