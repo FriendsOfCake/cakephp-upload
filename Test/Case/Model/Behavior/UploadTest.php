@@ -215,6 +215,15 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertInternalType('array', $result);
 	}
 
+	/**
+	 * @expectedException UploadException
+	 */
+	function testMoveFileExecption() {
+		$this->mockUpload(array('handleUploadedFile'));
+		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(false));
+		$result = $this->TestUpload->save($this->data['test_ok']);
+	}
+
 	function testIsUnderPhpSizeLimit() {
 		$this->TestUpload->validate = array(
 			'photo' => array(
