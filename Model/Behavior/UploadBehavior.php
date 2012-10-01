@@ -18,6 +18,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Folder', 'Utility');
+App::uses('UploadException', 'Upload.Lib/Error/Exception');
 class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
@@ -278,7 +279,8 @@ class UploadBehavior extends ModelBehavior {
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
-				$model->invalidate($field, 'moveUploadedFile');
+				$model->invalidate($field, 'Unable to move the uploaded file to '.$filePath);
+				throw new UploadException('Unable to upload file');
 			}
 
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
@@ -304,7 +306,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
-		return !is_uploaded_file($tmp) || !@move_uploaded_file($tmp, $filePath);
+		return is_uploaded_file($tmp) && @move_uploaded_file($tmp, $filePath);
 	}
 
 	public function unlink($file) {
