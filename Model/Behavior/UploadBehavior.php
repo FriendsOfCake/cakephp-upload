@@ -1172,7 +1172,17 @@ class UploadBehavior extends ModelBehavior {
 					'geometry', 'size', 'thumbnailPath'
 				));
 				$this->_mkPath($thumbnailPathSized);
-				if (!$this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized)) {
+
+				$valid = false;
+				if (method_exists($model, $method)) {
+					$valid = $model->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+				} elseif (method_exists($this, $method)) {
+					$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+				} else {
+					throw new Exception("Invalid thumbnailMethod %s", $method);
+				}
+
+				if (!$valid) {
 					$model->invalidate($field, 'resizeFail');
 				}
 			}
