@@ -1203,7 +1203,18 @@ class UploadBehavior extends ModelBehavior {
 			return $finfo->file($filePath);
 		}
 
-		return mime_content_type($filePath);
+		if (function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
+			$mimetype = image_type_to_mime_type(exif_imagetype($filePath));
+			if ($mimetype !== false) {
+				return $mimetype;
+			}
+		}
+
+		if (function_exists('mime_content_type')) {
+			return mime_content_type($filePath);
+		}
+
+		return 'application/octet-stream';
 	}
 
 	public function _prepareFilesForDeletion(&$model, $field, $data, $options) {
