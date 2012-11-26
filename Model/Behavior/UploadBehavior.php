@@ -1063,19 +1063,11 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function _getPathRandom(&$model, $field, $path) {
-		$endPath = null;
-		$decrement = 0;
-		$string = crc32($field . time());
-
-		for ($i = 0; $i < 3; $i++) {
-			$decrement = $decrement - 2;
-			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
-		}
-
-		$destDir = $path . $endPath;
-		$this->_mkPath($destDir);
-
-		return substr($endPath, 0, -1);
+		$string = md5($field . time());
+	        $destDir = $model->id . DIRECTORY_SEPARATOR . substr($string, 0, 10) . DIRECTORY_SEPARATOR;
+	        $this->_mkPath($path . $destDir);
+	
+	        return substr($destDir, 0, -1);
 	}
 
 	public function _mkPath($destDir) {
