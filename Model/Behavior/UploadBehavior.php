@@ -840,11 +840,11 @@ class UploadBehavior extends ModelBehavior {
 		if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
 			// resize with banding
 			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
-			$image->thumbnailImage($destW, $destH);
+			$image->cropThumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
 			// cropped resize (best fit)
 			list($destW, $destH) = explode('x', $geometry);
-			$image->cropThumbnailImage($destW, $destH);
+			$image->thumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 			// calculate heigh according to aspect ratio
 			$image->thumbnailImage((int)$geometry-1, 0);
