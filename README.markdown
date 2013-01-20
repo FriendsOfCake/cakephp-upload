@@ -39,6 +39,23 @@ In your `Plugin` directory type:
 
 	git clone -b master git://github.com/josegonzalez/upload.git Upload
 
+### Imagick Support
+
+To enable Imagick support, you need to have imagick installed:
+
+    # Debian systems
+    sudo apt-get install php-imagick
+
+    # OS X Homebrew
+    brew tap homebrew/dupes
+    brew tap josegonzalez/homebrew-php
+    brew install php54-imagick
+
+    # From pecl
+    pecl install imagick
+
+If you cannot install imagick, please do not use imagick, and instead configure the plugin with `'thumbnailMethod'	=> 'php'` in your setup options.
+
 ### Enable plugin
 
 In 2.0 you need to enable the plugin your `app/Config/bootstrap.php` file:
