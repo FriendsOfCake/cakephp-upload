@@ -1065,7 +1065,7 @@ class UploadBehavior extends ModelBehavior {
 	public function _getPathRandom(&$model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
-		$string = crc32($field . time());
+		$string = crc32($field . time() . $model->id);
 
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
