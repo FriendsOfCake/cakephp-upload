@@ -1260,7 +1260,10 @@ class UploadBehavior extends ModelBehavior {
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
 
-		$this->__filesToRemove[$model->alias] = array();
+		if (!isset($this->__filesToRemove[$model->alias])) {
+			$this->__filesToRemove[$model->alias] = array();
+		}
+
 		$this->__filesToRemove[$model->alias][] = $filePath;
 
 		$createThumbnails = $options['thumbnails'];
