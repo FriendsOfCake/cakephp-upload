@@ -1128,8 +1128,11 @@ class UploadBehavior extends ModelBehavior {
 
 		$replacements = array(
 			'{ROOT}'	=> $options['rootDir'],
+			'{primaryKey}'	=> $model->id,
 			'{model}'	=> Inflector::underscore($model->alias),
 			'{field}'	=> $fieldName,
+			'{time}'	=> time(),
+			'{microtime}'	=> microtime(),
 			'{DS}'		=> DIRECTORY_SEPARATOR,
 			'//'		=> DIRECTORY_SEPARATOR,
 			'/'			=> DIRECTORY_SEPARATOR,
@@ -1289,8 +1292,8 @@ class UploadBehavior extends ModelBehavior {
 
 		foreach ($options['thumbnailSizes'] as $size => $geometry) {
 			$fileName = str_replace(
-				array('{size}', '{filename}', '{primaryKey}'),
-				array($size, $pathInfo['filename'], $model->id),
+				array('{size}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
+				array($size, $pathInfo['filename'], $model->id, time(), microtime()),
 				$options['thumbnailName']
 			);
 
