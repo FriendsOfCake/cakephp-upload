@@ -422,6 +422,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isSuccessfulWrite
 
 Check that the file was successfully written to the server
@@ -441,6 +443,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File was unsuccessfully written to the server'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### noPhpExtensionErrors
 
@@ -462,6 +466,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isValidMimeType
 
 Check that the file is of a valid mimetype
@@ -481,6 +487,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File is of an invalid mimetype'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### isWritable
 
@@ -502,6 +510,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isValidDir
 
 Check that the upload directory exists
@@ -521,6 +531,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File upload directory does not exist'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### isBelowMaxSize
 
@@ -542,6 +554,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isAboveMinSize
 
 Check that the file is above the minimum file upload size (checked in bytes)
@@ -561,6 +575,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File is below the mimimum filesize'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### isValidExtension
 
@@ -582,6 +598,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isAboveMinHeight
 
 Check that the file is above the minimum height requirement (checked in pixels)
@@ -601,6 +619,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File is below the minimum height'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### isBelowMaxHeight
 
@@ -622,6 +642,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isAboveMinWidth
 
 Check that the file is above the minimum width requirement (checked in pixels)
@@ -642,6 +664,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 		)
 	);
 
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
+
 #### isBelowMaxWidth
 
 Check that the file is below the maximum width requirement (checked in pixels)
@@ -660,6 +684,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 			'message' => 'File is above the maximum width'
 		)
 	);
+
+In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 ## License
 
