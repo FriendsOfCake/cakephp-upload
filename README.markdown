@@ -236,9 +236,10 @@ Please note that this is not the only way to represent file uploads, but it is d
 * `pathMethod`: The method to use for file paths. This is appended to the `path` option below
   * Default: (string) `primaryKey`
   * Options:
-    * flat: Does not create a path for each record. Files are moved to the value of the 'path' option
-    * primaryKey: Path based upon the record's primaryKey is generated. Persists across a record
-    * random: Random path is generated for each file upload. Does not persist across a record.
+    * flat: Does not create a path for each record. Files are moved to the value of the 'path' option.
+    * primaryKey: Path based upon the record's primaryKey is generated. Persists across a record update.
+    * random: Random path is generated for each file upload. Does not persist across a record update.
+    * randomCombined: Random path - with model id - is generated for each file upload. Does not persist across a record update.
 * `path`: A path relative to the `APP_PATH`. Should end in `{DS}`
   * Default: (string) `'{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}'`
   * Tokens:
@@ -312,7 +313,7 @@ Please note that this is not the only way to represent file uploads, but it is d
     * Any valid image type
 * `saveDir`: Can be used to turn off saving the directory
   * Default: (boolean) `true`
-  * Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` than `primaryKey`, but keep this in mind when fiddling with this option
+  * Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` and `randomCombined` than `primaryKey`, but keep this in mind when fiddling with this option
 
 ## Thumbnail Sizes and Styles
 

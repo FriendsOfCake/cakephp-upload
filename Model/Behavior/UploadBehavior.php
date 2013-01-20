@@ -62,7 +62,7 @@ class UploadBehavior extends ModelBehavior {
 		'application/postscript',
 	);
 
-	protected $_pathMethods = array('flat', 'primaryKey', 'random');
+	protected $_pathMethods = array('flat', 'primaryKey', 'random', 'randomCombined');
 
 	protected $_resizeMethods = array('imagick', 'php');
 
@@ -1066,6 +1066,22 @@ class UploadBehavior extends ModelBehavior {
 		$endPath = null;
 		$decrement = 0;
 		$string = crc32($field . time());
+
+		for ($i = 0; $i < 3; $i++) {
+			$decrement = $decrement - 2;
+			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
+		}
+
+		$destDir = $path . $endPath;
+		$this->_mkPath($destDir);
+
+		return substr($endPath, 0, -1);
+	}
+
+	public function _getPathRandomCombined(&$model, $field, $path) {
+		$endPath = null;
+		$decrement = 0;
+		$string = crc32($field . time() . $model->id);
 
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
