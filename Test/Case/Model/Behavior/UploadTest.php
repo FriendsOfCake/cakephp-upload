@@ -71,7 +71,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->TestUpload->Behaviors->set('Upload', $this->MockUpload);
 	}
 
-	function endTest() {
+	function endTest($method) {
 		$folder = new Folder(TMP);
 		$folder->delete(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload');
 		$folder->delete(ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'tests' . DS . 'path');
