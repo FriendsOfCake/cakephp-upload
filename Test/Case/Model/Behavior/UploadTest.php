@@ -3,8 +3,8 @@ App::uses('Upload.Upload', 'Model/Behavior');
 App::uses('Folder', 'Utility');
 
 class TestUpload extends CakeTestModel {
-	var $useTable = 'uploads';
-	var $actsAs = array(
+	public $useTable = 'uploads';
+	public $actsAs = array(
 		'Upload.Upload' => array(
 			'photo' => array(
 				'thumbnailMethod' => '_bad_thumbnail_method_',
@@ -14,17 +14,39 @@ class TestUpload extends CakeTestModel {
 	);
 }
 
+class TestUploadTwo extends CakeTestModel {
+	public $useTable = 'uploads';
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'photo' => array(
+				'fields' => array(
+					'type' => 'type',
+					'dir' => 'dir'
+				),
+				'mimetypes' => array(
+					'image/png',
+					'image/jpeg',
+					'image/gif'
+				),
+				'thumbnailSizes' => array(
+					'thumb' => '80h'
+				)
+			)
+		)
+	);
+}
 
 class UploadBehaviorTest extends CakeTestCase {
 
-	var $fixtures = array('plugin.upload.upload');
-	var $TestUpload = null;
-	var $MockUpload = null;
-	var $data = array();
-	var $currentTestMethod;
+	public $fixtures = array('plugin.upload.upload');
+	public $TestUpload = null;
+	public $MockUpload = null;
+	public $data = array();
+	public $currentTestMethod;
 
 	function startTest($method) {
 		$this->TestUpload = ClassRegistry::init('TestUpload');
+		$this->TestUploadTwo = ClassRegistry::init('TestUploadTwo');
 		$this->currentTestMethod = $method;
 		$this->data['test_ok'] = array(
 			'photo' => array(
@@ -58,17 +80,22 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 	}
+
 	function mockUpload($methods = array()) {
 		if (!is_array($methods)) {
 			$methods = (array) $methods;
 		}
 		if (empty($methods)) {
-			$methods = array('handleUploadedFile', 'unlink', '_getMimeType');
+			$methods = array('handleUploadedFile', 'unlink', '_getMimeType', '_createThumbnails');
 		}
 		$this->MockUpload = $this->getMock('UploadBehavior', $methods);
 
+
 		$this->MockUpload->setup($this->TestUpload, $this->TestUpload->actsAs['Upload.Upload']);
 		$this->TestUpload->Behaviors->set('Upload', $this->MockUpload);
+
+		$this->MockUpload->setup($this->TestUploadTwo, $this->TestUploadTwo->actsAs['Upload.Upload']);
+		$this->TestUploadTwo->Behaviors->set('Upload', $this->MockUpload);
 	}
 
 	function endTest($method) {
@@ -77,6 +104,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$folder->delete(ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'tests' . DS . 'path');
 		Classregistry::flush();
 		unset($this->TestUpload);
+		unset($this->TestUploadTwo);
 	}
 
 	function testSetup() {
@@ -141,6 +169,59 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 
 		$this->assertEqual($expectedRecord, $newRecord);
+	}
+
+	/**
+	 * Tests Upload::save creates a new Upload record including
+	 * an upload of an PNG image file using the Upload.Upload behavior
+	 * with the default path and pathMethod (primaryKey)
+	 */
+	public function testSaveSuccessPngDefaultPathAndPathMethod() {
+		$this->mockUpload();
+		$next_id = (1+$this->TestUploadTwo->field('id', array(), array('TestUploadTwo.id' => 'DESC')));
+		$destination_dir = APP . 'webroot' . DS . 'files' . DS . 'test_upload_two' . DS . 'photo' . DS . $next_id . DS;
+
+		$Upload = array(
+			'TestUploadTwo' => array(
+				'photo' => array(
+					'name' => 'image-png.png',
+					'type' => 'image/png',
+					'tmp_name' => 'image-png-tmp.png',
+					'error' => UPLOAD_ERR_OK,
+					'size' => 8123,
+				)
+			)
+		);
+
+		$this->MockUpload->expects($this->never())
+			->method('unlink');
+
+		$this->MockUpload->expects($this->once())
+			->method('handleUploadedFile')
+			->with(
+					$this->equalTo('TestUploadTwo'),
+					$this->equalTo('photo'),
+					$this->equalTo('image-png-tmp.png'),
+					$this->equalTo($destination_dir . 'image-png.png')
+			)
+			->will($this->returnValue(true));
+
+		$this->MockUpload->expects($this->once())
+			->method('_createThumbnails')
+			->with(
+					$this->isInstanceOf('TestUploadTwo'),
+					$this->equalTo('photo'),
+					$this->equalTo($destination_dir),
+					$this->equalTo($destination_dir)
+			)
+			->will($this->returnValue(true));
+
+		$this->assertTrue(false !== $this->TestUploadTwo->save($Upload));
+		$this->assertSame(array(), array_keys($this->TestUploadTwo->validationErrors));
+
+		$this->assertSame('image-png.png', $this->TestUploadTwo->field('photo', array('TestUploadTwo.id' => $next_id)));
+		$this->assertSame('image/png', $this->TestUploadTwo->field('type', array('TestUploadTwo.id' => $next_id)));
+		$this->assertSame((string)$next_id, $this->TestUploadTwo->field('dir', array('TestUploadTwo.id' => $next_id)));
 	}
 
 	function testDeleteOnUpdate() {
