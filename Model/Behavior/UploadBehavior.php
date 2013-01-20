@@ -840,7 +840,12 @@ class UploadBehavior extends ModelBehavior {
 		if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
 			// resize with banding
 			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
-			$image->thumbnailImage($destW, $destH);
+			$image->thumbnailImage($destW, $destH, true);
+			$imageGeometry = $image->getImageGeometry();
+			$x = ($destW - $imageGeometry['width']) / 2;
+			$y = ($destH - $imageGeometry['height']) / 2;
+			$image->setGravity(Imagick::GRAVITY_CENTER);
+			$image->extentImage($destW, $destH, $x, $y);
 		} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
 			// cropped resize (best fit)
 			list($destW, $destH) = explode('x', $geometry);
