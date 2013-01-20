@@ -103,7 +103,7 @@ class UploadBehavior extends ModelBehavior {
  * @return void
  * @author Jose Diaz-Gonzalez
  */
-	public function _setupField(&$model, $field, $options) {
+	public function _setupField(Model $model, $field, $options) {
 		if (is_int($field)) {
 			$field = $options;
 			$options = array();
@@ -178,7 +178,7 @@ class UploadBehavior extends ModelBehavior {
  *   Unused if $one is an associative array, otherwise serves as the values to $one's keys.
  * @return void
  */
-	public function uploadSettings(&$model, $field, $one, $two = null) {
+	public function uploadSettings(Model $model, $field, $one, $two = null) {
 		if (empty($this->settings[$model->alias][$field])) {
 			$this->_setupField($model, $field, array());
 		}
@@ -346,7 +346,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Always true
  * @access public
  */
-	public function moveUploadedFile(&$model) {
+	public function moveUploadedFile(Model $model) {
 		return true;
 	}
 /**
@@ -358,7 +358,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isUnderPhpSizeLimit(&$model, $check) {
+	public function isUnderPhpSizeLimit(Model $model, $check) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -377,7 +377,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isUnderFormSizeLimit(&$model, $check) {
+	public function isUnderFormSizeLimit(Model $model, $check) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -395,7 +395,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isCompletedUpload(&$model, $check) {
+	public function isCompletedUpload(Model $model, $check) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -413,7 +413,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isFileUpload(&$model, $check) {
+	public function isFileUpload(Model $model, $check) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -431,7 +431,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function tempDirExists(&$model, $check, $requireUpload = true) {
+	public function tempDirExists(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -454,7 +454,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isSuccessfulWrite(&$model, $check, $requireUpload = true) {
+	public function isSuccessfulWrite(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -477,7 +477,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function noPhpExtensionErrors(&$model, $check, $requireUpload = true) {
+	public function noPhpExtensionErrors(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -501,7 +501,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isValidMimeType(&$model, $check, $mimetypes = array(), $requireUpload = true) {
+	public function isValidMimeType(Model $model, $check, $mimetypes = array(), $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -545,7 +545,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isWritable(&$model, $check, $requireUpload = true) {
+	public function isWritable(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -569,7 +569,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isValidDir(&$model, $check, $requireUpload = true) {
+	public function isValidDir(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -593,7 +593,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isBelowMaxSize(&$model, $check, $size = null, $requireUpload = true) {
+	public function isBelowMaxSize(Model $model, $check, $size = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -624,7 +624,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isAboveMinSize(&$model, $check, $size = null, $requireUpload = true) {
+	public function isAboveMinSize(Model $model, $check, $size = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -655,7 +655,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isValidExtension(&$model, $check, $extensions = array(), $requireUpload = true) {
+	public function isValidExtension(Model $model, $check, $extensions = array(), $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -701,7 +701,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isAboveMinHeight(&$model, $check, $height = null, $requireUpload = true) {
+	public function isAboveMinHeight(Model $model, $check, $height = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -733,7 +733,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isBelowMaxHeight(&$model, $check, $height = null, $requireUpload = true) {
+	public function isBelowMaxHeight(Model $model, $check, $height = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -765,7 +765,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isAboveMinWidth(&$model, $check, $width = null, $requireUpload = true) {
+	public function isAboveMinWidth(Model $model, $check, $width = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -797,7 +797,7 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean Success
  * @access public
  */
-	public function isBelowMaxWidth(&$model, $check, $width = null, $requireUpload = true) {
+	public function isBelowMaxWidth(Model $model, $check, $width = null, $requireUpload = true) {
 		$field = $this->_getField($check);
 
 		if (!empty($check[$field]['remove'])) {
@@ -820,7 +820,7 @@ class UploadBehavior extends ModelBehavior {
 		return $width > 0 && $imgWidth <= $width;
 	}
 
-	public function _resizeImagick(&$model, $field, $path, $size, $geometry, $thumbnailPath) {
+	public function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
 		$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['thumbnailType'];
@@ -921,7 +921,7 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-	public function _resizePhp(&$model, $field, $path, $size, $geometry, $thumbnailPath) {
+	public function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile  = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
 		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
@@ -1050,7 +1050,7 @@ class UploadBehavior extends ModelBehavior {
 		return false;
 	}
 
-	public function _getPath(&$model, $field) {
+	public function _getPath(Model $model, $field) {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
 
@@ -1061,19 +1061,19 @@ class UploadBehavior extends ModelBehavior {
 		return $this->_getPathPrimaryKey($model, $field, $path);
 	}
 
-	public function _getPathFlat(&$model, $field, $path) {
+	public function _getPathFlat(Model $model, $field, $path) {
 		$destDir = $path;
 		$this->_mkPath($destDir);
 		return '';
 	}
 
-	public function _getPathPrimaryKey(&$model, $field, $path) {
+	public function _getPathPrimaryKey(Model $model, $field, $path) {
 		$destDir = $path . $model->id . DIRECTORY_SEPARATOR;
 		$this->_mkPath($destDir);
 		return $model->id;
 	}
 
-	public function _getPathRandom(&$model, $field, $path) {
+	public function _getPathRandom(Model $model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
 		$string = crc32($field . microtime());
@@ -1089,7 +1089,7 @@ class UploadBehavior extends ModelBehavior {
 		return substr($endPath, 0, -1);
 	}
 
-	public function _getPathRandomCombined(&$model, $field, $path) {
+	public function _getPathRandomCombined(Model $model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
 		$string = crc32($field . microtime() . $model->id);
@@ -1118,7 +1118,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @return string
  **/
-	public function _path(&$model, $fieldName, $options = array()) {
+	public function _path(Model $model, $fieldName, $options = array()) {
 		$defaults = array(
 			'isThumbnail' => true,
 			'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
@@ -1180,7 +1180,7 @@ class UploadBehavior extends ModelBehavior {
 		return $newPath;
 	}
 
-	public function _pathThumbnail(&$model, $field, $params = array()) {
+	public function _pathThumbnail(Model $model, $field, $params = array()) {
 		return str_replace(
 			array('{size}', '{geometry}'),
 			array($params['size'], $params['geometry']),
@@ -1188,7 +1188,7 @@ class UploadBehavior extends ModelBehavior {
 		);
 	}
 
-	public function _createThumbnails(&$model, $field, $path, $thumbnailPath) {
+	public function _createThumbnails(Model $model, $field, $path, $thumbnailPath) {
 		$isImage = $this->_isImage($model, $this->runtime[$model->alias][$field]['type']);
 		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
 		$createThumbnails = $this->settings[$model->alias][$field]['thumbnails'];
@@ -1219,11 +1219,11 @@ class UploadBehavior extends ModelBehavior {
 		}
 	}
 
-	public function _isImage(&$model, $mimetype) {
+	public function _isImage(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
-	public function _isMedia(&$model, $mimetype) {
+	public function _isMedia(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
@@ -1247,7 +1247,7 @@ class UploadBehavior extends ModelBehavior {
 		return 'application/octet-stream';
 	}
 
-	public function _prepareFilesForDeletion(&$model, $field, $data, $options) {
+	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
 		$dir = $data[$model->alias][$options['fields']['dir']];
