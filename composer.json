@@ -1,0 +1,11 @@
+{
+  "name": "josegonzalez/upload",
+  "type": "cakephp-plugin",
+        "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
+  "homepage": "http://github.com/josegonzalez/upload",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "*"
+  }
+}
