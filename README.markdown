@@ -299,7 +299,7 @@ Please note that this is not the only way to represent file uploads, but it is d
   * Default: (string) `imagick`
   * Options:
     * imagick: Uses the PHP `imagick` extension to generate thumbnails
-    * php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails
+    * php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails. Does not support BMP images.
 * `thumbnailName`: Naming style for a thumbnail
   * Default: `NULL`
   * Note: The tokens `{size}` and `{filename}` are both valid for naming and will be auto-replaced with the actual terms.
@@ -317,7 +317,7 @@ Please note that this is not the only way to represent file uploads, but it is d
 * `thumbnailPrefixStyle`: Whether to prefix or suffix the style onto thumbnails
   * Default: (boolean) `true` prefix the thumbnail
   * Note that this overrides `thumbnailName` when `thumbnailName` is not specified in your config
-* `thumbnailQuality`: Quality of thumbnails that will be generated, on a scale of 0-100
+* `thumbnailQuality`: Quality of thumbnails that will be generated, on a scale of 0-100. Not supported gif images when using GD for image manipulation.
   * Default: (int) `75`
 * `thumbnailSizes`: Array of thumbnail sizes, with the size-name mapping to a geometry
   * Default: (array) empty

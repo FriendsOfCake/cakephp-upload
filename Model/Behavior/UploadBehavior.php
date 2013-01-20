@@ -961,6 +961,7 @@ class UploadBehavior extends ModelBehavior {
 				return false;
 		}
 
+		$supportsThumbnailQuality = false;
 		switch (strtolower($thumbnailType)) {
 			case 'gif':
 				$outputHandler = 'imagegif';
@@ -968,9 +969,11 @@ class UploadBehavior extends ModelBehavior {
 			case 'jpg':
 			case 'jpeg':
 				$outputHandler = 'imagejpeg';
+				$supportsThumbnailQuality = true;
 				break;
 			case 'png':
 				$outputHandler = 'imagepng';
+				$supportsThumbnailQuality = true;
 				break;
 			default:
 				return false;
@@ -1033,7 +1036,13 @@ class UploadBehavior extends ModelBehavior {
 			$img = imagecreatetruecolor($destW, $destH);
 			imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
 			imagecopyresampled($img, $src, ($destW-$resizeW)/2, ($destH-$resizeH)/2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
-			$outputHandler($img, $destFile);
+
+			if ($supportsThumbnailQuality) {
+				$outputHandler($img, $destFile, $this->settings[$model->alias][$field]['thumbnailQuality']);
+			} else {
+				$outputHandler($img, $destFile)
+			}
+
 			return true;
 		}
 		return false;
