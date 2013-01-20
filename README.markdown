@@ -264,6 +264,7 @@ Please note that this is not the only way to represent file uploads, but it is d
     * {DS}: Replaced by a `DIRECTORY_SEPARATOR`
     * {model}: Replaced by the Model Alias
     * {field}: Replaced by the field name
+    * {primaryKey}: Replaced by the record primary key, when available.
     * {size}: Replaced by a zero-length string (the empty string) when used for the regular file upload path
     * {geometry}: Replaced by a zero-length string (the empty string) when used for the regular file upload path
 * `fields`: An array of fields to use when uploading files
