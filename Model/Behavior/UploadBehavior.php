@@ -1034,6 +1034,8 @@ class UploadBehavior extends ModelBehavior {
 			}
 
 			$img = imagecreatetruecolor($destW, $destH);
+			imagealphablending($img, false);
+			imagesavealpha($img, true);
 			imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
 			imagecopyresampled($img, $src, ($destW-$resizeW)/2, ($destH-$resizeH)/2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
 
