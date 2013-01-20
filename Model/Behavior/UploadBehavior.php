@@ -1040,7 +1040,7 @@ class UploadBehavior extends ModelBehavior {
 			if ($supportsThumbnailQuality) {
 				$outputHandler($img, $destFile, $this->settings[$model->alias][$field]['thumbnailQuality']);
 			} else {
-				$outputHandler($img, $destFile)
+				$outputHandler($img, $destFile);
 			}
 
 			return true;
