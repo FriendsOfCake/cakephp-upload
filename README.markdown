@@ -1,4 +1,5 @@
-# Upload Plugin 2.0
+# Upload Plugin 2.0 [![Build Status](https://travis-ci.org/josegonzalez/upload.png?branch=master)](https://travis-ci.org/josegonzalez/upload)
+
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 

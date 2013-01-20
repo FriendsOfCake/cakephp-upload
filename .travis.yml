@@ -1,0 +1,39 @@
+language: php
+
+php:
+  - 5.3
+
+env:
+  - CAKE_VERSION=2.1.5 DB=mysql
+  - CAKE_VERSION=master DB=mysql
+  - CAKE_VERSION=2.3 DB=mysql
+
+before_script:
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi"
+  - git clone --depth 1 git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp && git checkout $CAKE_VERSION
+  - cp -R ../upload app/Plugin/Upload
+  - echo "<?php
+    class DATABASE_CONFIG {
+    public \$default = array(
+      'datasource' => 'Database/Mysql',
+      'persistent' => false,
+      'host' => '0.0.0.0',
+      'login' => 'root',
+      'password' => '',
+      'database' => 'cakephp_test',
+      'prefix' => ''
+    );
+    public \$test = array(
+      'datasource' => 'Database/Mysql',
+      'persistent' => false,
+      'host' => '0.0.0.0',
+      'login' => 'root',
+      'password' => '',
+      'database' => 'cakephp_test',
+      'prefix' => '',
+      'encoding' => 'utf8'
+    );
+    }" > ./app/Config/database.php
+
+script:
+  - ./app/Console/cake test Upload Model/Behavior/Upload
