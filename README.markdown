@@ -492,8 +492,8 @@ Check that the file is of a valid mimetype
 
 	public $validate = array(
 		'photo' => array(
-			'rule' => array('isValidMimeType', array('valid/mimetypes', 'array/here')),
-			'message' => 'File is of an invalid mimetype'
+			'rule' => array('isValidMimeType', array('application/pdf', 'image/png')),
+			'message' => 'File is not a pdf or png'
 		)
 	);
 
@@ -501,8 +501,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 
 	public $validate = array(
 		'photo' => array(
-			'rule' => array('isValidMimeType', array('valid/mimetypes', 'array/here'), false),
-			'message' => 'File is of an invalid mimetype'
+			'rule' => array('isValidMimeType', array('application/pdf', 'image/png'), false),
+			'message' => 'File is not a pdf or png'
 		)
 	);
 
@@ -602,8 +602,8 @@ Check that the file has a valid extension
 
 	public $validate = array(
 		'photo' => array(
-			'rule' => array('isValidExtension', array('ext', 'array', 'here')),
-			'message' => 'File has an invalid extension'
+			'rule' => array('isValidExtension', array('pdf', 'png', 'txt')),
+			'message' => 'File does not have a pdf, png, or txt extension'
 		)
 	);
 
@@ -611,8 +611,8 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 
 	public $validate = array(
 		'photo' => array(
-			'rule' => array('isValidExtension', array('ext', 'array', 'here'), false),
-			'message' => 'File has an invalid extension'
+			'rule' => array('isValidExtension', array('pdf', 'png', 'txt'), false),
+			'message' => 'File does not have a pdf, png, or txt extension'
 		)
 	);
 
