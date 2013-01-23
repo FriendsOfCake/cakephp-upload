@@ -248,6 +248,91 @@ We would also need a similar relationship in our `Message` model:
 
 Please note that this is not the only way to represent file uploads, but it is documented here for reference.
 
+### Custom Filename
+
+Add `customName` option to your Model.
+
+	<?php
+	class User extends AppModel {
+		public $actsAs = array(
+			'Upload.Upload' => array(
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'photo_dir',
+						'customName' => 'PATTERN'
+					)
+				)
+			)
+		);
+	}
+
+`PATTERN` is simple text, you can use any text you want. there is 3 `Block` types.
+
+ * `{#NAME}` : will be replaced by orginal file name
+ * `{fieldname}` : will be replaced by `Model`.`fieldname` value
+ * `{!method}` : will be replaced by  `Model`->`method` result
+
+#### PATTERN Usage
+
+	<?php
+	class User extends AppModel {
+		public $actsAs = array(
+			'Upload.Upload' => array(
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'photo_dir',
+						'customName' => 'prefix_{#NAME}_suffix'
+					)
+				)
+			)
+		);
+	}
+	// File's orginal name 	:	logo3w.png
+	// File's finally name 	: 	prefix_logo3w_suffix.png
+
+	<?php
+	class User extends AppModel {
+		public $actsAs = array(
+			'Upload.Upload' => array(
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'photo_dir',
+						'customName' => '{name}_photo'
+					)
+				)
+			)
+		);
+
+		public $name = "Dani";
+	}
+	// File's orginal name 	:	logo3w.png
+	// File's finally name 	: 	Dani_photo.png
+
+	<?php
+	class User extends AppModel {
+		public $actsAs = array(
+			'Upload.Upload' => array(
+				'photo' => array(
+					'fields' => array(
+						'dir' => 'photo_dir',
+						'customName' => '{!getName}'
+					)
+				)
+			)
+		);
+
+		/**
+		 * @param string $filename File's orginal  name. its optional.
+		 */
+		public function getName($filename = ''){
+			return md5($filename);
+		}
+	}
+	// File's orginal name 	:	logo3w.png
+	// File's finally name 	: 	29068a87847a81f8bc00b600421ddbd6.png
+
+Note that `Blocks` are `optional`. 
+
 ### Alternative Behaviors
 
 The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` behavior.
