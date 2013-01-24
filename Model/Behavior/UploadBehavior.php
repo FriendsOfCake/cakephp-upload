@@ -250,20 +250,26 @@ class UploadBehavior extends ModelBehavior {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
+			}else{
+				if ($this->settings[$model->alias][$field]['customName'] != false){					
+					$this->runtime[$model->alias][$field]['name'] =  $this->_customName($model,$this->settings[$model->alias][$field]['customName'],$model->data[$model->alias][$field]['name']);
+				}	
 			}
-
+			
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
 			));
 		}
+		
 		return true;
 	}
 
 	public function afterSave(Model $model, $created) {
+		
 		$temp = array($model->alias => array());
-		foreach ($this->settings[$model->alias] as $field => $options) {
+		foreach ($this->settings[$model->alias] as $field => $options) {			
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			if (empty($this->runtime[$model->alias][$field])) continue;
 		        if (isset($this->_removingOnly[$field])) continue;
@@ -278,12 +284,8 @@ class UploadBehavior extends ModelBehavior {
 				$thumbnailPath .= $tempPath . DS;
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
-			
-			if ($this->settings[$model->alias][$field]['customName'] != false){
-				$filePath = $path . $this->_customName($model,$this->settings[$model->alias][$field]['customName'],$model->data[$model->alias][$field]);
-			}else{
-				$filePath = $path . $this->_sanitizeFilename($model->data[$model->alias][$field]);
-			}
+						
+			$filePath = $path . $this->_sanitizeFilename($model->data[$model->alias][$field]);
 			
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'Unable to move the uploaded file to '.$filePath);
