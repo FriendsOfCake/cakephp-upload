@@ -1045,7 +1045,11 @@ class UploadBehavior extends ModelBehavior {
 			imagecopyresampled($img, $src, ($destW-$resizeW)/2, ($destH-$resizeH)/2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
 
 			if ($supportsThumbnailQuality) {
-				$outputHandler($img, $destFile, $this->settings[$model->alias][$field]['thumbnailQuality']);
+			 if ($outputHandler == 'imagepng') {
+                    		$outputHandler($img, $destFile, 8);
+                	} else {
+                    		$outputHandler($img, $destFile, $this->settings[$model->alias][$field]['thumbnailQuality']);
+                		}
 			} else {
 				$outputHandler($img, $destFile);
 			}
