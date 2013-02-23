@@ -44,7 +44,7 @@ class FileGrabberBehavior extends UploadBehavior {
 		foreach($this->settings[$model->alias] as $field => $options) {
 			$uri = $model->data[$model->alias][$field];
 			if (!$this->_grab($model, $field, $uri)) {
-				$this->invalidate($field, __d('upload', 'File was not downloaded.', true));
+				$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
 				return false;
 			}
 		}
