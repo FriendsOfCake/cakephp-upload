@@ -19,12 +19,11 @@ class FileGrabberBehavior extends UploadBehavior {
 		}
 
 		$model->data[$model->alias][$field] = array(
-			$field => null,
 			'name' => $file_name,
+			'type' => $headers['Content-Type']
 			'tmp_name' => $tmp_file,
 			'error' => 1,
 			'size' => $headers['Content-Length'],
-			'type' => $headers['Content-Type']
 		);
 
 		$file = file_put_contents($tmp_file, $socket->response['body']);
@@ -52,7 +51,7 @@ class FileGrabberBehavior extends UploadBehavior {
 	}
 
 	function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
-		return !rename($tmp, $filePath);
+		return rename($tmp, $filePath);
 	}
 
 }
