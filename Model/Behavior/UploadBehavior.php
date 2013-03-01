@@ -217,7 +217,9 @@ class UploadBehavior extends ModelBehavior {
 			$removing = isset($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
-			&& strlen($model->data[$model->alias][$field]['name']))) {
+			&& strlen($model->data[$model->alias][$field]['name'])
+			&& isset($this->runtime[$model->alias][$field]['tmp_name'])
+			&& strlen($this->runtime[$model->alias][$field]['tmp_name']))) {
 				// We're updating the file, remove old versions
 				if (!empty($model->id)) {
 					$data = $model->find('first', array(
