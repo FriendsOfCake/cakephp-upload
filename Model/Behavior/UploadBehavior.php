@@ -217,7 +217,9 @@ class UploadBehavior extends ModelBehavior {
 			$removing = isset($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
-			&& strlen($model->data[$model->alias][$field]['name']))) {
+			&& strlen($model->data[$model->alias][$field]['name'])
+			&& isset($this->runtime[$model->alias][$field]['tmp_name'])
+			&& strlen($this->runtime[$model->alias][$field]['tmp_name']))) {
 				// We're updating the file, remove old versions
 				if (!empty($model->id)) {
 					$data = $model->find('first', array(
@@ -250,10 +252,6 @@ class UploadBehavior extends ModelBehavior {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
 				continue;
-			}else{
-				if ($this->settings[$model->alias][$field]['customName'] != false){					
-					$this->runtime[$model->alias][$field]['name'] =  $this->_customName($model,$this->settings[$model->alias][$field]['customName'],$model->data[$model->alias][$field]['name']);
-				}	
 			}
 			
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
@@ -261,6 +259,14 @@ class UploadBehavior extends ModelBehavior {
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
 			));
+
+			if (isset($model->data[$model->alias][$field])
+				&& !empty($model->data[$model->alias][$field])
+				&& $this->settings[$model->alias][$field]['customName'] != false
+				&& isset($this->runtime[$model->alias][$field]['tmp_name'])
+				&& strlen($this->runtime[$model->alias][$field]['tmp_name'])) {
+				$model->data[$model->alias][$field] = $this->_customName($model,$this->settings[$model->alias][$field]['customName'],$model->data[$model->alias][$field]);
+			}
 		}
 		
 		return true;
