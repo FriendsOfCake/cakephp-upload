@@ -1270,7 +1270,11 @@ class UploadBehavior extends ModelBehavior {
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
+		$dir = '';
+		if (isset($options['fields']['dir'])
+			&& isset ($data[$model->alias][$options['fields']['dir']])) {
 		$dir = $data[$model->alias][$options['fields']['dir']];
+		}
 		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
