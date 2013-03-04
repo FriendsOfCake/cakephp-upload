@@ -45,6 +45,7 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate'	=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
+		'customName'		=> false
 	);
 
 	protected $_imageMimetypes = array(
@@ -216,7 +217,9 @@ class UploadBehavior extends ModelBehavior {
 			$removing = isset($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
-			&& strlen($model->data[$model->alias][$field]['name']))) {
+			&& strlen($model->data[$model->alias][$field]['name'])
+			&& isset($this->runtime[$model->alias][$field]['tmp_name'])
+			&& strlen($this->runtime[$model->alias][$field]['tmp_name']))) {
 				// We're updating the file, remove old versions
 				if (!empty($model->id)) {
 					$data = $model->find('first', array(
@@ -250,19 +253,29 @@ class UploadBehavior extends ModelBehavior {
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
-
+			
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
 			));
+
+			if (isset($model->data[$model->alias][$field])
+				&& !empty($model->data[$model->alias][$field])
+				&& $this->settings[$model->alias][$field]['customName'] != false
+				&& isset($this->runtime[$model->alias][$field]['tmp_name'])
+				&& strlen($this->runtime[$model->alias][$field]['tmp_name'])) {
+				$model->data[$model->alias][$field] = $this->_customName($model,$this->settings[$model->alias][$field]['customName'],$model->data[$model->alias][$field]);
+			}
 		}
+		
 		return true;
 	}
 
 	public function afterSave(Model $model, $created) {
+		
 		$temp = array($model->alias => array());
-		foreach ($this->settings[$model->alias] as $field => $options) {
+		foreach ($this->settings[$model->alias] as $field => $options) {			
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			if (empty($this->runtime[$model->alias][$field])) continue;
 		        if (isset($this->_removingOnly[$field])) continue;
@@ -277,7 +290,9 @@ class UploadBehavior extends ModelBehavior {
 				$thumbnailPath .= $tempPath . DS;
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
-			$filePath = $path . $model->data[$model->alias][$field];
+						
+			$filePath = $path . $this->_sanitizeFilename($model->data[$model->alias][$field]);
+			
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'Unable to move the uploaded file to '.$filePath);
 				throw new UploadException('Unable to upload file');
@@ -1255,7 +1270,11 @@ class UploadBehavior extends ModelBehavior {
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
+		$dir = '';
+		if (isset($options['fields']['dir'])
+			&& isset ($data[$model->alias][$options['fields']['dir']])) {
 		$dir = $data[$model->alias][$options['fields']['dir']];
+		}
 		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
@@ -1344,6 +1363,66 @@ class UploadBehavior extends ModelBehavior {
 			$pathInfo['filename'] = basename($pathInfo['basename'], '.' . $pathInfo['extension']);
 		}
 		return $pathInfo;
+	}
+	
+	public function _customName(Model $model, $customName ,$filename  ){
+		$filename = $this->_pathinfo($filename);
+		$customName = str_replace('{#NAME}',$filename['filename'],$customName);
+		preg_match_all("/(\{.*?})/", $customName, $matches);
+		if ($matches){
+			foreach ($matches[0] as $row){
+				$cm = substr($row,1,-1);
+				if ($cm[0] == '!'){
+					$cm = substr($cm,1);
+					$customName = str_replace($row,$model->$cm($filename['filename']),$customName);
+	
+				}else{
+					$customName = str_replace($row,$model->$cm,$customName);
+				}
+			}
+		}
+		return $this->_sanitizeFilename("{$customName}.{$filename['extension']}");
+	}
+	
+	/**
+	 * Make a filename safe to use in any function. (Accents, spaces, special chars...)
+	 * The iconv function must be activated.
+	 *
+	 * @param string  $fileName       The filename to sanitize (with or without extension)
+	 * @param string  $defaultIfEmpty The default string returned for a non valid filename (only special chars or separators)
+	 * @param string  $separator      The default separator
+	 * @param boolean $lowerCase      Tells if the string must converted to lower case
+	 *
+	 * @author COil <https://github.com/COil>
+	 * @see    http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
+	 *
+	 * @return string
+	 */
+	public function _sanitizeFilename($fileName, $defaultIfEmpty = 'default', $separator = '_', $lowerCase = true)
+	{
+		// Gather file informations and store its extension
+		// use _pathinfo instead pathinfo
+		$fileInfos = $this->_pathinfo($fileName);
+		$fileExt   = array_key_exists('extension', $fileInfos) ? '.'. strtolower($fileInfos['extension']) : '';
+	
+		// Removes accents
+		$fileName = @iconv('UTF-8', 'us-ascii//TRANSLIT', $fileInfos['filename']);
+	
+		// Removes all characters that are not separators, letters, numbers, dots or whitespaces
+		$fileName = preg_replace("/[^ a-zA-Z". preg_quote($separator). "\d\.\s]/", '', $lowerCase ? strtolower($fileName) : $fileName);
+	
+		// Replaces all successive separators into a single one
+		$fileName = preg_replace('!['. preg_quote($separator).'\s]+!u', $separator, $fileName);
+	
+		// Trim beginning and ending seperators
+		$fileName = trim($fileName, $separator);
+	
+		// If empty use the default string
+		if (empty($fileName)) {
+			$fileName = $defaultIfEmpty;
+		}
+	
+		return $fileName. $fileExt;
 	}
 
 }
