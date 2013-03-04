@@ -213,7 +213,7 @@ class UploadBehavior extends ModelBehavior {
 
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
-			$removing = isset($model->data[$model->alias][$field]['remove']);
+			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
 			&& strlen($model->data[$model->alias][$field]['name']))) {
