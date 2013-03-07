@@ -20,7 +20,7 @@ class FileGrabberBehavior extends UploadBehavior {
 
 		$model->data[$model->alias][$field] = array(
 			'name' => $file_name,
-			'type' => $headers['Content-Type']
+			'type' => $headers['Content-Type'],
 			'tmp_name' => $tmp_file,
 			'error' => 1,
 			'size' => $headers['Content-Length'],
