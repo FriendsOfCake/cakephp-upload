@@ -45,7 +45,9 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate'	=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
-	);
+// 'killFolder' is what I've named the option for deleting the entire folder; false by default 
+		'killFolder' => false,
+);
 
 	protected $_imageMimetypes = array(
 		'image/bmp',
@@ -67,6 +69,9 @@ class UploadBehavior extends ModelBehavior {
 	protected $_resizeMethods = array('imagick', 'php');
 
 	private $__filesToRemove = array();
+
+// $__folderToRemove is where I store the 'dir' name when running __prepareFilesForDeletion, so I can access it in afterDelete
+	private $__folderToRemove;
 
 	protected $_removingOnly = array();
 
@@ -313,6 +318,24 @@ class UploadBehavior extends ModelBehavior {
 		return @unlink($file);
 	}
 
+// this is a standard folder deletion script that automatically iterates over a folder to remove it and all of its contentts
+	public function deleteFolder($dir) {
+		$it = new RecursiveDirectoryIterator($dir);
+		$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+		foreach($files as $file) {
+			if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+				continue;
+			}
+			if ($file->isDir()){
+				rmdir($file->getRealPath());
+			} else {
+				unlink($file->getRealPath());
+			}
+		}
+		rmdir($dir);
+	}
+
+
 	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
 			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
@@ -331,6 +354,15 @@ class UploadBehavior extends ModelBehavior {
 		if (!empty($this->__filesToRemove[$model->alias])) {
 			foreach ($this->__filesToRemove[$model->alias] as $file) {
 				$result[] = $this->unlink($file);
+			}
+		}
+
+// check the killFolder option. if true, send the folder path to my new deleteFolder function
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if ($options['killFolder'] == true) {
+				$folderToDelete = $options['path'].$this->__folderToRemove;
+				$this->deleteFolder($folderToDelete);
+				return true;
 			}
 		}
 		return $result;
@@ -1265,6 +1297,9 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$this->__filesToRemove[$model->alias][] = $filePath;
+
+// now I'll know what folder to delete in afterDelete
+		$this->__folderToRemove = $dir;
 
 		$createThumbnails = $options['thumbnails'];
 		$hasThumbnails = !empty($options['thumbnailSizes']);
