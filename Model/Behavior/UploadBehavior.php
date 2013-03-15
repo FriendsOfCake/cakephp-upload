@@ -45,7 +45,8 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate'	=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
-	);
+		'deleteFolderOnDelete' => false,
+);
 
 	protected $_imageMimetypes = array(
 		'image/bmp',
@@ -67,6 +68,8 @@ class UploadBehavior extends ModelBehavior {
 	protected $_resizeMethods = array('imagick', 'php');
 
 	private $__filesToRemove = array();
+
+	private $__foldersToRemove = array();
 
 	protected $_removingOnly = array();
 
@@ -313,6 +316,27 @@ class UploadBehavior extends ModelBehavior {
 		return @unlink($file);
 	}
 
+	public function deleteFolder($path, $folders) {
+		foreach ( $folders as $folder ) {
+			$dir = $path . $folder;
+			$it = new RecursiveDirectoryIterator($dir);
+			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach($files as $file) {
+				if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+					continue;
+				}
+				if ($file->isDir()) {
+					// error suppression?
+					rmdir($file->getRealPath());
+				} else {
+					// error suppression?
+					unlink($file->getRealPath());
+				}
+			}
+			rmdir($dir);
+		}
+	}
+
 	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
 			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
@@ -331,6 +355,13 @@ class UploadBehavior extends ModelBehavior {
 		if (!empty($this->__filesToRemove[$model->alias])) {
 			foreach ($this->__filesToRemove[$model->alias] as $file) {
 				$result[] = $this->unlink($file);
+			}
+		}
+
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if ($options['deleteFolderOnDelete'] == true) {
+				$this->deleteFolder($options['path'], $this->__foldersToRemove[$model->alias]);
+				return true;
 			}
 		}
 		return $result;
@@ -1265,6 +1296,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$this->__filesToRemove[$model->alias][] = $filePath;
+		$this->__foldersToRemove[$model->alias][] = $dir;
 
 		$createThumbnails = $options['thumbnails'];
 		$hasThumbnails = !empty($options['thumbnailSizes']);
