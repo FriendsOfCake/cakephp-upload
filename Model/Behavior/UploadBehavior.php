@@ -316,7 +316,8 @@ class UploadBehavior extends ModelBehavior {
 		return @unlink($file);
 	}
 
-	public function deleteFolder($path, $folders) {
+	public function deleteFolder($model, $path) {
+		$folders = $this->__foldersToRemove[$model->alias];
 		foreach ( $folders as $folder ) {
 			$dir = $path . $folder;
 			$it = new RecursiveDirectoryIterator($dir);
@@ -326,14 +327,12 @@ class UploadBehavior extends ModelBehavior {
 					continue;
 				}
 				if ($file->isDir()) {
-					// error suppression?
-					rmdir($file->getRealPath());
+					@rmdir($file->getRealPath());
 				} else {
-					// error suppression?
-					unlink($file->getRealPath());
+					@unlink($file->getRealPath());
 				}
 			}
-			rmdir($dir);
+			@rmdir($dir);
 		}
 	}
 
@@ -360,7 +359,7 @@ class UploadBehavior extends ModelBehavior {
 
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if ($options['deleteFolderOnDelete'] == true) {
-				$this->deleteFolder($options['path'], $this->__foldersToRemove[$model->alias]);
+				$this->deleteFolder($model, $options['path']);
 				return true;
 			}
 		}
