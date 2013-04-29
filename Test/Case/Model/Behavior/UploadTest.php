@@ -277,7 +277,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEmpty($this->TestUpload->findById($this->data['test_update']['id']));
 	}
 
-	function testDeleteFileOnRemoveSave() {
+	function testDeleteFileOnTrueRemoveSave() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
 
@@ -292,6 +292,38 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->MockUpload->expects($this->once())->method('unlink')->with(
 			$this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
 		);
+		$result = $this->TestUpload->save($data);
+		$this->assertInternalType('array', $result);
+	}
+	
+	function testKeepFileOnFalseRemoveSave() {
+		$this->mockUpload();
+		$this->MockUpload->expects($this->never())->method('unlink');
+
+		$data = array(
+			'id' => 1,
+			'photo' => array(
+				'remove' => false
+			)
+		);
+
+		$existingRecord = $this->TestUpload->findById($data['id']);
+		$result = $this->TestUpload->save($data);
+		$this->assertInternalType('array', $result);
+	}
+	
+	function testKeepFileOnNullRemoveSave() {
+		$this->mockUpload();
+		$this->MockUpload->expects($this->never())->method('unlink');
+
+		$data = array(
+			'id' => 1,
+			'photo' => array(
+				'remove' => null
+			)
+		);
+
+		$existingRecord = $this->TestUpload->findById($data['id']);
 		$result = $this->TestUpload->save($data);
 		$this->assertInternalType('array', $result);
 	}
