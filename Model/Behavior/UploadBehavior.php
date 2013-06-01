@@ -317,15 +317,20 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function deleteFolder($model, $path) {
+		if (!isset($this->__foldersToRemove[$model->alias])) {
+			return false;
+		}
+
 		$folders = $this->__foldersToRemove[$model->alias];
-		foreach ( $folders as $folder ) {
+		foreach ($folders as $folder) {
 			$dir = $path . $folder;
 			$it = new RecursiveDirectoryIterator($dir);
 			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				if ($file->getFilename() === '.' || $file->getFilename() === '..') {
 					continue;
 				}
+
 				if ($file->isDir()) {
 					@rmdir($file->getRealPath());
 				} else {
@@ -334,6 +339,8 @@ class UploadBehavior extends ModelBehavior {
 			}
 			@rmdir($dir);
 		}
+
+		return true;
 	}
 
 	public function beforeDelete(Model $model, $cascade = true) {
