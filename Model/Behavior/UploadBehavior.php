@@ -283,6 +283,8 @@ class UploadBehavior extends ModelBehavior {
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
 				$model->invalidate($field, 'Unable to move the uploaded file to '.$filePath);
+				$db = $model->getDataSource();
+				$db->rollback();
 				throw new UploadException('Unable to upload file');
 			}
 
@@ -1254,6 +1256,8 @@ class UploadBehavior extends ModelBehavior {
 				} elseif (method_exists($this, $method)) {
 					$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
 				} else {
+					$db = $model->getDataSource();
+					$db->rollback();
 					throw new Exception("Invalid thumbnailMethod %s", $method);
 				}
 
