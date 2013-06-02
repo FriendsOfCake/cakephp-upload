@@ -1,6 +1,6 @@
 <?php
 App::uses('UploadBehavior', 'Upload.Model/Behavior');
-App::uses('HttpSocket', 'Utility');
+App::uses('HttpSocket', 'Network/Http');
 
 class FileGrabberBehavior extends UploadBehavior {
 
