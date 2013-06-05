@@ -10,13 +10,11 @@ class FileGrabberBehavior extends UploadBehavior {
 	function _grab(Model $model, $field, $uri) {
 
 		$socket = new HttpSocket();
-		$socket->get($uri);
+		$socket->get($uri, array(), array('redirect' => true));
 		$headers = $socket->response['header'];
 		$file_name = basename($socket->request['uri']['path']);
 		$tmp_file = sys_get_temp_dir() . '/' . $file_name;
-		if (!$socket->response['status']['code'] != 200) {
-			return false;
-		}
+		if ($socket->response['status']['code'] != 200) return false;
 
 		$model->data[$model->alias][$field] = array(
 			'name' => $file_name,
@@ -27,9 +25,7 @@ class FileGrabberBehavior extends UploadBehavior {
 		);
 
 		$file = file_put_contents($tmp_file, $socket->response['body']);
-		if (!$file) {
-			return false;
-		}
+		if (!$file) return false;
 
 		$model->data[$model->alias][$field]['error'] = 0;
 		return true;
