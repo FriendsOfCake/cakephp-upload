@@ -1142,6 +1142,7 @@ class UploadBehavior extends ModelBehavior {
 		$decrement = 0;
 		$string = crc32($field . microtime() . $model->id);
 
+		$endPath = $model->id . DIRECTORY_SEPARATOR;
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
 			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));

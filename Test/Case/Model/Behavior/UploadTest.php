@@ -295,7 +295,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($data);
 		$this->assertInternalType('array', $result);
 	}
-	
+
 	function testKeepFileOnFalseRemoveSave() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
@@ -311,7 +311,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($data);
 		$this->assertInternalType('array', $result);
 	}
-	
+
 	function testKeepFileOnNullRemoveSave() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
@@ -850,6 +850,17 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$this->assertInternalType('string', $result);
 		$this->assertEqual(8, strlen($result));
+		$this->assertTrue(is_dir(TMP . $basePath . $result));
+	}
+
+	function testGetPathRandomCombined() {
+		$this->TestUpload->id = 5;
+		$basePath = 'tests' . DS . 'path' . DS . 'random' . DS;
+		$result = $this->TestUpload->Behaviors->Upload->_getPathRandomCombined($this->TestUpload, 'photo', TMP . $basePath);
+
+		$this->assertInternalType('string', $result);
+		$this->assertEqual(9 + strlen($this->TestUpload->id), strlen($result));
+		$this->assertEqual(substr($result, 0, strlen($this->TestUpload->id)), $this->TestUpload->id);
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
 
