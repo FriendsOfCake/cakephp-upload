@@ -338,11 +338,26 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 Attach on your model Upload.FileGrabber behaviors:
 
 	<?php
-	class User extends AppModel {
-		public $actsAs = array(
-			'Upload.FileGrabber' => array('gravatar')
-		);
-	}
+    class UserFile extends AppModel {
+        public $name = 'UserFile';
+        public $useTable = 'files';
+        public $actsAs = array(
+            'Upload.Upload' => array(
+                'file' => array(
+                    'fields' => array(
+                        'dir' => 'dir',
+                        'type' => 'type',
+                        'size' => 'size'),
+                    'thumbnailMethod' => 'php',
+                    'thumbnailPrefixStyle' => false,
+                    'thumbnailSizes' => array(
+                        'i' => '16x16',
+                        't' => '48x48',
+                        'p' => '220w',
+                        'f' => '960w'),
+                    'path' => '{ROOT}webroot{DS}files{DS}',
+                    'pathMethod' => 'flat')));
+    }
 
 Add in your view the form:
 
