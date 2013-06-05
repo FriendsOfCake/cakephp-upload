@@ -1188,6 +1188,11 @@ class UploadBehavior extends ModelBehavior {
 
 		if ($socket->response['status']['code'] != 200) return false;
 
+		// DETERMINE IF USER IS TRYING TO OVERRIDE THE FILE NAME
+		if(isset($model->data[$model->alias]['file_name_override'])) {
+			$file_name = $model->data[$model->alias]['file_name_override'] . '.' . pathinfo($socket->request['uri']['path'], PATHINFO_EXTENSION);
+		}
+
 		$model->data[$model->alias][$field] = array(
 			'name' => $file_name,
 			'type' => $headers['Content-Type'],
@@ -1195,6 +1200,11 @@ class UploadBehavior extends ModelBehavior {
 			'error' => 1,
 			'size' => $headers['Content-Length'],
 		);
+
+		// echo "<pre>";
+		// var_dump($model->data[$model->alias][$field]);
+		// echo "</pre>";
+		// exit;
 
 		$file = file_put_contents($tmp_file, $socket->response['body']);
 		if (!$file) return false;
