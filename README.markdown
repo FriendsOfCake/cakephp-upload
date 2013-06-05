@@ -120,7 +120,7 @@ In the above example, photo can be a file upload via a file input within a form,
     <?php echo $this->Form->end(); ?>
 
 
-###File Grabbing Example
+###File Grabbing via Form Example
 
     <?php echo $this->Form->create('User', array('type' => 'file')); ?>
         <?php echo $this->Form->input('User.username'); ?>
@@ -128,7 +128,7 @@ In the above example, photo can be a file upload via a file input within a form,
         <?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
     <?php echo $this->Form->end(); ?>
 
-###Programmatic Upload via Controller
+###Programmatic File Grab via Controller
 
     $dataToSave['photo'] = $image_url;
     $this->User->set($dataToSave);
