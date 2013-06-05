@@ -269,8 +269,8 @@ class UploadBehavior extends ModelBehavior {
 	 * for UploadBehavior plugin processing.
 	 */
 	function beforeValidate(Model $model) {
-		foreach($this->settings[$model->alias] as $field => $options) {
-			if($this->_isURI($model->data[$model->alias][$field])) {
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if ($this->_isURI($model->data[$model->alias][$field])) {
 				$uri = $model->data[$model->alias][$field];
 				if (!$this->_grab($model, $field, $uri)) {
 					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
@@ -331,7 +331,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
-		if(is_uploaded_file($tmp)) {
+		if (is_uploaded_file($tmp)) {
 			return move_uploaded_file($tmp, $filePath);
 		} else {
 			return rename($tmp, $filePath);
@@ -1181,15 +1181,17 @@ class UploadBehavior extends ModelBehavior {
 	 */
 	public function _grab(Model $model, $field, $uri) {
 		$socket = new HttpSocket();
-		$socket->get($uri, array(), array('redirect' => true));
+		$file = $socket->get($uri, array(), array('redirect' => true));
+		var_dump($file);exit;
 		$headers = $socket->response['header'];
 		$file_name = basename($socket->request['uri']['path']);
 		$tmp_file = sys_get_temp_dir() . '/' . $file_name;
 
-		if ($socket->response['status']['code'] != 200) return false;
+		if ($socket->response['status']['code'] != 200) {
+			return false;
+		}
 
-		// DETERMINE IF USER IS TRYING TO OVERRIDE THE FILE NAME
-		if(isset($model->data[$model->alias]['file_name_override'])) {
+		if (isset($model->data[$model->alias]['file_name_override'])) {
 			$file_name = $model->data[$model->alias]['file_name_override'] . '.' . pathinfo($socket->request['uri']['path'], PATHINFO_EXTENSION);
 		}
 
@@ -1201,13 +1203,10 @@ class UploadBehavior extends ModelBehavior {
 			'size' => $headers['Content-Length'],
 		);
 
-		// echo "<pre>";
-		// var_dump($model->data[$model->alias][$field]);
-		// echo "</pre>";
-		// exit;
-
 		$file = file_put_contents($tmp_file, $socket->response['body']);
-		if (!$file) return false;
+		if (!$file) {
+			return false;
+		}
 
 		$model->data[$model->alias][$field]['error'] = 0;
 		return true;

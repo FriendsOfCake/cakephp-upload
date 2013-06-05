@@ -111,7 +111,7 @@ Using the above setup, uploaded files cannot be deleted. To do so, a field must 
 
 In the above example, photo can be a file upload via a file input within a form, a file grabber (from a url) via a text input, OR programatically used on the controller to file grab via a url.
 
-###File Upload Example
+### File Upload Example
 
     <?php echo $this->Form->create('User', array('type' => 'file')); ?>
     	<?php echo $this->Form->input('User.username'); ?>
@@ -120,7 +120,7 @@ In the above example, photo can be a file upload via a file input within a form,
     <?php echo $this->Form->end(); ?>
 
 
-###File Grabbing via Form Example
+### File Grabbing via Form Example
 
     <?php echo $this->Form->create('User', array('type' => 'file')); ?>
         <?php echo $this->Form->input('User.username'); ?>
@@ -128,10 +128,10 @@ In the above example, photo can be a file upload via a file input within a form,
         <?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
     <?php echo $this->Form->end(); ?>
 
-###Programmatic File Grab via Controller
+### Programmatic File Grab via Controller
 
-    $dataToSave['photo'] = $image_url;
-    $this->User->set($dataToSave);
+    $data['photo'] = $image_url;
+    $this->User->set($data);
     $this->User->save();
 
 Thumbnails are not automatically created. To do so, thumbnail sizes must be defined:
