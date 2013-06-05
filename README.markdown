@@ -111,7 +111,8 @@ Using the above setup, uploaded files cannot be deleted. To do so, a field must 
 
 Photo can be a file upload via a file input within a form, a file grabbing from urls via a text input, OR programatically through the controller.
 
-File Upload Example
+##File Upload Example
+
     <?php echo $this->Form->create('User', array('type' => 'file')); ?>
     	<?php echo $this->Form->input('User.username'); ?>
     	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
@@ -119,14 +120,16 @@ File Upload Example
     <?php echo $this->Form->end(); ?>
 
 
-File Grabbing Example
+##File Grabbing Example
+
     <?php echo $this->Form->create('User', array('type' => 'file')); ?>
         <?php echo $this->Form->input('User.username'); ?>
         <?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
         <?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
     <?php echo $this->Form->end(); ?>
 
-Programmatic Upload via Controller
+##Programmatic Upload via Controller
+
     $dataToSave['file'] = $image_url;
     $this->UserFile->set($dataToSave);
     $this->UserFile->save();
