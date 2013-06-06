@@ -1182,7 +1182,6 @@ class UploadBehavior extends ModelBehavior {
 	public function _grab(Model $model, $field, $uri) {
 		$socket = new HttpSocket();
 		$file = $socket->get($uri, array(), array('redirect' => true));
-		var_dump($file);exit;
 		$headers = $socket->response['header'];
 		$file_name = basename($socket->request['uri']['path']);
 		$tmp_file = sys_get_temp_dir() . '/' . $file_name;
@@ -1192,7 +1191,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (isset($model->data[$model->alias]['file_name_override'])) {
-			$file_name = $model->data[$model->alias]['file_name_override'] . '.' . pathinfo($socket->request['uri']['path'], PATHINFO_EXTENSION);
+			$file_name = $model->data[$model->alias]['file_name_override'] . '.jpg';
 		}
 
 		$model->data[$model->alias][$field] = array(
