@@ -1191,7 +1191,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (isset($model->data[$model->alias]['file_name_override'])) {
-			$file_name = $model->data[$model->alias]['file_name_override'] . '.jpg';
+			$file_name = $model->data[$model->alias]['file_name_override'] . '.' . pathinfo($socket->request['uri']['path'], PATHINFO_EXTENSION);
 		}
 
 		$model->data[$model->alias][$field] = array(
@@ -1199,7 +1199,7 @@ class UploadBehavior extends ModelBehavior {
 			'type' => $headers['Content-Type'],
 			'tmp_name' => $tmp_file,
 			'error' => 1,
-			'size' => $headers['Content-Length'],
+			'size' => (isset($headers['content-length']) ? $headers['Content-Length'] : 0),
 		);
 
 		$file = file_put_contents($tmp_file, $socket->response['body']);
