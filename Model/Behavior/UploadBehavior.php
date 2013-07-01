@@ -319,7 +319,7 @@ class UploadBehavior extends ModelBehavior {
 		return @unlink($file);
 	}
 
-	public function deleteFolder($model, $path) {
+	public function deleteFolder(Model $model, $path) {
 		if (!isset($this->__foldersToRemove[$model->alias])) {
 			return false;
 		}
