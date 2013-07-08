@@ -19,6 +19,7 @@
  */
 App::uses('Folder', 'Utility');
 App::uses('UploadException', 'Upload.Lib/Error/Exception');
+App::uses('HttpSocket', 'Network/Http');
 class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
@@ -263,8 +264,26 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+	/**
+	 * Transform Model.field value like as PHP upload array (name, tmp_name)
+	 * for UploadBehavior plugin processing.
+	 */
+	function beforeValidate(Model $model) {
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if ($this->_isURI($model->data[$model->alias][$field])) {
+				$uri = $model->data[$model->alias][$field];
+				if (!$this->_grab($model, $field, $uri)) {
+					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public function afterSave(Model $model, $created) {
 		$temp = array($model->alias => array());
+
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			if (empty($this->runtime[$model->alias][$field])) continue;
@@ -312,7 +331,11 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
-		return is_uploaded_file($tmp) && @move_uploaded_file($tmp, $filePath);
+		if (is_uploaded_file($tmp)) {
+			return move_uploaded_file($tmp, $filePath);
+		} else {
+			return rename($tmp, $filePath);
+		}
 	}
 
 	public function unlink($file) {
@@ -1153,6 +1176,41 @@ class UploadBehavior extends ModelBehavior {
 		return substr($endPath, 0, -1);
 	}
 
+	/**
+	 * Download remote file into PHP's TMP dir
+	 */
+	public function _grab(Model $model, $field, $uri) {
+		$socket = new HttpSocket();
+		$file = $socket->get($uri, array(), array('redirect' => true));
+		$headers = $socket->response['header'];
+		$file_name = basename($socket->request['uri']['path']);
+		$tmp_file = sys_get_temp_dir() . '/' . $file_name;
+
+		if ($socket->response['status']['code'] != 200) {
+			return false;
+		}
+
+		if (isset($model->data[$model->alias]['file_name_override'])) {
+			$file_name = $model->data[$model->alias]['file_name_override'] . '.' . pathinfo($socket->request['uri']['path'], PATHINFO_EXTENSION);
+		}
+
+		$model->data[$model->alias][$field] = array(
+			'name' => $file_name,
+			'type' => $headers['Content-Type'],
+			'tmp_name' => $tmp_file,
+			'error' => 1,
+			'size' => (isset($headers['content-length']) ? $headers['Content-Length'] : 0),
+		);
+
+		$file = file_put_contents($tmp_file, $socket->response['body']);
+		if (!$file) {
+			return false;
+		}
+
+		$model->data[$model->alias][$field]['error'] = 0;
+		return true;
+	}
+
 	public function _mkPath($destDir) {
 		if (!file_exists($destDir)) {
 			@mkdir($destDir, 0777, true);
@@ -1272,6 +1330,10 @@ class UploadBehavior extends ModelBehavior {
 
 	public function _isImage(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
+	}
+
+	public function _isURI($url_str) {
+		return (filter_var($url_str, FILTER_VALIDATE_URL) ? true : false);
 	}
 
 	public function _isMedia(Model $model, $mimetype) {
