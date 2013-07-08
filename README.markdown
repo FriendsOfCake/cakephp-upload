@@ -434,6 +434,8 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 * `saveDir`: Can be used to turn off saving the directory
   * Default: (boolean) `true`
   * Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` and `randomCombined` than `primaryKey`, but keep this in mind when fiddling with this option
+* `mode`: The UNIX permissions to set on the created upload directories.
+  * Default: (integer) `0777`
 
 ## Thumbnail Sizes and Styles
 
