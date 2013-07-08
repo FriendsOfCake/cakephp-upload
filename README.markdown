@@ -280,7 +280,7 @@ In the above example, we are calling our custom `createWithAttachments` method o
 
               // Unset the foreign_key if the user tries to specify it
               if (isset($image['foreign_key'])) {
-                unset($image['foreign_key'])
+                unset($image['foreign_key']);
               }
 
               $images[] = $image;
