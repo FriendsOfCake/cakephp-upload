@@ -1308,7 +1308,7 @@ class UploadBehavior extends ModelBehavior {
 				$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
 					'geometry', 'size', 'thumbnailPath'
 				));
-				$this->_mkPath($Model, $field, $thumbnailPathSized);
+				$this->_mkPath($model, $field, $thumbnailPathSized);
 
 				$valid = false;
 				if (method_exists($model, $method)) {
