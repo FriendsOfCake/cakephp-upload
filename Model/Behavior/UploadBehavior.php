@@ -1156,7 +1156,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$destDir = $path . $endPath;
-		$this->_mkPath($modeil, $field, $destDir);
+		$this->_mkPath($model, $field, $destDir);
 
 		return substr($endPath, 0, -1);
 	}
