@@ -905,6 +905,75 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(4, count($result['TestUpload']));
 	}
 
+	function testPrepareFilesForDeletionWithoutDirDataFieldWithPrimaryKeyPathMethod() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'pathMethod'	 => 'primaryKey',
+				'thumbnailSizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
+				),
+				'fields' => array(
+					'dir' => false
+				)
+			)
+		);
+		$this->mockUpload();
+		$this->MockUpload->expects($this->once())->method('_getMimeType')->will($this->returnValue('image/png'));
+
+		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('id' => 1, 'photo' => 'Photo.png')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		);
+		$this->assertInternalType('array', $result);
+		$this->assertEqual(1, count($result));
+		$this->assertEqual(4, count($result['TestUpload']));
+
+		$basePath	= $this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']['path'];
+		$primaryKey = 1;
+		$this->assertEqual($result['TestUpload'][0], sprintf('%s%d/Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][1], sprintf('%s%d/xvga_Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][2], sprintf('%s%d/vga_Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][3], sprintf('%s%d/thumb_Photo.png', $basePath, $primaryKey));
+	}
+
+	function testPrepareFilesForDeletionWithoutDirDataFieldWithFlagPathMethod() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'pathMethod'	 => 'flat',
+				'thumbnailSizes' => array(
+					'xvga' 		=> '1024x768',
+					'vga' 		=> '640x480',
+					'thumb' 	=> '80x80'
+				),
+				'fields' => array(
+					'dir' => false
+				)
+			)
+		);
+		$this->mockUpload();
+		$this->MockUpload->expects($this->once())->method('_getMimeType')->will($this->returnValue('image/png'));
+
+		$result = $this->TestUpload->Behaviors->Upload->_prepareFilesForDeletion(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('id' => 1, 'photo' => 'Photo.png')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		);
+
+		$this->assertInternalType('array', $result);
+		$this->assertEqual(1, count($result));
+		$this->assertEqual(4, count($result['TestUpload']));
+
+		$basePath	= $this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']['path'];
+		$primaryKey = 1;
+		$this->assertEqual($result['TestUpload'][0], sprintf('%sPhoto.png', $basePath));
+		$this->assertEqual($result['TestUpload'][1], sprintf('%sxvga_Photo.png', $basePath));
+		$this->assertEqual($result['TestUpload'][2], sprintf('%svga_Photo.png', $basePath));
+		$this->assertEqual($result['TestUpload'][3], sprintf('%sthumb_Photo.png', $basePath));
+	}
+
 	function testPrepareFilesForDeletionWithThumbnailType() {
 		$this->TestUpload->actsAs['Upload.Upload'] = array(
 			'photo' => array(
