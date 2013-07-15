@@ -1364,9 +1364,9 @@ class UploadBehavior extends ModelBehavior {
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
-		if (isset($data[$model->alias][$options['fields']['dir']]) && $data[$model->alias][$options['fields']['dir']] != false) {
+		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
 			$dir = $data[$model->alias][$options['fields']['dir']];
-		} else {	// "dir" option is not set in $data or is false (model not save "dir" into table)
+		} else {
 			if (in_array($options['pathMethod'], array('_getPathFlat', '_getPathPrimaryKey'))) {
 				$model->id = $data[$model->alias][$model->primaryKey];
 				$dir = call_user_func(array($this, '_getPath'), $model, $field);
