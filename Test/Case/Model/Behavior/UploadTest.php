@@ -74,6 +74,10 @@ class UploadBehaviorTest extends CakeTestCase {
 			'other_field' => 'test',
 			'photo' => array()
 		);
+		$this->data['test_update_other_field_without_photo_set'] = array(
+			'id' => 1,
+			'other_field' => 'test',
+		);
 		$this->data['test_remove'] = array(
 			'photo' => array(
 				'remove' => true,
@@ -263,6 +267,16 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$this->assertEqual($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
+	}
+
+	function testUpdateWithoutNewUploadWithoutFieldSet() {
+		$this->mockUpload();
+		$this->MockUpload->expects($this->never())->method('unlink');
+		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
+		$result = $this->TestUpload->save($this->data['test_update_other_field_without_photo_set']);
+		$this->assertInternalType('array', $result);
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+		$this->assertEqual($this->data['test_update_other_field_without_photo_set']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
 	function testUnlinkFileOnDelete() {
