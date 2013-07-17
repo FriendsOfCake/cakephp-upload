@@ -242,13 +242,13 @@ We would also need to present a valid counter-relationship in the `Post` model:
 				'className' => 'Attachment',
 				'foreignKey' => 'foreign_key',
 				'conditions' => array(
-					'Attachment.model' => 'Post',
+					'Image.model' => 'Post',
 				),
 			),
 		);
 	}
 
-The key thing to note here is the `Post` model has some conditions on the relationship to the `Attachment` model, where the `Attachment.model` has to be `Post`. Remember to set the `model` field to `Post`, or whatever model it is you'd like to attach it to, otherwise you may get incorrect relationship results when performing find queries.
+The key thing to note here is the `Post` model has some conditions on the relationship to the `Attachment` model, where the `Image.model` has to be `Post`. Remember to set the `model` field to `Post`, or whatever model it is you'd like to attach it to, otherwise you may get incorrect relationship results when performing find queries.
 
 We would also need a similar relationship in our `Message` model:
 
@@ -259,7 +259,7 @@ We would also need a similar relationship in our `Message` model:
 				'className' => 'Attachment',
 				'foreignKey' => 'foreign_key',
 				'conditions' => array(
-					'Attachment.model' => 'Message',
+					'Video.model' => 'Message',
 				),
 			),
 		);
