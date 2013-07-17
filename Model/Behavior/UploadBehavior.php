@@ -271,7 +271,8 @@ class UploadBehavior extends ModelBehavior {
 	 */
 	function beforeValidate(Model $model) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if ($this->_isURI($model->data[$model->alias][$field])) {
+			if (!empty($model->data[$model->alias][$field])
+				AND $this->_isURI($model->data[$model->alias][$field])) {
 				$uri = $model->data[$model->alias][$field];
 				if (!$this->_grab($model, $field, $uri)) {
 					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
