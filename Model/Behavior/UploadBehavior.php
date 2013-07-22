@@ -45,6 +45,7 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate'	=> false,
 		'mediaThumbnailType'=> 'png',
 		'saveDir'			=> true,
+		'rename'			=> true,
 	);
 
 	protected $_imageMimetypes = array(
@@ -211,6 +212,10 @@ class UploadBehavior extends ModelBehavior {
 			if (!isset($model->data[$model->alias][$field])) continue;
 			if (!is_array($model->data[$model->alias][$field])) continue;
 
+			if ($this->settings[$model->alias][$field]['rename']) {
+                $model->data[$model->alias][$field]['name'] = $this->_rename($model->data[$model->alias][$field]['name']);
+            }
+			
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			$removing = isset($model->data[$model->alias][$field]['remove']);
@@ -1302,5 +1307,17 @@ class UploadBehavior extends ModelBehavior {
 		}
 		return $pathInfo;
 	}
+	
+	public function _hash($input) {
+        return md5($input . time() . mt_rand());
+    }
+
+    public function _rename($input) {
+        $exploded = explode('.', $input);
+        $extension = $exploded[count($exploded) - 1];
+        unset($exploded[count($exploded) - 1]);
+
+        return $this->_hash(implode('.', $exploded)) . '.' . $extension;
+    }
 
 }
