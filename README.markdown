@@ -227,7 +227,7 @@ Once the `attachments` table has been created, we would create the following mod
 				'foreignKey' => 'foreign_key',
 			),
 			'Message' => array(
-				'className' => 'Post',
+				'className' => 'Message',
 				'foreignKey' => 'foreign_key',
 			),
 		);
