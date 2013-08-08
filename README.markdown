@@ -809,6 +809,15 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
+## Remove a current file without deleting the entire record
+
+In some cases you might want to remove a photo or uploaded file without having to
+remove the entire record from the Model.  In this case you would use the following code:
+
+    <?php
+    echo $this->Form->create('Model', array('type' => 'file'));
+    echo $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label' => 'Remove existing file'));
+
 ## License
 
 Copyright (c) 2010-2012 Jose Diaz-Gonzalez
