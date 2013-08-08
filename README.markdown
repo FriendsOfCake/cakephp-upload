@@ -740,8 +740,9 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 In some cases you might want to remove a photo or uploaded file without having to
 remove the entire record from the Model.  In this case you would use the following code:
 
-    $this->Form->create('Model', array('type' => 'file'));
-    $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label' => 'Remove existing file'));
+    <?php
+    echo $this->Form->create('Model', array('type' => 'file'));
+    echo $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label' => 'Remove existing file'));
 
 ## License
 
