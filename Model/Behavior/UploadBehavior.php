@@ -1365,8 +1365,17 @@ class UploadBehavior extends ModelBehavior {
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
-		$dir = $data[$model->alias][$options['fields']['dir']];
-		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
+		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
+			$dir = $data[$model->alias][$options['fields']['dir']];
+		} else {
+			if (in_array($options['pathMethod'], array('_getPathFlat', '_getPathPrimaryKey'))) {
+				$model->id = $data[$model->alias][$model->primaryKey];
+				$dir = call_user_func(array($this, '_getPath'), $model, $field);
+			} else {
+				CakeLog::error(sprintf('Cannot get directory to %s.%s: %s pathMethod is not supported.', $model->alias, $field, $options['pathMethod']));
+			}
+		}
+		$filePathDir = $this->settings[$model->alias][$field]['path'] . (empty($dir) ? '' : $dir. DS);
 		$filePath = $filePathDir.$data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
 
@@ -1384,7 +1393,7 @@ class UploadBehavior extends ModelBehavior {
 			return $this->__filesToRemove;
 		}
 
-		$DS = DIRECTORY_SEPARATOR;
+		$DS = empty($dir) ? '' : DIRECTORY_SEPARATOR;
 		$mimeType = $this->_getMimeType($filePath);
 		$isMedia = $this->_isMedia($model, $mimeType);
 		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
