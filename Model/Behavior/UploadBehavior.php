@@ -489,6 +489,29 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
+ * Check that either a file was uploaded,
+ * or the existing value in the database is not blank.
+ *
+ * @param Object $model
+ * @param mixed $check Value to check
+ * @return boolean Success
+ * @access public
+ */
+	public function isFileUploadOrHasExistingValue(Model $model, $check) {
+		if(!$this->isFileUpload($model, $check)){
+			$pkey = $model->primaryKey;
+			if($model->data[$model->alias][$pkey]){
+				$field = $this->_getField($check);
+				$fieldValue = $model->field($field, array($pkey => $model->data[$model->alias][$pkey]));
+				return !empty($fieldValue);
+			} else {
+				return false; // New record - there cannot be an existing value
+			}
+		}
+		return true;
+	}
+
+/**
  * Check that the PHP temporary directory is missing
  *
  * @param Object $model
