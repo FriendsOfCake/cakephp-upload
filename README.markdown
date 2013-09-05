@@ -524,6 +524,17 @@ Check that a file was uploaded
 		)
 	);
 
+#### isFileUploadOrHasExistingValue
+
+Check that either a file was uploaded, or the existing value in the database is not blank
+
+	public $validate = array(
+		'photo' => array(
+			'rule' => 'isFileUploadOrHasExistingValue',
+			'message' => 'File was missing from submission'
+		)
+	);
+
 #### tempDirExists
 
 Check that the PHP temporary directory is missing
