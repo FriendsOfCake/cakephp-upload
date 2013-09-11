@@ -74,6 +74,8 @@ class UploadBehavior extends ModelBehavior {
 	private $__foldersToRemove = array();
 
 	protected $_removingOnly = array();
+	
+	protected $options = array();
 
 /**
  * Runtime configuration for this behavior
@@ -169,7 +171,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$options['pathMethod'] = '_getPath' . Inflector::camelize($options['pathMethod']);
 			$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
-			$this->settings[$model->alias][$field] = $options;
+			$this->settings[$model->alias][$field] = $this->options = $options;
 		}
 	}
 
@@ -217,6 +219,22 @@ class UploadBehavior extends ModelBehavior {
 			if (!is_array($model->data[$model->alias][$field])) continue;
 
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
+			
+			// Add file name processing if set
+			$fileName = $this->runtime[$model->alias][$field]['name'];
+			if(!empty($this->options['fileNameFunction'])){
+				if(method_exists($model, $this->options['fileNameFunction'])){
+					$fileName = $model->{$this->options['fileNameFunction']}($fileName);
+				}
+				elseif(function_exists($this->options['fileNameFunction'])){
+					$fileName = call_user_func($this->options['fileNameFunction'], $fileName);
+				}
+			
+				if(!$fileName){
+					CakeLog::write('debug', sprintf(__('No filename resulting after parsing. Function: %s'),$this->options['fileNameFunction']));
+				}
+			}
+			$this->runtime[$model->alias][$field]['name'] = $fileName;
 
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
