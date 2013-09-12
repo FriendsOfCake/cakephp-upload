@@ -498,9 +498,9 @@ class UploadBehavior extends ModelBehavior {
  * @access public
  */
 	public function isFileUploadOrHasExistingValue(Model $model, $check) {
-		if(!$this->isFileUpload($model, $check)){
+		if (!$this->isFileUpload($model, $check)) {
 			$pkey = $model->primaryKey;
-			if($model->data[$model->alias][$pkey]){
+			if (!empty($model->data[$model->alias][$pkey])) {
 				$field = $this->_getField($check);
 				$fieldValue = $model->field($field, array($pkey => $model->data[$model->alias][$pkey]));
 				return !empty($fieldValue);
