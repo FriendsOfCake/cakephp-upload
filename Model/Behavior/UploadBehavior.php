@@ -266,7 +266,7 @@ class UploadBehavior extends ModelBehavior {
 				}
 			
 				if (!$fileName) {
-					CakeLog::write('debug', sprintf(__('No filename resulting after parsing. Function: %s'),$this->options['fileNameFunction']));
+					CakeLog::write('debug', sprintf(__('No filename after parsing. Function: %s is broken'),$this->options['fileNameFunction']));
 				}
 			}
 			$this->runtime[$model->alias][$field]['name'] = $fileName;
