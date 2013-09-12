@@ -217,7 +217,7 @@ class UploadBehavior extends ModelBehavior {
 			if (!is_array($model->data[$model->alias][$field])) continue;
 
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
-
+			
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
@@ -255,6 +255,21 @@ class UploadBehavior extends ModelBehavior {
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
+			
+			// Add file name processing if set
+			$fileName = $this->runtime[$model->alias][$field]['name'];
+			if (!empty($this->settings[$model->alias][$field]['fileNameFunction'])) {
+				if (is_callable(array($model, $this->settings[$model->alias][$field]['fileNameFunction']),true, $callable_name)) {
+					$fileName = $model->{$this->settings[$model->alias][$field]['fileNameFunction']}($fileName);
+				} else if (is_callable($this->settings[$model->alias][$field]['fileNameFunction'])) {
+					$fileName = call_user_func($this->settings[$model->alias][$field]['fileNameFunction'], $fileName);
+				}
+			
+				if (!$fileName) {
+					CakeLog::write('debug', sprintf(__('No filename after parsing. Function: %s is broken'),$this->options['fileNameFunction']));
+				}
+			}
+			$this->runtime[$model->alias][$field]['name'] = $fileName;
 
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
