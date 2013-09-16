@@ -940,16 +940,16 @@ class UploadBehavior extends ModelBehavior {
 			$image->cropThumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 			// calculate heigh according to aspect ratio
-			$image->thumbnailImage((int)$geometry-1, 0);
+			$image->thumbnailImage((int)$geometry, 0);
 		} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 			// calculate width according to aspect ratio
-			$image->thumbnailImage(0, (int)$geometry-1);
+			$image->thumbnailImage(0, (int)$geometry);
 		} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 			// calculate shortest side according to aspect ratio
 			$destW = 0;
 			$destH = 0;
-			$destW = ($width > $height) ? (int)$geometry-1 : 0;
-			$destH = ($width > $height) ? 0 : (int)$geometry-1;
+			$destW = ($width > $height) ? (int)$geometry : 0;
+			$destH = ($width > $height) ? 0 : (int)$geometry;
 
 			$imagickVersion = phpversion('imagick');
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
@@ -1090,16 +1090,16 @@ class UploadBehavior extends ModelBehavior {
 				$resizeMode = 'best';
 			} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 				// calculate heigh according to aspect ratio
-				$destW = (int)$geometry-1;
+				$destW = (int)$geometry;
 				$resizeMode = false;
 			} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 				// calculate width according to aspect ratio
-				$destH = (int)$geometry-1;
+				$destH = (int)$geometry;
 				$resizeMode = false;
 			} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 				// calculate shortest side according to aspect ratio
-				if ($srcW > $srcH) $destW = (int)$geometry-1;
-				else $destH = (int)$geometry-1;
+				if ($srcW > $srcH) $destW = (int)$geometry;
+				else $destH = (int)$geometry;
 				$resizeMode = false;
 			}
 			if (!isset($destW)) $destW = ($destH/$srcH) * $srcW;
