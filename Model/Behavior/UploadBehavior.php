@@ -43,7 +43,7 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnailQuality' => 75,
 		'thumbnailSizes' => array(),
 		'thumbnailType' => false,
-		'forceThumbnailSize' => true,
+		'thumbnailEnlarge' => true,
 		'deleteOnUpdate' => false,
 		'mediaThumbnailType' => 'png',
 		'saveDir' => true,
@@ -952,7 +952,7 @@ class UploadBehavior extends ModelBehavior {
 			$destW = ($width > $height) ? (int)$geometry : 0;
 			$destH = ($width > $height) ? 0 : (int)$geometry;
 
-			if ($this->settings[$model->alias][$field]['forceThumbnailSize'] || ( $destH < $height && $destW < $width )) {
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || ($destH < $height && $destW < $width)) {
 				$imagickVersion = phpversion('imagick');
 				$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
 			}
