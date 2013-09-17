@@ -941,10 +941,14 @@ class UploadBehavior extends ModelBehavior {
 			$image->cropThumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 			// calculate heigh according to aspect ratio
-			$image->thumbnailImage((int)$geometry, 0);
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || (int)$geometry < $width) {
+				$image->thumbnailImage((int)$geometry, 0);
+			}
 		} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 			// calculate width according to aspect ratio
-			$image->thumbnailImage(0, (int)$geometry);
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || (int)$geometry < $height) {
+				$image->thumbnailImage(0, (int)$geometry);
+			}
 		} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 			// calculate shortest side according to aspect ratio
 			$destW = 0;
