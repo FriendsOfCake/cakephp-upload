@@ -156,16 +156,16 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->alias,
 			'photo',
 			$this->data['test_ok']['photo']['tmp_name'],
-			$this->MockUpload->settings['TestUpload']['photo']['path'] . 2 . DS . $this->data['test_ok']['photo']['name']
+			$this->MockUpload->settings['TestUpload']['photo']['path'] . 3 . DS . $this->data['test_ok']['photo']['name']
 		);
 		$result = $this->TestUpload->save($this->data['test_ok']);
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
 		$expectedRecord = array(
 			'TestUpload' => array(
-				'id' => 2,
+				'id' => 3,
 				'photo' => 'Photo.png',
-				'dir' => 2,
+				'dir' => 3,
 				'type' => 'image/png',
 				'size' => 8192,
 				'other_field' => null
@@ -309,7 +309,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($data);
 		$this->assertInternalType('array', $result);
 	}
-	
+
 	function testKeepFileOnFalseRemoveSave() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
@@ -325,7 +325,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($data);
 		$this->assertInternalType('array', $result);
 	}
-	
+
 	function testKeepFileOnNullRemoveSave() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->never())->method('unlink');
@@ -473,6 +473,157 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertFalse($this->TestUpload->validates());
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isFileUpload', current($this->TestUpload->validationErrors['photo']));
+
+		$this->TestUpload->set($this->data['test_ok']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+
+		$this->TestUpload->set($this->data['test_remove']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+/**
+ * This simulates the case where we are uploading no file
+ * to an existing record, which DOES have an existing value.
+ */
+	function testIsFileUploadOrHasExistingValueEditingWithExistingValue() {
+		$this->TestUpload->validate = array(
+			'photo' => array(
+				'isFileUploadOrHasExistingValue' => array(
+					'rule' => 'isFileUploadOrHasExistingValue',
+					'message' => 'isFileUploadOrHasExistingValue'
+				),
+			)
+		);
+
+		$data = array(
+			'id' => 1, // Fixture record #1 has an existing value.
+			'photo' => array(
+				'tmp_name'  => 'Photo.png',
+				'dir'   => '/tmp/php/file.tmp',
+				'type'  => 'image/png',
+				'size'  => 8192,
+				'error' => UPLOAD_ERR_NO_FILE,
+			)
+		);
+		$this->TestUpload->set($data);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+
+		$this->TestUpload->set($this->data['test_ok']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+
+		$this->TestUpload->set($this->data['test_remove']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+/**
+ * This simulates the case where we are uploading no file
+ * to an existing record, which does NOT have an existing value.
+ */
+	function testIsFileUploadOrHasExistingValueEditingWithoutExistingValue() {
+		$this->TestUpload->validate = array(
+			'photo' => array(
+				'isFileUploadOrHasExistingValue' => array(
+					'rule' => 'isFileUploadOrHasExistingValue',
+					'message' => 'isFileUploadOrHasExistingValue'
+				),
+			)
+		);
+
+		$data = array(
+			'id' => 2, // Fixture record #2 has no existing value.
+			'photo' => array(
+				'tmp_name'  => 'Photo.png',
+				'dir'   => '/tmp/php/file.tmp',
+				'type'  => 'image/png',
+				'size'  => 8192,
+				'error' => UPLOAD_ERR_NO_FILE,
+			)
+		);
+		$this->TestUpload->set($data);
+		$this->assertFalse($this->TestUpload->validates());
+		$this->assertEqual(1, count($this->TestUpload->validationErrors));
+		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
+
+		$this->TestUpload->set($this->data['test_ok']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+
+		$this->TestUpload->set($this->data['test_remove']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+/**
+ * This simulates the case where the same view is used for add / edit,
+ * and so when adding records, the data will contain a blank id key.
+ */
+	function testIsFileUploadOrHasExistingValueAddingNewRecordWithEmptyId() {
+		$this->TestUpload->validate = array(
+			'photo' => array(
+				'isFileUploadOrHasExistingValue' => array(
+					'rule' => 'isFileUploadOrHasExistingValue',
+					'message' => 'isFileUploadOrHasExistingValue'
+				),
+			)
+		);
+
+		$data = array(
+			'id' => '', // intentionally have an id key, but leave it blank.
+			'photo' => array(
+				'tmp_name'  => 'Photo.png',
+				'dir'   => '/tmp/php/file.tmp',
+				'type'  => 'image/png',
+				'size'  => 8192,
+				'error' => UPLOAD_ERR_NO_FILE,
+			)
+		);
+		$this->TestUpload->set($data);
+		$this->assertFalse($this->TestUpload->validates());
+		$this->assertEqual(1, count($this->TestUpload->validationErrors));
+		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
+
+		$this->TestUpload->set($this->data['test_ok']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+
+		$this->TestUpload->set($this->data['test_remove']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+/**
+ * This simulates the case where different views are used for add / edit,
+ * and so when adding records, the data will not contain no id key at all.
+ */
+	function testIsFileUploadOrHasExistingValueAddingNewRecordWithNoIdKeyAtAll() {
+		$this->TestUpload->validate = array(
+			'photo' => array(
+				'isFileUploadOrHasExistingValue' => array(
+					'rule' => 'isFileUploadOrHasExistingValue',
+					'message' => 'isFileUploadOrHasExistingValue'
+				),
+			)
+		);
+
+		$data = array(
+			//'id' => '', // intentionally do NOT have an id key at all.
+			'photo' => array(
+				'tmp_name'  => 'Photo.png',
+				'dir'   => '/tmp/php/file.tmp',
+				'type'  => 'image/png',
+				'size'  => 8192,
+				'error' => UPLOAD_ERR_NO_FILE,
+			)
+		);
+		$this->TestUpload->set($data);
+		$this->assertFalse($this->TestUpload->validates());
+		$this->assertEqual(1, count($this->TestUpload->validationErrors));
+		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
 
 		$this->TestUpload->set($this->data['test_ok']);
 		$this->assertTrue($this->TestUpload->validates());

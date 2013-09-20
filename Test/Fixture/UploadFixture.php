@@ -20,7 +20,15 @@ class UploadFixture extends CakeTestFixture {
 			'photo' => 'Photo.png',
 			'dir' => '1',
 			'type' => 'image/png',
-			'size' => 8192	
+			'size' => 8192
+		),
+		array(
+			// Intentionally empty record, for testing isFileUploadOrHasExistingValue validation
+			'id' => 2,
+			'photo' => '',
+			'dir' => '',
+			'type' => '',
+			'size' => 0
 		),
 	);
 }
