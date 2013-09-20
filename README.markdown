@@ -1,5 +1,6 @@
-# Upload Plugin 2.0 [![Build Status](https://travis-ci.org/josegonzalez/upload.png?branch=master)](https://travis-ci.org/josegonzalez/upload)
+[![Build Status](https://travis-ci.org/josegonzalez/upload.png?branch=master)](https://travis-ci.org/josegonzalez/upload) [![Coverage Status](https://coveralls.io/repos/josegonzalez/upload/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/upload?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/upload/d/total.png)](https://packagist.org/packages/josegonzalez/upload) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/upload/v/stable.png)](https://packagist.org/packages/josegonzalez/upload)
 
+# Upload Plugin 2.0
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 
@@ -16,7 +17,17 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 
 ## Installation
 
-For CakePHP 1.3 support, please see the [1.3 branch](https://github.com/josegonzalez/upload/tree/1.3).
+_[Using [Composer](http://getcomposer.org/)]_
+
+Add the plugin to your project's `composer.json` - something like this:
+
+	{
+		"require": {
+			"josegonzalez/upload": "dev-master"
+		}
+	}
+
+Because this plugin has the type `cakephp-plugin` set in it's own `composer.json`, composer knows to install it inside your `/Plugins` directory, rather than in the usual vendors file. It is recommended that you add `/Plugins/Upload` to your .gitignore file. (Why? [read this](http://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).)
 
 _[Manual]_
 
@@ -38,18 +49,6 @@ _[GIT Clone]_
 In your `Plugin` directory type:
 
 	git clone -b master git://github.com/josegonzalez/upload.git Upload
-
-_[Using [Composer](http://getcomposer.org/)]_
-
-Add the plugin to your project's `composer.json` - something like this:
-
-	{
-		"require": {
-			"josegonzalez/upload": "dev-master"
-		}
-	}
-
-Because this plugin has the type `cakephp-plugin` set in it's own `composer.json`, composer knows to install it inside your `/Plugins` directory, rather than in the usual vendors file. It is recommended that you add `/Plugins/Upload` to your .gitignore file. (Why? [read this](http://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).)
 
 ### Imagick Support
 
@@ -843,7 +842,9 @@ remove the entire record from the Model.  In this case you would use the followi
 
 ## License
 
-Copyright (c) 2010-2012 Jose Diaz-Gonzalez
+The MIT License (MIT)
+
+Copyright (c) 2010 Jose Diaz-Gonzalez
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
