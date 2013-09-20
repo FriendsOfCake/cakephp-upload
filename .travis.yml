@@ -7,7 +7,7 @@ php:
 
 env:
   global:
-    - REPO_NAME=upload
+    - REPO_NAME="cakephp-upload"
     - PLUGIN_NAME=Upload
   matrix:
     - DB=mysql CAKE_VERSION=master

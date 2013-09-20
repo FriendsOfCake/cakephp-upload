@@ -14,7 +14,7 @@
  * @copyright     Copyright 2010, Jose Diaz-Gonzalez
  * @package       upload
  * @subpackage    upload.models.behaviors
- * @link          http://github.com/josegonzalez/upload
+ * @link          http://github.com/josegonzalez/cakephp-upload
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Folder', 'Utility');

@@ -4,7 +4,7 @@ Upload loves to welcome your contributions. There are several ways to help out:
 * Create a ticket in GitHub, if you have found a bug
 * Write testcases for open bug tickets
 * Write patches for open bug/feature tickets, preferably with testcases included
-* Contribute to the [documentation](https://github.com/josegonzalez/upload/tree/gh-pages)
+* Contribute to the [documentation](https://github.com/josegonzalez/cakephp-upload/tree/gh-pages)
 
 There are a few guidelines that we need contributors to follow so that we have a
 chance of keeping on top of things.
@@ -63,7 +63,7 @@ for the sniff and phpcs.
 # Additional Resources
 
 * [CakePHP coding standards](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html)
-* [Bug tracker](https://github.com/josegonzalez/upload/issues)
+* [Bug tracker](https://github.com/josegonzalez/cakephp-upload/issues)
 * [General GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
 * #cakephp IRC channel on freenode.org

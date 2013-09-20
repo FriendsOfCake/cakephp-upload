@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/josegonzalez/upload.png?branch=master)](https://travis-ci.org/josegonzalez/upload) [![Coverage Status](https://coveralls.io/repos/josegonzalez/upload/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/upload?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/upload/d/total.png)](https://packagist.org/packages/josegonzalez/upload) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/upload/v/stable.png)](https://packagist.org/packages/josegonzalez/upload)
+[![Build Status](https://travis-ci.org/josegonzalez/cakephp-upload.png?branch=master)](https://travis-ci.org/josegonzalez/cakephp-upload) [![Coverage Status](https://coveralls.io/repos/josegonzalez/cakephp-upload/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/cakephp-upload?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/cakephp-upload/d/total.png)](https://packagist.org/packages/josegonzalez/cakephp-upload) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/cakephp-upload/v/stable.png)](https://packagist.org/packages/josegonzalez/cakephp-upload)
 
 # Upload Plugin 2.0
 
-The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
+The Upload Plugin is an attempt to sanely upload files using techniques garnered packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/cakephp-uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 
 ## Background
 
@@ -23,7 +23,7 @@ Add the plugin to your project's `composer.json` - something like this:
 
 	{
 		"require": {
-			"josegonzalez/upload": "dev-master"
+			"josegonzalez/cakephp-upload": "dev-master"
 		}
 	}
 
@@ -31,7 +31,7 @@ Because this plugin has the type `cakephp-plugin` set in it's own `composer.json
 
 _[Manual]_
 
-* Download this: [http://github.com/josegonzalez/upload/zipball/master](http://github.com/josegonzalez/upload/zipball/master)
+* Download this: [http://github.com/josegonzalez/cakephp-upload/zipball/master](http://github.com/josegonzalez/cakephp-upload/zipball/master)
 * Unzip that download.
 * Copy the resulting folder to `app/Plugin`
 * Rename the folder you just copied to `Upload`
@@ -40,7 +40,7 @@ _[GIT Submodule]_
 
 In your app directory type:
 
-	git submodule add -b master git://github.com/josegonzalez/upload.git Plugin/Upload
+	git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
 	git submodule init
 	git submodule update
 
@@ -48,7 +48,7 @@ _[GIT Clone]_
 
 In your `Plugin` directory type:
 
-	git clone -b master git://github.com/josegonzalez/upload.git Upload
+	git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
 
 ### Imagick Support
 
