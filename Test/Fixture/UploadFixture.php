@@ -1,27 +1,39 @@
 <?php
 /* Upload Fixture generated on: 2010-08-11 21:08:00 : 1281575760 */
 class UploadFixture extends CakeTestFixture {
-	var $name = 'Upload';
 
-	var $fields = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
-		'photo' => array('type' => 'string', 'null' => true, 'default' => NULL),
-		'dir' => array('type' => 'string', 'null' => true, 'default' => NULL),
-		'type' => array('type' => 'string', 'null' => true, 'default' => NULL),
-		'size' => array('type' => 'integer', 'null' => true, 'default' => NULL),
-		'other_field' => array('type' => 'string', 'null' => true, 'default' => NULL),
+	public $name = 'Upload';
+
+	public $fields = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'photo' => array('type' => 'string', 'null' => true, 'default' => null),
+		'dir' => array('type' => 'string', 'null' => true, 'default' => null),
+		'type' => array('type' => 'string', 'null' => true, 'default' => null),
+		'size' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'other_field' => array('type' => 'string', 'null' => true, 'default' => null),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
-		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array(
+			'charset' => 'utf8',
+			'collate' => 'utf8_general_ci'
+		),
 	);
 
-	var $records = array(
+	public $records = array(
 		array(
 			'id' => 1,
 			'photo' => 'Photo.png',
 			'dir' => '1',
 			'type' => 'image/png',
-			'size' => 8192	
+			'size' => 8192
+		),
+		array(
+			// Intentionally empty record, for testing isFileUploadOrHasExistingValue validation
+			'id' => 2,
+			'photo' => '',
+			'dir' => '',
+			'type' => '',
+			'size' => 0
 		),
 	);
+
 }
-?>
