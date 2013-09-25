@@ -36,6 +36,7 @@ class UploadBehavior extends ModelBehavior {
 		'maxWidth' => 0,
 		'minWidth' => 0,
 		'thumbnails' => true,
+		'thumbnailEnlarge' => true,
 		'thumbnailMethod' => 'imagick',
 		'thumbnailName' => null,
 		'thumbnailPath' => null,
@@ -968,10 +969,14 @@ class UploadBehavior extends ModelBehavior {
 			$image->cropThumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 			// calculate heigh according to aspect ratio
-			$image->thumbnailImage((int)$geometry, 0);
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || (int)$geometry < $width) {
+				$image->thumbnailImage((int)$geometry, 0);
+			}
 		} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 			// calculate width according to aspect ratio
-			$image->thumbnailImage(0, (int)$geometry);
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || (int)$geometry < $height) {
+				$image->thumbnailImage(0, (int)$geometry);
+			}
 		} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 			// calculate shortest side according to aspect ratio
 			$destW = 0;
@@ -979,8 +984,10 @@ class UploadBehavior extends ModelBehavior {
 			$destW = ($width > $height) ? (int)$geometry : 0;
 			$destH = ($width > $height) ? 0 : (int)$geometry;
 
-			$imagickVersion = phpversion('imagick');
-			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
+			if ($this->settings[$model->alias][$field]['thumbnailEnlarge'] || ($destH < $height && $destW < $width)) {
+				$imagickVersion = phpversion('imagick');
+				$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
+			}
 		}
 
 		if ($isMedia) {

@@ -434,6 +434,8 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
   * Default: (int) `75`
 * `thumbnailSizes`: Array of thumbnail sizes, with the size-name mapping to a geometry
   * Default: (array) empty
+* `thumbnailEnlarge`: When creating thumbnails by width (`120l`), height (`120h`), or longest side (`120l`), enlarge the image if the thumbnail will be bigger than the original image. If you set this to false, the thumbnail file will still be created, but it will never be bigger than the original image.
+  * Default: (boolean) `true`
 * `thumbnailType`: Override the type of the generated thumbnail
   * Default: (mixed) `false` or `png` when the upload is a Media file
   * Options:
