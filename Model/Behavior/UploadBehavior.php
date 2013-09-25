@@ -953,13 +953,13 @@ class UploadBehavior extends ModelBehavior {
 
 			$imagickVersion = phpversion('imagick');
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
-		} elseif (preg_match('/^m[\\d]+w$/', $geometry)) {
+		} elseif (preg_match('/^[\\d]+wm$/', $geometry)) {
 			// calculate heigh according to aspect ratio
 			$image->thumbnailImage((int)$geometry, 0);
-		} elseif (preg_match('/^m[\\d]+h$/', $geometry)) {
+		} elseif (preg_match('/^[\\d]+hm$/', $geometry)) {
 			// calculate width according to aspect ratio
 			$image->thumbnailImage(0, (int)$geometry);
-		} elseif (preg_match('/^m[\\d]+l$/', $geometry)) {
+		} elseif (preg_match('/^[\\d]+lm$/', $geometry)) {
 			// calculate shortest side according to aspect ratio
 			$destW = 0;
 			$destH = 0;
