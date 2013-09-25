@@ -1151,6 +1151,22 @@ class UploadBehavior extends ModelBehavior {
 					$destH = (int)$geometry;
 				}
 				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+mw$/', $geometry)) {
+				// calculate heigh according to aspect ratio
+				$destW = (int)$geometry;
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+mh$/', $geometry)) {
+				// calculate width according to aspect ratio
+				$destH = (int)$geometry;
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+ml$/', $geometry)) {
+				// calculate shortest side according to aspect ratio
+				if ($srcW > $srcH) {
+					$destW = (int)$geometry;
+				} else {
+					$destH = (int)$geometry;
+				}
+				$resizeMode = false;
 			}
 
 			if (!isset($destW)) {
