@@ -19,11 +19,11 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-Add the plugin to your project's `composer.json` - something like this:
+[View on Packagist](https://packagist.org/packages/josegonzalez/cakephp-upload), and copy the json snippet for the latest version into your project's `composer.json`. Eg, v. 1.0.0 would look like this:
 
 	{
 		"require": {
-			"josegonzalez/cakephp-upload": "dev-master"
+			"josegonzalez/cakephp-upload": "1.0.0"
 		}
 	}
 
