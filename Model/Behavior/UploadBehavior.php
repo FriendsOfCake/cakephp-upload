@@ -1205,7 +1205,9 @@ class UploadBehavior extends ModelBehavior {
 	 * Download remote file into PHP's TMP dir
 	 */
 	public function _grab(Model $model, $field, $uri) {
-		$socket = new HttpSocket();
+		$socket = new HttpSocket(array(
+			'ssl_verify_host' => false
+		));
 		$file = $socket->get($uri, array(), array('redirect' => true));
 		$headers = $socket->response['header'];
 		$file_name = basename($socket->request['uri']['path']);
