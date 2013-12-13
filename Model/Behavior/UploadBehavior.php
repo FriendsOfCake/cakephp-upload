@@ -952,6 +952,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$image->readImage($srcFile);
+		$this->_exifRotateImagick($image);
 		$height = $image->getImageHeight();
 		$width = $image->getImageWidth();
 
@@ -1067,22 +1068,7 @@ class UploadBehavior extends ModelBehavior {
 
 		copy($srcFile, $destFile);
 		$src = null;
-		$createHandler = null;
 		$outputHandler = null;
-		switch (strtolower($pathInfo['extension'])) {
-			case 'gif':
-				$createHandler = 'imagecreatefromgif';
-				break;
-			case 'jpg':
-			case 'jpeg':
-				$createHandler = 'imagecreatefromjpeg';
-				break;
-			case 'png':
-				$createHandler = 'imagecreatefrompng';
-				break;
-			default:
-				return false;
-		}
 
 		$supportsThumbnailQuality = false;
 		$adjustedThumbnailQuality = $this->settings[$model->alias][$field]['thumbnailQuality'];
@@ -1105,7 +1091,9 @@ class UploadBehavior extends ModelBehavior {
 				return false;
 		}
 
-		if ($src = $createHandler($destFile)) {
+		$src = $this->_createImageResource($destFile, $pathInfo);
+		if ($src) {
+
 			$srcW = imagesx($src);
 			$srcH = imagesy($src);
 
@@ -1192,6 +1180,158 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 		return false;
+	}
+
+	protected function _createImageResource($filename, $pathInfo) {
+		switch (strtolower($pathInfo['extension'])) {
+			case 'gif':
+				$src = imagecreatefromgif($filename);
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$src = $this->_imagecreatefromjpegexif($filename);
+				break;
+			case 'png':
+				$src = imagecreatefrompng($filename);
+				break;
+			default:
+				return false;
+		}
+
+		return $src;
+	}
+
+/**
+ * Same as imagecreatefromjpeg, but honouring the file's Exif data.
+ * See http://www.php.net/manual/en/function.imagecreatefromjpeg.php#112902
+ */
+	protected function _imagecreatefromjpegexif($filename) {
+		$image = imagecreatefromjpeg($filename);
+		$exif = exif_read_data($filename);
+		if ($image && $exif && isset($exif['Orientation'])) {
+			$ort = $exif['Orientation'];
+		} else {
+			return $image;
+		}
+
+		$trans = $this->_exifOrientationTransformations($ort);
+
+		if ($trans['flip_vert']) {
+			$image = $this->_flipImage($image,'vert');
+		}
+
+		if ($trans['flip_horz']) {
+			$image = $this->_flipImage($image,'horz');
+		}
+
+		if ($trans['rotate_clockwise']) {
+			$image = imagerotate($image, -1 * $trans['rotate_clockwise'], 0);
+		}
+
+		return $image;
+	}
+
+/**
+ * Determine what transformations need to be applied to an image,
+ * in order to maintain it's orientation and get rid of it's Exif Orientation data
+ * http://www.impulseadventure.com/photo/exif-orientation.html
+ * @param  int $orientation The exif orientation of the image
+ * @return array of transformations - array keys are:
+ * 'flip_vert' - true if the image needs to be flipped vertically
+ * 'flip_horz' - true if the image needs to be flipped horizontally
+ * 'rotate_clockwise' - number of degrees image needs to be rotated, clockwise
+ */
+	protected function _exifOrientationTransformations($orientation) {
+		$trans = array(
+			'flip_vert' => false,
+			'flip_horz' => false,
+			'rotate_clockwise' => 0,
+		);
+
+		switch($orientation) {
+			case 1:
+				break;
+
+			case 2:
+				$trans['flip_horz'] = true;
+				break;
+
+			case 3:
+				$trans['rotate_clockwise'] = 180;
+				break;
+
+			case 4:
+				$trans['flip_vert'] = true;
+				break;
+
+			case 5:
+				$trans['flip_vert'] = true;
+				$trans['rotate_clockwise'] = 90;
+				break;
+
+			case 6:
+				$trans['rotate_clockwise'] = 90;
+				break;
+
+			case 7:
+				$trans['flip_horz'] = true;
+				$trans['rotate_clockwise'] = 90;
+				break;
+
+			case 8:
+				$trans['rotate_clockwise'] = -90;
+				break;
+		}
+
+		return $trans;
+	}
+
+/**
+ * Flip an image object. Code from http://www.roscripts.com/snippets/show/55
+ * @param  resource $img An image resource, such as one returned by imagecreatefromjpeg()
+ * @param  string $type 'horz' or 'vert'
+ * @return resource The flipped image
+ */
+	protected function _flipImage($img, $type) {
+		$width = imagesx($img);
+		$height = imagesy($img);
+		$dest = imagecreatetruecolor($width, $height);
+		switch($type){
+			case 'vert':
+				for ($i = 0; $i < $height; $i++) {
+					imagecopy($dest, $img, 0, ($height - $i - 1), 0, $i, $width, 1);
+				}
+				break;
+			case 'horz':
+				for ($i = 0; $i < $width; $i++) {
+					imagecopy($dest, $img, ($width - $i - 1), 0, $i, 0, 1, $height);
+				}
+				break;
+		}
+		return $dest;
+	}
+
+/**
+ * rotate an imagick object based on it's exif data.
+ * @param  imagick $image an instance of imagick
+ */
+	protected function _exifRotateImagick($image) {
+		$orientation = $image->getImageOrientation();
+		$trans = $this->_exifOrientationTransformations($orientation);
+
+		if ($trans['flip_vert']) {
+			$image->flopImage();
+		}
+
+		if ($trans['flip_horz']) {
+			$image->flipImage();
+		}
+
+		if ($trans['rotate_clockwise']) {
+			$image->rotateimage("#000", $trans['rotate_clockwise']);
+		}
+
+		$image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 	}
 
 	protected function _getPath(Model $model, $field) {
