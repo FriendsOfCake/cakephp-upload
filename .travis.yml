@@ -7,33 +7,34 @@ php:
 
 env:
   global:
-    - REPO_NAME="cakephp-upload"
     - PLUGIN_NAME=Upload
+    - REQUIRE=""
+    - DB=mysql CAKE_VERSION=2.4
   matrix:
-    - DB=mysql CAKE_VERSION=master
+    - DB=mysql CAKE_VERSION=2.4
     - DB=mysql CAKE_VERSION=2.5
 
 matrix:
   include:
     - php: 5.4
       env:
-        - DB=mysql CAKE_VERSION=master COVERALLS=1
+        - COVERALLS=1
     - php: 5.4
       env:
-        - DB=mysql CAKE_VERSION=master PHPCS=1
+        - PHPCS=1
+    - php: 5.4
+      env:
+        - FOC_VALIDATE=1
 
 before_script:
-  - cd ..
-  - git clone git://github.com/cakephp/cakephp.git --branch $CAKE_VERSION --depth 1
-  - cd cakephp/app
-  - git clone https://github.com/FriendsOfCake/travis.git
-  - ./travis/before_script.sh
+  - git clone https://github.com/FriendsOfCake/travis.git --depth 1 ../travis
+  - ../travis/before_script.sh
 
 script:
-  - ./travis/script.sh
+  - ../travis/script.sh
 
 after_success:
-  - ./travis/after_success.sh
+  - ../travis/after_success.sh
 
 notifications:
   email: false
