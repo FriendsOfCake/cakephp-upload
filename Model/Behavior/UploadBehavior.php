@@ -1217,11 +1217,11 @@ class UploadBehavior extends ModelBehavior {
 		$trans = $this->_exifOrientationTransformations($ort);
 
 		if ($trans['flip_vert']) {
-			$image = $this->_flipImage($image,'vert');
+			$image = $this->_flipImage($image, 'vert');
 		}
 
 		if ($trans['flip_horz']) {
-			$image = $this->_flipImage($image,'horz');
+			$image = $this->_flipImage($image, 'horz');
 		}
 
 		if ($trans['rotate_clockwise']) {
