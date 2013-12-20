@@ -342,7 +342,8 @@ class UploadBehavior extends ModelBehavior {
 			if ($model->hasField($options['fields']['dir'])) {
 				if ($created && $options['pathMethod'] == '_getPathFlat') {
 				} elseif ($options['saveDir']) {
-					$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
+					$db = $model->getDataSource();
+					$temp[$model->alias][$options['fields']['dir']] = $db->value($tempPath, 'string');
 				}
 			}
 		}
