@@ -244,6 +244,23 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertSame((string)$nextId, $this->TestUploadTwo->field('dir', array('TestUploadTwo.id' => $nextId)));
 	}
 
+	public function testSaveDirEscaped() {
+		$this->TestUpload->actsAs['Upload.Upload']['photo']['pathMethod'] = 'random';
+		$this->mockUpload(array('handleUploadedFile', 'unlink', '_getMimeType', '_createThumbnails', '_getPathRandom'));
+
+		$DS = '\\';
+		$randomPath = '01' . $DS . '02' . $DS . '03';
+
+		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
+		$this->MockUpload->expects($this->once())->method('_getPathRandom')->will($this->returnValue($randomPath));
+
+		$result = $this->TestUpload->save($this->data['test_ok']);
+		$this->assertInternalType('array', $result);
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+
+		$this->assertSame($randomPath, $newRecord['TestUpload']['dir']);
+	}
+
 	public function testDeleteOnUpdate() {
 		$this->TestUpload->actsAs['Upload.Upload']['photo']['deleteOnUpdate'] = true;
 		$this->mockUpload();
