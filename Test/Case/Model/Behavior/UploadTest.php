@@ -989,6 +989,17 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
 
+	public function testGetPathRandomCombined() {
+		$this->TestUpload->id = 5;
+		$basePath = 'tests' . DS . 'path' . DS . 'random' . DS;
+		$result = $this->TestUpload->Behaviors->Upload->_getPathRandomCombined($this->TestUpload, 'photo', TMP . $basePath);
+
+		$this->assertInternalType('string', $result);
+		$this->assertEqual(9 + strlen($this->TestUpload->id), strlen($result));
+		$this->assertEqual(substr($result, 0, strlen($this->TestUpload->id)), $this->TestUpload->id);
+		$this->assertTrue(is_dir(TMP . $basePath . $result));
+	}
+
 	public function testReplacePath() {
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_path', array(
 			$this->TestUpload, 'photo', array('path' => 'webroot{DS}files/{model}\\{field}{DS}')
