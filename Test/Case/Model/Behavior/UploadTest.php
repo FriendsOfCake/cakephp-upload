@@ -408,13 +408,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isUnderPhpSizeLimit', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testIsUnderFormSizeLimit() {
@@ -441,13 +435,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isUnderFormSizeLimit', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testIsCompletedUpload() {
@@ -474,13 +462,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isCompletedUpload', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testIsFileUpload() {
@@ -507,13 +489,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isFileUpload', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 /**
@@ -544,13 +520,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 /**
@@ -582,13 +552,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 /**
@@ -620,13 +584,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 /**
@@ -658,13 +616,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testTempDirExists() {
@@ -691,13 +643,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('tempDirExists', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testIsSuccessfulWrite() {
@@ -724,13 +670,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isSuccessfulWrite', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testNoPhpExtensionErrors() {
@@ -757,13 +697,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('noPhpExtensionErrors', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 	}
 
 	public function testIsValidMimeType() {
@@ -795,13 +729,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		));
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkAndRemoveCasesValidate();
 
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -812,9 +740,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkCaseValidates();
 	}
 
 	public function testIsValidExtension() {
@@ -869,9 +795,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
 
 		$this->TestUpload->validate['photo']['isValidExtension']['rule'] = array('isValidExtension', array('jpg', 'bmp', 'png'));
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testOkCaseValidates();
 
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -897,9 +821,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(1, count($this->TestUpload->validationErrors));
 		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
 
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testRemoveCaseValidates();
 	}
 
 	public function testIsWritable() {
@@ -938,9 +860,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testRemoveCaseValidates();
 	}
 
 	public function testIsValidDir() {
@@ -979,9 +899,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 
-		$this->TestUpload->set($this->data['test_remove']);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->__testRemoveCaseValidates();
 	}
 
 	public function testIsImage() {
@@ -1271,6 +1189,23 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertInternalType('array', $result);
 		$this->assertEqual(1, count($result));
 		$this->assertEqual(4, count($result['TestUpload']));
+	}
+
+	private function __testOkAndRemoveCasesValidate() {
+		$this->__testOkCaseValidates();
+		$this->__testRemoveCaseValidates();
+	}
+
+	private function __testOkCaseValidates() {
+		$this->TestUpload->set($this->data['test_ok']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+	private function __testRemoveCaseValidates() {
+		$this->TestUpload->set($this->data['test_remove']);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 	}
 
 }
