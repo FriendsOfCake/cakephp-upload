@@ -962,7 +962,6 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 	}
 
-
 	private function __testOkCaseValidates() {
 		$this->__testValidates($this->data['test_ok']);
 	}
