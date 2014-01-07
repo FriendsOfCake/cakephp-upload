@@ -985,6 +985,25 @@ class UploadBehavior extends ModelBehavior {
 
 			$imagickVersion = phpversion('imagick');
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
+		} elseif (preg_match('/^[\\d]+mw$/', $geometry)) {
+			if ((int)$geometry < $width) {
+				$image->thumbnailImage((int)$geometry, 0);
+			}
+		} elseif (preg_match('/^[\\d]+mh$/', $geometry)) {
+			if ((int)$geometry < $height) {
+				$image->thumbnailImage(0, (int)$geometry);
+			}
+		} elseif (preg_match('/^[\\d]+ml$/', $geometry)) {
+			// calculate shortest side according to aspect ratio
+			$destW = 0;
+			$destH = 0;
+			$destW = ($width > $height) ? (int)$geometry : 0;
+			$destH = ($width > $height) ? 0 : (int)$geometry;
+
+			if ($destH < $height && $destW < $width) {
+				$imagickVersion = phpversion('imagick');
+				$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
+			}
 		}
 
 		if ($isMedia) {
@@ -1121,6 +1140,42 @@ class UploadBehavior extends ModelBehavior {
 					$destW = (int)$geometry;
 				} else {
 					$destH = (int)$geometry;
+				}
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+mw$/', $geometry)) {
+				// calculate heigh according to aspect ratio
+				if ((int)$geometry < $srcW) {
+					$destW = (int)$geometry;
+				}
+				else {
+					$destW = $srcW;
+				}
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+mh$/', $geometry)) {
+				// calculate width according to aspect ratio
+				if ((int)$geometry < $srcH) {
+					$destH = (int)$geometry;
+				}
+				else {
+					$destH = $srcH;
+				}
+				$resizeMode = false;
+			} elseif (preg_match('/^[\\d]+ml$/', $geometry)) {
+				// calculate shortest side according to aspect ratio
+				if ($srcW > $srcH) {
+					if ((int)$geometry < $srcW) {
+						$destW = (int)$geometry;
+					}
+					else {
+						$destW = $srcW;
+					}
+				} else {
+					if ((int)$geometry < $srcH) {
+						$destH = (int)$geometry;
+					}
+					else {
+						$destH = $srcH;
+					}
 				}
 				$resizeMode = false;
 			}
