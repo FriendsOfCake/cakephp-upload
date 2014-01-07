@@ -1541,7 +1541,7 @@ class UploadBehavior extends ModelBehavior {
 				} elseif (method_exists($this, $method)) {
 					$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
 				} else {
-					CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $filePath));
+					CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $method));
 					$db = $model->getDataSource();
 					$db->rollback();
 					throw new Exception("Invalid thumbnailMethod %s", $method);
