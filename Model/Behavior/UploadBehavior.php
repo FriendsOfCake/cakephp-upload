@@ -1146,8 +1146,7 @@ class UploadBehavior extends ModelBehavior {
 				// calculate heigh according to aspect ratio
 				if ((int)$geometry < $srcW) {
 					$destW = (int)$geometry;
-				}
-				else {
+				} else {
 					$destW = $srcW;
 				}
 				$resizeMode = false;
@@ -1155,8 +1154,7 @@ class UploadBehavior extends ModelBehavior {
 				// calculate width according to aspect ratio
 				if ((int)$geometry < $srcH) {
 					$destH = (int)$geometry;
-				}
-				else {
+				} else {
 					$destH = $srcH;
 				}
 				$resizeMode = false;
@@ -1165,15 +1163,13 @@ class UploadBehavior extends ModelBehavior {
 				if ($srcW > $srcH) {
 					if ((int)$geometry < $srcW) {
 						$destW = (int)$geometry;
-					}
-					else {
+					} else {
 						$destW = $srcW;
 					}
 				} else {
 					if ((int)$geometry < $srcH) {
 						$destH = (int)$geometry;
-					}
-					else {
+					} else {
 						$destH = $srcH;
 					}
 				}
