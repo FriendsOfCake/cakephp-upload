@@ -394,9 +394,9 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_ok']);
 	}
 
- /**
-	* @dataProvider providerTestValidationRules
-	*/
+/**
+ * @dataProvider providerTestValidationRules
+ */
 	public function testValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -432,9 +432,9 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 	}
 
- /**
-	* @dataProvider providerTestIgnorableValidationRules
-	*/
+/**
+ * @dataProvider providerTestIgnorableValidationRules
+ */
 	public function testIgnorableValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -471,9 +471,9 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 	}
 
- /**
-	* @dataProvider providerTestChangeConfigurationValidationRules
-	*/
+/**
+ * @dataProvider providerTestChangeConfigurationValidationRules
+ */
 	public function testChangeConfigurationValidationRules($rule) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
