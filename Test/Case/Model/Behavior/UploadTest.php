@@ -68,6 +68,16 @@ class UploadBehaviorTest extends CakeTestCase {
 				'error' => UPLOAD_ERR_OK,
 			)
 		);
+		$this->data['test_ok_bmp'] = array(
+			'photo' => array(
+				'name' => 'Photo.bmp',
+				'tmp_name' => 'Photo.bmp',
+				'dir' => '/tmp/php/file.tmp',
+				'type' => 'image/bmp',
+				'size' => 8192,
+				'error' => UPLOAD_ERR_OK,
+			)
+		);
 		$this->data['test_update'] = array(
 			'id' => 1,
 			'photo' => array(
@@ -384,112 +394,114 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_ok']);
 	}
 
-	public function testIsUnderPhpSizeLimit() {
+ /**
+	* @dataProvider providerTestValidationRules
+	*/
+	public function testValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
-				'isUnderPhpSizeLimit' => array(
-					'rule' => 'isUnderPhpSizeLimit',
-					'message' => 'isUnderPhpSizeLimit'
+				$rule => array(
+					'rule' => $rule,
+					'message' => $rule
 				),
 			)
 		);
 
-		$data = array(
-			'photo' => array(
+		$data = array_merge(array(
+			'photo' => array_merge(array(
 				'tmp_name' => 'Photo.png',
 				'dir' => '/tmp/php/file.tmp',
 				'type' => 'image/png',
 				'size' => 8192,
-				'error' => UPLOAD_ERR_INI_SIZE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isUnderPhpSizeLimit', current($this->TestUpload->validationErrors['photo']));
+			), $data
+		), $record));
 
+		$this->__testInvalidValidationRule($rule, $data);
 		$this->__testOkAndRemoveCasesValidate();
 	}
 
-	public function testIsUnderFormSizeLimit() {
+	public function providerTestValidationRules() {
+		return array(
+			array('isUnderPhpSizeLimit', array('error' => UPLOAD_ERR_INI_SIZE)),
+			array('isUnderFormSizeLimit', array('error' => UPLOAD_ERR_FORM_SIZE)),
+			array('isCompletedUpload', array('error' => UPLOAD_ERR_PARTIAL)),
+			array('isFileUpload', array('error' => UPLOAD_ERR_NO_FILE)),
+			array('isFileUploadOrHasExistingValue', array('error' => UPLOAD_ERR_NO_FILE), array('id' => 2)),
+			array('isFileUploadOrHasExistingValue', array('error' => UPLOAD_ERR_NO_FILE), array('id' => '')),
+			array('isFileUploadOrHasExistingValue', array('error' => UPLOAD_ERR_NO_FILE)),
+		);
+	}
+
+ /**
+	* @dataProvider providerTestIgnorableValidationRules
+	*/
+	public function testIgnorableValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
-				'isUnderFormSizeLimit' => array(
-					'rule' => 'isUnderFormSizeLimit',
-					'message' => 'isUnderFormSizeLimit'
+				$rule => array(
+					'rule' => $rule,
+					'message' => $rule
 				),
 			)
 		);
 
-		$data = array(
-			'photo' => array(
+		$data = array_merge(array(
+			'photo' => array_merge(array(
 				'tmp_name' => 'Photo.png',
 				'dir' => '/tmp/php/file.tmp',
 				'type' => 'image/png',
 				'size' => 8192,
-				'error' => UPLOAD_ERR_FORM_SIZE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isUnderFormSizeLimit', current($this->TestUpload->validationErrors['photo']));
+			), $data
+		), $record));
+		$this->__testInvalidValidationRule($rule, $data);
 
+		$this->TestUpload->validate = array('photo' => array(
+			$rule => array('rule' => array($rule, false),
+		)));
+		$data = array('photo' => array('error' => UPLOAD_ERR_NO_FILE));
+		$this->__testSkipValidationRule($rule, $data);
 		$this->__testOkAndRemoveCasesValidate();
 	}
 
-	public function testIsCompletedUpload() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isCompletedUpload' => array(
-					'rule' => 'isCompletedUpload',
-					'message' => 'isCompletedUpload'
-				),
-			)
+	public function providerTestIgnorableValidationRules() {
+		return array(
+			array('tempDirExists', array('error' => UPLOAD_ERR_NO_TMP_DIR)),
+			array('isSuccessfulWrite', array('error' => UPLOAD_ERR_CANT_WRITE)),
+			array('noPhpExtensionErrors', array('error' => UPLOAD_ERR_EXTENSION)),
 		);
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_PARTIAL,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isCompletedUpload', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
 	}
 
-	public function testIsFileUpload() {
+ /**
+	* @dataProvider providerTestChangeConfigurationValidationRules
+	*/
+	public function testChangeConfigurationValidationRules($rule) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
-				'isFileUpload' => array(
-					'rule' => 'isFileUpload',
-					'message' => 'isFileUpload'
+				$rule => array(
+					'rule' => $rule,
+					'message' => $rule
 				),
 			)
 		);
 
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_NO_FILE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isFileUpload', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule($rule, $this->data['test_ok']);
 
-		$this->__testOkAndRemoveCasesValidate();
+		$this->TestUpload->Behaviors->detach('Upload.Upload');
+		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
+			'photo' => array(
+				'path' => TMP
+			)
+		));
+
+		$this->__testOkCaseValidates();
+		$this->__testRemoveCaseValidates();
+	}
+
+	public function providerTestChangeConfigurationValidationRules() {
+		return array(
+			array('isWritable'),
+			array('isValidDir'),
+		);
 	}
 
 /**
@@ -523,183 +535,6 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->__testOkAndRemoveCasesValidate();
 	}
 
-/**
- * This simulates the case where we are uploading no file
- * to an existing record, which does NOT have an existing value.
- */
-	public function testIsFileUploadOrHasExistingValueEditingWithoutExistingValue() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isFileUploadOrHasExistingValue' => array(
-					'rule' => 'isFileUploadOrHasExistingValue',
-					'message' => 'isFileUploadOrHasExistingValue'
-				),
-			)
-		);
-
-		$data = array(
-			'id' => 2, // Fixture record #2 has no existing value.
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_NO_FILE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
-/**
- * This simulates the case where the same view is used for add / edit,
- * and so when adding records, the data will contain a blank id key.
- */
-	public function testIsFileUploadOrHasExistingValueAddingNewRecordWithEmptyId() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isFileUploadOrHasExistingValue' => array(
-					'rule' => 'isFileUploadOrHasExistingValue',
-					'message' => 'isFileUploadOrHasExistingValue'
-				),
-			)
-		);
-
-		$data = array(
-			'id' => '', // intentionally have an id key, but leave it blank.
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_NO_FILE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
-/**
- * This simulates the case where different views are used for add / edit,
- * and so when adding records, the data will not contain no id key at all.
- */
-	public function testIsFileUploadOrHasExistingValueAddingNewRecordWithNoIdKeyAtAll() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isFileUploadOrHasExistingValue' => array(
-					'rule' => 'isFileUploadOrHasExistingValue',
-					'message' => 'isFileUploadOrHasExistingValue'
-				),
-			)
-		);
-
-		$data = array(
-			//'id' => '', // intentionally do NOT have an id key at all.
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_NO_FILE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isFileUploadOrHasExistingValue', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
-	public function testTempDirExists() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'tempDirExists' => array(
-					'rule' => 'tempDirExists',
-					'message' => 'tempDirExists'
-				),
-			)
-		);
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_NO_TMP_DIR,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('tempDirExists', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
-	public function testIsSuccessfulWrite() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isSuccessfulWrite' => array(
-					'rule' => 'isSuccessfulWrite',
-					'message' => 'isSuccessfulWrite'
-				),
-			)
-		);
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_CANT_WRITE,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isSuccessfulWrite', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
-	public function testNoPhpExtensionErrors() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'noPhpExtensionErrors' => array(
-					'rule' => 'noPhpExtensionErrors',
-					'message' => 'noPhpExtensionErrors'
-				),
-			)
-		);
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.png',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/png',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_EXTENSION,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('noPhpExtensionErrors', current($this->TestUpload->validationErrors['photo']));
-
-		$this->__testOkAndRemoveCasesValidate();
-	}
-
 	public function testIsValidMimeType() {
 		$this->TestUpload->Behaviors->detach('Upload.Upload');
 		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
@@ -717,10 +552,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidMimeType', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidMimeType', $this->data['test_ok']);
 
 		$this->TestUpload->Behaviors->detach('Upload.Upload');
 		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
@@ -741,6 +573,12 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 
 		$this->__testOkCaseValidates();
+
+		$this->TestUpload->validate = array('photo' => array(
+			'isValidMimeType' => array('rule' => array('isValidMimeType', 'image/png', false),
+		)));
+		$data = array('photo' => array('error' => UPLOAD_ERR_NO_FILE));
+		$this->__testSkipValidationRule('isValidMimeType', $data);
 	}
 
 	public function testIsValidExtension() {
@@ -760,14 +598,9 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidExtension', $this->data['test_ok']);
 
-		$data = $this->data['test_ok'];
-		$data['photo']['name'] = 'Photo.bmp';
-		$this->TestUpload->set($data);
+		$this->TestUpload->set($this->data['test_ok_bmp']);
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
 
@@ -777,22 +610,13 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->TestUpload->validate['photo']['isValidExtension']['rule'] = array('isValidExtension', 'jpg');
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidExtension', $this->data['test_ok']);
 
 		$this->TestUpload->validate['photo']['isValidExtension']['rule'] = array('isValidExtension', array('jpg'));
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidExtension', $this->data['test_ok']);
 
 		$this->TestUpload->validate['photo']['isValidExtension']['rule'] = array('isValidExtension', array('jpg', 'bmp'));
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidExtension', $this->data['test_ok']);
 
 		$this->TestUpload->validate['photo']['isValidExtension']['rule'] = array('isValidExtension', array('jpg', 'bmp', 'png'));
 		$this->__testOkCaseValidates();
@@ -810,96 +634,19 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$this->__testInvalidValidationRule('isValidExtension', $this->data['test_ok']);
 
-		$data['photo']['name'] = 'Photo.jpg';
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidExtension', current($this->TestUpload->validationErrors['photo']));
+		$data = $this->data['test_ok'];
+		$data['photo']['name'] = 'Photo.jpeg';
+		$this->__testInvalidValidationRule('isValidExtension', $data);
 
 		$this->__testRemoveCaseValidates();
-	}
 
-	public function testIsWritable() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isWritable' => array(
-					'rule' => 'isWritable',
-					'message' => 'isWritable'
-				),
-			)
-		);
-
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isWritable', current($this->TestUpload->validationErrors['photo']));
-
-		$this->TestUpload->Behaviors->detach('Upload.Upload');
-		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
-			'photo' => array(
-				'path' => TMP
-			)
-		));
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.bmp',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/bmp',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_OK,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->__testRemoveCaseValidates();
-	}
-
-	public function testIsValidDir() {
-		$this->TestUpload->validate = array(
-			'photo' => array(
-				'isValidDir' => array(
-					'rule' => 'isValidDir',
-					'message' => 'isValidDir'
-				),
-			)
-		);
-
-		$this->TestUpload->set($this->data['test_ok']);
-		$this->assertFalse($this->TestUpload->validates());
-
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual('isValidDir', current($this->TestUpload->validationErrors['photo']));
-
-		$this->TestUpload->Behaviors->detach('Upload.Upload');
-		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
-			'photo' => array(
-				'path' => TMP
-			)
-		));
-
-		$data = array(
-			'photo' => array(
-				'tmp_name' => 'Photo.bmp',
-				'dir' => '/tmp/php/file.tmp',
-				'type' => 'image/bmp',
-				'size' => 8192,
-				'error' => UPLOAD_ERR_OK,
-			)
-		);
-		$this->TestUpload->set($data);
-		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
-
-		$this->__testRemoveCaseValidates();
+		$this->TestUpload->validate = array('photo' => array(
+			'isValidExtension' => array('rule' => array('isValidExtension', array('jpeg', 'bmp'), false),
+		)));
+		$data = array('photo' => array('error' => UPLOAD_ERR_NO_FILE));
+		$this->__testSkipValidationRule('isValidExtension', $data);
 	}
 
 	public function testIsImage() {
@@ -1209,16 +956,34 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->__testRemoveCaseValidates();
 	}
 
-	private function __testOkCaseValidates() {
-		$this->TestUpload->set($this->data['test_ok']);
+	private function __testValidates($data) {
+		$this->TestUpload->set($data);
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+
+	private function __testOkCaseValidates() {
+		$this->__testValidates($this->data['test_ok']);
 	}
 
 	private function __testRemoveCaseValidates() {
 		$this->TestUpload->set($this->data['test_remove']);
 		$this->assertTrue($this->TestUpload->validates());
 		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+	private function __testSkipValidationRule($ruleName, $data) {
+		$this->TestUpload->set($data);
+		$this->assertTrue($this->TestUpload->validates());
+		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+	}
+
+	private function __testInvalidValidationRule($ruleName, $data) {
+		$this->TestUpload->set($data);
+		$this->assertFalse($this->TestUpload->validates());
+		$this->assertEqual(1, count($this->TestUpload->validationErrors));
+		$this->assertEqual($ruleName, current($this->TestUpload->validationErrors['photo']));
 	}
 
 }
