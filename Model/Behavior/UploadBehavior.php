@@ -1375,7 +1375,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	protected function _getPathRandomCombined(Model $model, $field, $path) {
-		$endPath = null;
+		$endPath = $model->id . DIRECTORY_SEPARATOR;
 		$decrement = 0;
 		$string = crc32($field . microtime() . $model->id);
 
