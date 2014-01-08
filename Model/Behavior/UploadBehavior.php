@@ -215,11 +215,9 @@ class UploadBehavior extends ModelBehavior {
 	public function beforeSave(Model $model, $options = array()) {
 		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!isset($model->data[$model->alias][$field])) {
-				continue;
-			}
-
-			if (!is_array($model->data[$model->alias][$field])) {
+			if (!isset($model->data[$model->alias][$field]) || !is_array($model->data[$model->alias][$field])) {
+				// it may have previously been set by a prior save using this same instance
+				unset($this->runtime[$model->alias][$field]);
 				continue;
 			}
 
