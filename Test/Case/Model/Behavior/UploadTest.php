@@ -322,6 +322,19 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEqual($this->data['test_update_other_field_without_photo_set']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
+	public function testRuntimeConfigIsResetBetweenSaves() {
+		$this->mockUpload();
+		$this->MockUpload->expects($this->never())->method('unlink');
+
+		// We'll save the record twice using the same model instance,
+		// but handleUploadedFile should only be called once, on the first save.
+		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
+		$result = $this->TestUpload->save($this->data['test_update']);
+
+		$this->TestUpload->read(null, $this->data['test_update']['id']);
+		$result = $this->TestUpload->save(); // intentionally don't pass an uploaded file in save data
+	}
+
 	public function testUnlinkFileOnDelete() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
