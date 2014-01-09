@@ -46,6 +46,7 @@ class UploadBehavior extends ModelBehavior {
 		'deleteOnUpdate' => false,
 		'mediaThumbnailType' => 'png',
 		'saveDir' => true,
+        'rename'			=> true,
 		'deleteFolderOnDelete' => false,
 		'mode' => 0777,
 	);
@@ -223,6 +224,10 @@ class UploadBehavior extends ModelBehavior {
 				continue;
 			}
 
+			if ($this->settings[$model->alias][$field]['rename']) {
+                $model->data[$model->alias][$field]['name'] = $this->_rename($model->data[$model->alias][$field]['name']);
+            }
+			
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
@@ -1742,5 +1747,17 @@ class UploadBehavior extends ModelBehavior {
 		}
 		return $pathInfo;
 	}
+	
+	public function _hash($input) {
+        return md5($input . time() . mt_rand());
+    }
+
+    public function _rename($input) {
+        $exploded = explode('.', $input);
+        $extension = $exploded[count($exploded) - 1];
+        unset($exploded[count($exploded) - 1]);
+
+        return $this->_hash(implode('.', $exploded)) . '.' . $extension;
+    }
 
 }
