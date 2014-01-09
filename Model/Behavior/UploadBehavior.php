@@ -371,7 +371,10 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function unlink($file) {
-		return unlink($file);
+		if (file_exists($file)) {
+			return unlink($file);
+		}
+		return true;
 	}
 
 	public function deleteFolder(Model $model, $path) {
