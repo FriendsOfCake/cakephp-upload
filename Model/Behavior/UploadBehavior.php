@@ -14,40 +14,42 @@
  * @copyright     Copyright 2010, Jose Diaz-Gonzalez
  * @package       upload
  * @subpackage    upload.models.behaviors
- * @link          http://github.com/josegonzalez/upload
+ * @link          http://github.com/josegonzalez/cakephp-upload
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Folder', 'Utility');
 App::uses('UploadException', 'Upload.Lib/Error/Exception');
+App::uses('HttpSocket', 'Network/Http');
 class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
-		'rootDir'			=> null,
-		'pathMethod'		=> 'primaryKey',
-		'path'				=> '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
-		'fields'			=> array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
-		'mimetypes'			=> array(),
-		'extensions'		=> array(),
-		'maxSize'			=> 2097152,
-		'minSize'			=> 8,
-		'maxHeight'			=> 0,
-		'minHeight'			=> 0,
-		'maxWidth'			=> 0,
-		'minWidth'			=> 0,
-		'thumbnails'		=> true,
-		'thumbnailMethod'	=> 'imagick',
-		'thumbnailName'		=> null,
-		'thumbnailPath'		=> null,
-		'thumbnailPrefixStyle'=> true,
-		'thumbnailQuality'	=> 75,
-		'thumbnailSizes'	=> array(),
-		'thumbnailType'		=> false,
-		'deleteOnUpdate'	=> false,
-		'mediaThumbnailType'=> 'png',
-		'saveDir'			=> true,
+		'rootDir' => null,
+		'pathMethod' => 'primaryKey',
+		'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
+		'fields' => array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
+		'mimetypes' => array(),
+		'extensions' => array(),
+		'maxSize' => 2097152,
+		'minSize' => 8,
+		'maxHeight' => 0,
+		'minHeight' => 0,
+		'maxWidth' => 0,
+		'minWidth' => 0,
+		'thumbnails' => true,
+		'thumbnailMethod' => 'imagick',
+		'thumbnailName' => null,
+		'thumbnailPath' => null,
+		'thumbnailPrefixStyle' => true,
+		'thumbnailQuality' => 75,
+		'thumbnailSizes' => array(),
+		'thumbnailType' => false,
+		'deleteOnUpdate' => false,
+		'mediaThumbnailType' => 'png',
+		'saveDir' => true,
 		'deleteFolderOnDelete' => false,
+		'mode' => 0777,
         'rename'            => true,
-);
+	);
 
 	protected $_imageMimetypes = array(
 		'image/bmp',
@@ -87,10 +89,12 @@ class UploadBehavior extends ModelBehavior {
  * @param object $model instance of model
  * @param array $config array of configuration settings.
  * @return void
- * @access public
  */
 	public function setup(Model $model, $config = array()) {
-		if (isset($this->settings[$model->alias])) return;
+		if (isset($this->settings[$model->alias])) {
+			return;
+		}
+
 		$this->settings[$model->alias] = array();
 
 		foreach ($config as $field => $options) {
@@ -101,13 +105,12 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Setup a particular upload field
  *
- * @param AppModel $model Model instance
+ * @param Model $model Model instance
  * @param string $field Name of field being modified
  * @param array $options array of configuration settings for a field
  * @return void
- * @author Jose Diaz-Gonzalez
  */
-	public function _setupField(Model $model, $field, $options) {
+	protected function _setupField(Model $model, $field, $options) {
 		if (is_int($field)) {
 			$field = $options;
 			$options = array();
@@ -115,7 +118,7 @@ class UploadBehavior extends ModelBehavior {
 
 		$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
 		if (!isset($this->settings[$model->alias][$field])) {
-			$options = array_merge($this->defaults, (array) $options);
+			$options = array_merge($this->defaults, (array)$options);
 
 			// HACK: Remove me in next major version
 			if (!empty($options['thumbsizes'])) {
@@ -175,7 +178,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Convenience method for configuring UploadBehavior settings
  *
- * @param AppModel $model Model instance
+ * @param Model $model Model instance
  * @param string $field Name of field being modified
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
@@ -206,14 +209,16 @@ class UploadBehavior extends ModelBehavior {
  *
  * Handles setup of file uploads
  *
- * @param AppModel $model Model instance
+ * @param Model $model Model instance
+ * @param array $options
  * @return boolean
  */
-	public function beforeSave(Model $model) {
+	public function beforeSave(Model $model, $options = array()) {
 		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!isset($model->data[$model->alias][$field])) continue;
-			if (!is_array($model->data[$model->alias][$field])) continue;
+			if (!isset($model->data[$model->alias][$field])) {
+				continue;
+			}
 
             if ($this->settings[$model->alias][$field]['rename']) {
                 $model->data[$model->alias]['realname'] = $model->data[$model->alias][$field]['name'];
@@ -269,12 +274,59 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-	public function afterSave(Model $model, $created) {
-		$temp = array($model->alias => array());
+/**
+ * Transform Model.field value like as PHP upload array (name, tmp_name)
+ * for UploadBehavior plugin processing.
+ *
+ * @param Model $model Model instance
+ * @param array $options
+ * @return boolean
+ */
+	public function beforeValidate(Model $model, $options = array()) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
-			if (empty($this->runtime[$model->alias][$field])) continue;
-		        if (isset($this->_removingOnly[$field])) continue;
+			if (!empty($model->data[$model->alias][$field]) && $this->_isURI($model->data[$model->alias][$field])) {
+				$uri = $model->data[$model->alias][$field];
+				if (!$this->_grab($model, $field, $uri)) {
+					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+/**
+ * After save method. Called after all saves
+ *
+ * Handles moving file uploads
+ *
+ * @param Model $model Model instance
+ * @param boolean $created
+ * @param array $options
+ * @return boolean
+ * @throws UploadException
+ */
+	public function afterSave(Model $model, $created, $options = array()) {
+		$temp = array($model->alias => array());
+
+		foreach ($this->settings[$model->alias] as $field => $options) {
+			if (!in_array($field, array_keys($model->data[$model->alias]))) { 
+                continue;
+            }
+			if (empty($this->runtime[$model->alias][$field])) {
+                continue;
+            }
+            if (isset($this->_removingOnly[$field])) {
+                continue;
+            }
+
+			if (empty($this->runtime[$model->alias][$field])) {
+				continue;
+			}
+
+			if (isset($this->_removingOnly[$field])) {
+				continue;
+			}
 
 			$tempPath = $this->_getPath($model, $field);
 
@@ -298,8 +350,9 @@ class UploadBehavior extends ModelBehavior {
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
 				if ($created && $options['pathMethod'] == '_getPathFlat') {
-				} else if ($options['saveDir']) {
-					$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
+				} elseif ($options['saveDir']) {
+					$db = $model->getDataSource();
+					$temp[$model->alias][$options['fields']['dir']] = $db->value($tempPath, 'string');
 				}
 			}
 		}
@@ -323,7 +376,10 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function unlink($file) {
-		return @unlink($file);
+		if (file_exists($file)) {
+			return unlink($file);
+		}
+		return true;
 	}
 
 	public function deleteFolder($model, $path) {

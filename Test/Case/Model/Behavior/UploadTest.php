@@ -267,14 +267,12 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	function testUnlinkFileOnDelete() {
 		$this->mockUpload();
-		$this->MockUpload->expects($this->once())->method('unlink')->will($this->returnValue(true));
-		$existingRecord = $this->TestUpload->findById($this->data['test_update']['id']);
-		$this->MockUpload->expects($this->once())->method('unlink')->with(
-			$this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
-		);
-		$result = $this->TestUpload->delete($this->data['test_update']['id']);
-		$this->assertTrue($result);
-		$this->assertEmpty($this->TestUpload->findById($this->data['test_update']['id']));
+		$this->MockUpload->expects($this->never())->method('unlink');
+		$this->MockUpload->expects($this->never())->method('handleUploadedFile');
+		$result = $this->TestUpload->save($this->data['test_update_other_field_without_photo_set']);
+		$this->assertInternalType('array', $result);
+		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+		$this->assertEqual($this->data['test_update_other_field_without_photo_set']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
 	function testDeleteFileOnTrueRemoveSave() {
