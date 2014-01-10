@@ -1337,7 +1337,11 @@ class UploadBehavior extends ModelBehavior {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
-	public function _isMedia(Model $model, $mimetype) {
+    protected function _isURI($string) {
+        return (filter_var($string, FILTER_VALIDATE_URL) ? true : false);
+    }
+
+    public function _isMedia(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
