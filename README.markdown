@@ -21,11 +21,13 @@ _[Using [Composer](http://getcomposer.org/)]_
 
 [View on Packagist](https://packagist.org/packages/josegonzalez/cakephp-upload), and copy the json snippet for the latest version into your project's `composer.json`. Eg, v. 1.0.0 would look like this:
 
-	{
-		"require": {
-			"josegonzalez/cakephp-upload": "1.0.0"
-		}
+```javascript
+{
+	"require": {
+		"josegonzalez/cakephp-upload": "1.0.0"
 	}
+}
+```
 
 Because this plugin has the type `cakephp-plugin` set in it's own `composer.json`, composer knows to install it inside your `/Plugins` directory, rather than in the usual vendors file. It is recommended that you add `/Plugins/Upload` to your .gitignore file. (Why? [read this](http://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).)
 
@@ -40,152 +42,211 @@ _[GIT Submodule]_
 
 In your app directory type:
 
-	git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
-	git submodule init
-	git submodule update
+```shell
+git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
+git submodule init
+git submodule update
+```
 
 _[GIT Clone]_
 
 In your `Plugin` directory type:
 
-	git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
+```shell
+git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
+```
 
 ### Imagick Support
 
 To enable Imagick support, you need to have imagick installed:
 
-    # Debian systems
-    sudo apt-get install php-imagick
+```shell
+# Debian systems
+sudo apt-get install php-imagick
 
-    # OS X Homebrew
-    brew tap homebrew/dupes
-    brew tap josegonzalez/homebrew-php
-    brew install php54-imagick
+# OS X Homebrew
+brew tap homebrew/dupes
+brew tap josegonzalez/homebrew-php
+brew install php54-imagick
 
-    # From pecl
-    pecl install imagick
+# From pecl
+pecl install imagick
+```
 
-If you cannot install imagick, please do not use imagick, and instead configure the plugin with `'thumbnailMethod'	=> 'php'` in your setup options.
+If you cannot install imagick, please do not use imagick, and instead configure the plugin with `'thumbnailMethod'  => 'php'` in your setup options.
 
 ### Enable plugin
 
 In 2.0 you need to enable the plugin your `app/Config/bootstrap.php` file:
 
-	CakePlugin::load('Upload');
+```php
+<?php
+CakePlugin::load('Upload');
+?>
+```
 
 If you are already using `CakePlugin::loadAll();`, then this is not necessary.
 
 ## Usage
 
-	CREATE table users (
-		id int(10) unsigned NOT NULL auto_increment,
-		username varchar(20) NOT NULL,
-		photo varchar(255)
+```sql
+CREATE table users (
+	id int(10) unsigned NOT NULL auto_increment,
+	username varchar(20) NOT NULL,
+	photo varchar(255)
+);
+```
+
+```php
+<?php
+class User extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'photo'
+		)
 	);
+}
+?>
+```
 
-	<?php
-	class User extends AppModel {
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'photo'
-			)
-		);
-	}
-
-	<?php echo $this->Form->create('User', array('type' => 'file')); ?>
-		<?php echo $this->Form->input('User.username'); ?>
-		<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
-	<?php echo $this->Form->end(); ?>
+```php
+<?php echo $this->Form->create('User', array('type' => 'file')); ?>
+<?php echo $this->Form->input('User.username'); ?>
+<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
+<?php echo $this->Form->end(); ?>
+```
 
 Using the above setup, uploaded files cannot be deleted. To do so, a field must be added to store the directory of the file as follows:
 
-	CREATE table users (
-		`id` int(10) unsigned NOT NULL auto_increment,
-		`username` varchar(20) NOT NULL,
-		`photo` varchar(255) DEFAULT NULL,
-		`photo_dir` varchar(255) DEFAULT NULL,
-		PRIMARY KEY (`id`)
-	);
+```sql
+CREATE table users (
+	`id` int(10) unsigned NOT NULL auto_increment,
+	`username` varchar(20) NOT NULL,
+	`photo` varchar(255) DEFAULT NULL,
+	`photo_dir` varchar(255) DEFAULT NULL,
+	PRIMARY KEY (`id`)
+);
+```
 
-	<?php
-	class User extends AppModel {
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'photo' => array(
-					'fields' => array(
-						'dir' => 'photo_dir'
-					)
+```php
+<?php
+class User extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'photo' => array(
+				'fields' => array(
+					'dir' => 'photo_dir'
 				)
 			)
-		);
-	}
+		)
+	);
+}
+?>
+```
 
 In the above example, photo can be a file upload via a file input within a form, a file grabber (from a url) via a text input, OR programatically used on the controller to file grab via a url.
 
 ### File Upload Example
 
-    <?php echo $this->Form->create('User', array('type' => 'file')); ?>
-    	<?php echo $this->Form->input('User.username'); ?>
-    	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
-    	<?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
-    <?php echo $this->Form->end(); ?>
-
+```php
+<?php echo $this->Form->create('User', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.username'); ?>
+	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
+<?php echo $this->Form->end(); ?>
+```
 
 ### File Grabbing via Form Example
 
-    <?php echo $this->Form->create('User', array('type' => 'file')); ?>
-        <?php echo $this->Form->input('User.username'); ?>
-        <?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
-        <?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
-    <?php echo $this->Form->end(); ?>
+```php
+<?php echo $this->Form->create('User', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.username'); ?>
+	<?php echo $this->Form->input('User.photo', array('type' => 'file')); ?>
+	<?php echo $this->Form->input('User.photo_dir', array('type' => 'hidden')); ?>
+<?php echo $this->Form->end(); ?>
+```
 
-### Programmatic File Grab via Controller
+### Programmatic File Retrieval without a Form
 
-    $data['photo'] = $image_url;
-    $this->User->set($data);
-    $this->User->save();
+```php
+<?php
+$this->User->set(array('photo' => $image_url));
+$this->User->save();
+?>
+```
+
+### Thumbnail Creation
 
 Thumbnails are not automatically created. To do so, thumbnail sizes must be defined:
-Note: by default thumbnails will be generated by imagick, if you want to use GD you need to set the thumbnailMethod attribute. Example: `'thumbnailMethod'	=> 'php'`.
+Note: by default thumbnails will be generated by imagick, if you want to use GD you need to set the thumbnailMethod attribute. Example: `'thumbnailMethod'  => 'php'`.
 
-	<?php
-	class User extends AppModel {
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'photo' => array(
-					'fields' => array(
-						'dir' => 'photo_dir'
-					),
-					'thumbnailSizes' => array(
-						'xvga' => '1024x768',
-						'vga' => '640x480',
-						'thumb' => '80x80'
-					)
+```php
+<?php
+class User extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'photo' => array(
+				'thumbnailSizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
 				)
 			)
-		);
-	}
+		)
+	);
+}
+?>
+```
+
+### Uploading Multiple files
 
 Multiple files can also be attached to a single record:
 
-	<?php
-	class User extends AppModel {
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'resume',
-				'photo' => array(
-					'fields' => array(
-						'dir' => 'profile_dir'
-					),
-					'thumbnailSizes' => array(
-						'xvga' => '1024x768',
-						'vga' => '640x480',
-						'thumb' => '80x80'
-					)
+```php
+<?php
+class User extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'resume',
+			'photo' => array(
+				'fields' => array(
+					'dir' => 'profile_dir'
 				)
 			)
-		);
-	}
+		)
+	);
+}
+?>
+```
+
+Each key in the `Upload.Upload` array is a field name, and can contain it's own configuration. For example, you might want to set different fields for storing file paths:
+
+```php
+<?php
+class User extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'resume' => array(
+				'fields' => array(
+					'dir' => 'resume_dir',
+					'type' => 'resume_type',
+					'size' => 'resume_size',
+				)
+			),
+			'photo' => array(
+				'fields' => array(
+					'dir' => 'photo_dir',
+					'type' => 'photo_type',
+					'size' => 'photo_size',
+				)
+			)
+		)
+	);
+}
+?>
+```
+
+Keep in mind that while this plugin does not have any limits in terms of number of files uploaded per request, you should keep this down in order to decrease the ability of your users to block other requests.
 
 ### PDF Support
 
@@ -197,138 +258,155 @@ Please read about the Behavior options for more details as to how to configure t
 
 In some cases you will want to store multiple file uploads for a multiple models, but will not want to use multiple tables for some reason. For example, we might have a `Post` model that can have many images for a gallery, and a `Message` model that has many videos. In this case, we would use an `Attachment` model:
 
-	Post hasMany Attachment
+Post hasMany Attachment
 
 We could use the following database schema for the `Attachment` model:
 
-	CREATE table attachments (
-		`id` int(10) unsigned NOT NULL auto_increment,
-		`model` varchar(20) NOT NULL,
-		`foreign_key` int(11) NOT NULL,
-		`name` varchar(32) NOT NULL,
-		`attachment` varchar(255) NOT NULL,
-		`dir` varchar(255) DEFAULT NULL,
-		`type` varchar(255) DEFAULT NULL,
-		`size` int(11) DEFAULT 0,
-		`active` tinyint(1) DEFAULT 1,
-		PRIMARY KEY (`id`)
-	);
+```sql
+CREATE table attachments (
+	`id` int(10) unsigned NOT NULL auto_increment,
+	`model` varchar(20) NOT NULL,
+	`foreign_key` int(11) NOT NULL,
+	`name` varchar(32) NOT NULL,
+	`attachment` varchar(255) NOT NULL,
+	`dir` varchar(255) DEFAULT NULL,
+	`type` varchar(255) DEFAULT NULL,
+	`size` int(11) DEFAULT 0,
+	`active` tinyint(1) DEFAULT 1,
+	PRIMARY KEY (`id`)
+);
+```
 
 Our attachment records would thus be able to have a name and be activated/de-activated on the fly. The schema is simply an example, and such functionality would need to be implemented within your application.
 
 Once the `attachments` table has been created, we would create the following model:
 
-	<?php
-	class Attachment extends AppModel {
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'attachment' => array(
-					'thumbnailSizes' => array(
-						'xvga' => '1024x768',
-						'vga' => '640x480',
-						'thumb' => '80x80',
-					),
+```php
+<?php
+class Attachment extends AppModel {
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'attachment' => array(
+				'thumbnailSizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80',
 				),
 			),
-		);
+		),
+	);
 
-		public $belongsTo = array(
-			'Post' => array(
-				'className' => 'Post',
-				'foreignKey' => 'foreign_key',
-			),
-			'Message' => array(
-				'className' => 'Message',
-				'foreignKey' => 'foreign_key',
-			),
-		);
-	}
+	public $belongsTo = array(
+		'Post' => array(
+			'className' => 'Post',
+			'foreignKey' => 'foreign_key',
+		),
+		'Message' => array(
+			'className' => 'Message',
+			'foreignKey' => 'foreign_key',
+		),
+	);
+}
+?>
+```
 
 We would also need to present a valid counter-relationship in the `Post` model:
 
-	<?php
-	class Post extends AppModel {
-		public $hasMany = array(
-			'Image' => array(
-				'className' => 'Attachment',
-				'foreignKey' => 'foreign_key',
-				'conditions' => array(
-					'Image.model' => 'Post',
-				),
+```php
+<?php
+class Post extends AppModel {
+	public $hasMany = array(
+		'Image' => array(
+			'className' => 'Attachment',
+			'foreignKey' => 'foreign_key',
+			'conditions' => array(
+				'Image.model' => 'Post',
 			),
-		);
-	}
+		),
+	);
+}
+?>
+```
 
 The key thing to note here is the `Post` model has some conditions on the relationship to the `Attachment` model, where the `Image.model` has to be `Post`. Remember to set the `model` field to `Post`, or whatever model it is you'd like to attach it to, otherwise you may get incorrect relationship results when performing find queries.
 
 We would also need a similar relationship in our `Message` model:
 
-	<?php
-	class Message extends AppModel {
-		public $hasMany = array(
-			'Video' => array(
-				'className' => 'Attachment',
-				'foreignKey' => 'foreign_key',
-				'conditions' => array(
-					'Video.model' => 'Message',
-				),
+```php
+<?php
+class Message extends AppModel {
+	public $hasMany = array(
+		'Video' => array(
+			'className' => 'Attachment',
+			'foreignKey' => 'foreign_key',
+			'conditions' => array(
+				'Video.model' => 'Message',
 			),
-		);
-	}
+		),
+	);
+}
+?>
+```
 
 Now that we have our models setup, we should create the proper actions in our controllers. To keep this short, we shall only document the Post model:
 
-    <?php
-    class PostsController extends AppController {
-      /* the rest of your controller here */
-      public function add() {
-        if ($this->request->is('post')) {
-          try {
-            $this->Post->createWithAttachments($this->request->data);
-            $this->Session->setFlash(__('The message has been saved'));
-          } catch (Exception $e) {
-            $this->Session->setFlash($e->getMessage());
-          }
-        }
-      }
-    }
+```php
+<?php
+class PostsController extends AppController {
+	/* the rest of your controller here */
+	public function add() {
+		if ($this->request->is('post')) {
+			try {
+				$this->Post->createWithAttachments($this->request->data);
+				$this->Session->setFlash(__('The message has been saved'));
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+			}
+		}
+	}
+}
+?>
+```
 
 In the above example, we are calling our custom `createWithAttachments` method on the `Post` model. This will allow us to unify the Post creation logic together in one place. That method is outlined below:
 
-    <?php
-    class Post extends AppModel {
-      /* the rest of your model here */
+```php
+<?php
+class Post extends AppModel {
+	/* the rest of your model here */
 
-      public function createWithAttachments($data) {
-        // Sanitize your images before adding them
-        $images = array();
-        if (!empty($data['Image'][0])) {
-          foreach ($data['Image'] as $i => $image) {
-            if (is_array($data['Image'][$i])) {
-              // Force setting the `model` field to this model
-              $image['model'] = 'Post';
+	public function createWithAttachments($data) {
+		// Sanitize your images before adding them
+		$images = array();
+		if (!empty($data['Image'][0])) {
+			foreach ($data['Image'] as $i => $image) {
+				if (is_array($data['Image'][$i])) {
+					// Force setting the `model` field to this model
+					$image['model'] = 'Post';
 
-              // Unset the foreign_key if the user tries to specify it
-              if (isset($image['foreign_key'])) {
-                unset($image['foreign_key']);
-              }
+					// Unset the foreign_key if the user tries to specify it
+					if (isset($image['foreign_key'])) {
+						unset($image['foreign_key']);
+					}
 
-              $images[] = $image;
-            }
-          }
-        }
-        $data['Image'] = $images;
+					$images[] = $image;
+				}
+			}
+		}
+		$data['Image'] = $images;
 
-        // Try to save the data using Model::saveAll()
-        $this->create();
-        if ($this->saveAll($data)) {
-          return true;
-        }
+		// Try to save the data using Model::saveAll()
+		$this->create();
+		if ($this->saveAll($data)) {
+			return true;
+		}
 
-        // Throw an exception for the controller
-        throw new Exception(__("This post could not be saved. Please try again"));
-      }
-    }
+		// Throw an exception for the controller
+		throw new Exception(__("This post could not be saved. Please try again"));
+	}
+}
+?>
+```
 
 The above model method will:
 
@@ -338,12 +416,14 @@ The above model method will:
 
 Now that this is set, we just need a view for our controller. A sample view for `View/Posts/add.ctp` is as follows (fields not necessary for the example are omitted):
 
-    <?php
-      echo $this->Form->create('Post', array('type' => 'file'));
-        echo $this->Form->input('Image.0.attachment', array('type' => 'file', 'label' => 'Image'));
-        echo $this->Form->input('Image.0.model', array('type' => 'hidden', 'value' => 'Post'));
-      echo $this->Form->end(__('Add'));
-    ?>
+```php
+<?php
+	echo $this->Form->create('Post', array('type' => 'file'));
+	echo $this->Form->input('Image.0.attachment', array('type' => 'file', 'label' => 'Image'));
+	echo $this->Form->input('Image.0.model', array('type' => 'hidden', 'value' => 'Post'));
+	echo $this->Form->end(__('Add'));
+?>
+```
 
 The one important thing you'll notice is that I am not referring to the `Attachment` model as `Attachment`, but rather as `Image`; when I initially specified the `$hasMany` relationship between an `Attachment` and a `Post`, I aliased `Attachment` to `Image`. This is necessary for cases where many of your Polymorphic models may be related to each other, as a type of *hint* to the CakePHP ORM to properly reference model data.
 
@@ -364,110 +444,112 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 ## Behavior options:
 
 * `pathMethod`: The method to use for file paths. This is appended to the `path` option below
-  * Default: (string) `primaryKey`
-  * Options:
-    * flat: Does not create a path for each record. Files are moved to the value of the 'path' option.
-    * primaryKey: Path based upon the record's primaryKey is generated. Persists across a record update.
-    * random: Random path is generated for each file upload in the form `nn/nn/nn` where `nn` are random numbers. Does not persist across a record update.
-    * randomCombined: Random path - with model id - is generated for each file upload in the form `ID/nn/nn/nn` where `ID` is the current model's ID and `nn` are random numbers. Does not persist across a record update.
+* Default: (string) `primaryKey`
+* Options:
+	* flat: Does not create a path for each record. Files are moved to the value of the 'path' option.
+	* primaryKey: Path based upon the record's primaryKey is generated. Persists across a record update.
+	* random: Random path is generated for each file upload in the form `nn/nn/nn` where `nn` are random numbers. Does not persist across a record update.
+	* randomCombined: Random path - with model id - is generated for each file upload in the form `ID/nn/nn/nn` where `ID` is the current model's ID and `nn` are random numbers. Does not persist across a record update.
 * `path`: A path relative to the `APP_PATH`. Should end in `{DS}`
-  * Default: (string) `'{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}'`
-  * Tokens:
-    * {ROOT}: Replaced by a `rootDir` option
-    * {DS}: Replaced by a `DIRECTORY_SEPARATOR`
-    * {model}: Replaced by the Model Alias.
-    * {field}: Replaced by the field name.
-    * {primaryKey}: Replaced by the record primary key, when available. If used on a new record being created, will have undefined behavior.
-    * {size}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
-    * {geometry}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
+* Default: (string) `'{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}'`
+* Tokens:
+	* {ROOT}: Replaced by a `rootDir` option
+	* {DS}: Replaced by a `DIRECTORY_SEPARATOR`
+	* {model}: Replaced by the Model Alias.
+	* {field}: Replaced by the field name.
+	* {primaryKey}: Replaced by the record primary key, when available. If used on a new record being created, will have undefined behavior.
+	* {size}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
+	* {geometry}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
 * `fields`: An array of fields to use when uploading files
-  * Default: (array) `array('dir' => 'dir', 'type' => 'type', 'size' => 'size')`
-  * Options:
-    * dir: Field to use for storing the directory
-    * type: Field to use for storing the filetype
-    * size: Field to use for storing the filesize
+* Default: (array) `array('dir' => 'dir', 'type' => 'type', 'size' => 'size')`
+* Options:
+	* dir: Field to use for storing the directory
+	* type: Field to use for storing the filetype
+	* size: Field to use for storing the filesize
 * `rootDir`: Root directory for moving images. Auto-prepended to `path` and `thumbnailPath` where necessary
-  * Default (string) `ROOT . DS . APP_DIR . DS`
+* Default (string) `ROOT . DS . APP_DIR . DS`
 * `mimetypes`: Array of mimetypes to use for validation
-  * Default: (array) empty
+* Default: (array) empty
 * `extensions`: Array of extensions to use for validation
-  * Default: (array) empty
+* Default: (array) empty
 * `maxSize`: Max filesize in bytes for validation
-  * Default: (int) `2097152`
+* Default: (int) `2097152`
 * `minSize`: Minimum filesize in bytes for validation
-  * Default: (int) `8`
+* Default: (int) `8`
 * `maxHeight`: Maximum image height for validation
-  * Default: (int) `0`
+* Default: (int) `0`
 * `minHeight`: Minimum image height for validation
-  * Default: (int) `0`
+* Default: (int) `0`
 * `maxWidth`: Maximum image width for validation
-  * Default: (int) `0`
+* Default: (int) `0`
 * `minWidth`: Minimum image width for validation
-  * Default: (int) `0`
+* Default: (int) `0`
 * `deleteOnUpdate`: Whether to delete files when uploading new versions (potentially dangerous due to naming conflicts)
-  * Default: (boolean) `false`
+* Default: (boolean) `false`
 * `thumbnails`: Whether to create thumbnails or not
-  * Default: (boolean) `true`
+* Default: (boolean) `true`
 * `thumbnailMethod`: The method to use for resizing thumbnails
-  * Default: (string) `imagick`
-  * Options:
-    * imagick: Uses the PHP `imagick` extension to generate thumbnails
-    * php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails. Does not support BMP images.
+* Default: (string) `imagick`
+* Options:
+	* imagick: Uses the PHP `imagick` extension to generate thumbnails
+	* php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails. Does not support BMP images.
 * `thumbnailName`: Naming style for a thumbnail
-  * Default: `NULL`
-  * Note: The tokens `{size}` and `{filename}` are both valid for naming and will be auto-replaced with the actual terms.
-  * Note: As well, the extension of the file will be automatically added.
-  * Note: When left unspecified, will be set to `{size}_{filename}` or `{filename}_{size}` depending upon the value of `thumbnailPrefixStyle`
+* Default: `NULL`
+* Note: The tokens `{size}` and `{filename}` are both valid for naming and will be auto-replaced with the actual terms.
+* Note: As well, the extension of the file will be automatically added.
+* Note: When left unspecified, will be set to `{size}_{filename}` or `{filename}_{size}` depending upon the value of `thumbnailPrefixStyle`
 * `thumbnailPath`: A path relative to the `rootDir` where thumbnails will be saved. Should end in `{DS}`. If not set, thumbnails will be saved at `path`.
-  * Default: `NULL`
-  * Tokens:
-    * {ROOT}: Replaced by a `rootDir` option
-    * {DS}: Replaced by a `DIRECTORY_SEPARATOR`
-    * {model}: Replaced by the Model Alias
-    * {field}: Replaced by the field name
-    * {size}: Replaced by the size key specified by a given `thumbnailSize`
-    * {geometry}: Replaced by the geometry value specified by a given `thumbnailSize`
+* Default: `NULL`
+* Tokens:
+	* {ROOT}: Replaced by a `rootDir` option
+	* {DS}: Replaced by a `DIRECTORY_SEPARATOR`
+	* {model}: Replaced by the Model Alias
+	* {field}: Replaced by the field name
+	* {size}: Replaced by the size key specified by a given `thumbnailSize`
+	* {geometry}: Replaced by the geometry value specified by a given `thumbnailSize`
 * `thumbnailPrefixStyle`: Whether to prefix or suffix the style onto thumbnails
-  * Default: (boolean) `true` prefix the thumbnail
-  * Note that this overrides `thumbnailName` when `thumbnailName` is not specified in your config
+* Default: (boolean) `true` prefix the thumbnail
+* Note that this overrides `thumbnailName` when `thumbnailName` is not specified in your config
 * `thumbnailQuality`: Quality of thumbnails that will be generated, on a scale of 0-100. Not supported gif images when using GD for image manipulation.
-  * Default: (int) `75`
+* Default: (int) `75`
 * `thumbnailSizes`: Array of thumbnail sizes, with the size-name mapping to a geometry
-  * Default: (array) empty
+* Default: (array) empty
 * `thumbnailType`: Override the type of the generated thumbnail
-  * Default: (mixed) `false` or `png` when the upload is a Media file
-  * Options:
-    * Any valid image type
+* Default: (mixed) `false` or `png` when the upload is a Media file
+* Options:
+	* Any valid image type
 * `mediaThumbnailType`: Override the type of the generated thumbnail for a non-image media (`pdfs`). Overrides `thumbnailType`
-  * Default: (mixed) `png`
-  * Options:
-    * Any valid image type
+* Default: (mixed) `png`
+* Options:
+	* Any valid image type
 * `saveDir`: Can be used to turn off saving the directory
-  * Default: (boolean) `true`
-  * Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` and `randomCombined` than `primaryKey`, but keep this in mind when fiddling with this option
+* Default: (boolean) `true`
+* Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` and `randomCombined` than `primaryKey`, but keep this in mind when fiddling with this option
 * `mode`: The UNIX permissions to set on the created upload directories.
-  * Default: (integer) `0777`
+* Default: (integer) `0777`
 
 ## Thumbnail Sizes and Styles
 
 Styles are the definition of thumbnails that will be generated for original image. You can define as many as you want.
 
-	<?php
-	class User extends AppModel {
-		public $name = 'User';
-		public $actsAs = array(
-			'Upload.Upload' => array(
-				'photo' => array(
-					'thumbnailSizes' => array(
-						'big' => '200x200',
-						'small' => '120x120'
-						'thumb' => '80x80'
-					)
+```php
+<?php
+class User extends AppModel {
+	public $name = 'User';
+	public $actsAs = array(
+		'Upload.Upload' => array(
+			'photo' => array(
+				'thumbnailSizes' => array(
+					'big' => '200x200',
+					'small' => '120x120'
+					'thumb' => '80x80'
 				)
 			)
-		);
-	}
-
+		)
+	);
+}
+?>
+```
 
 Styles only apply to images of the following types:
 
@@ -498,76 +580,104 @@ By default, no validation rules are attached to the model. One must explicitly a
 
 Check that the file does not exceed the max file size specified by PHP
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isUnderPhpSizeLimit',
-			'message' => 'File exceeds upload filesize limit'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isUnderPhpSizeLimit',
+		'message' => 'File exceeds upload filesize limit'
+	)
+);
+?>
+```
 
 #### isUnderFormSizeLimit
 
 Check that the file does not exceed the max file size specified in the HTML Form
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isUnderFormSizeLimit',
-			'message' => 'File exceeds form upload filesize limit'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isUnderFormSizeLimit',
+		'message' => 'File exceeds form upload filesize limit'
+	)
+);
+?>
+```
 
 #### isCompletedUpload
 
 Check that the file was completely uploaded
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isCompletedUpload',
-			'message' => 'File was not successfully uploaded'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isCompletedUpload',
+		'message' => 'File was not successfully uploaded'
+	)
+);
+?>
+```
 
 #### isFileUpload
 
 Check that a file was uploaded
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isFileUpload',
-			'message' => 'File was missing from submission'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isFileUpload',
+		'message' => 'File was missing from submission'
+	)
+);
+?>
+```
 
 #### isFileUploadOrHasExistingValue
 
 Check that either a file was uploaded, or the existing value in the database is not blank
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isFileUploadOrHasExistingValue',
-			'message' => 'File was missing from submission'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isFileUploadOrHasExistingValue',
+		'message' => 'File was missing from submission'
+	)
+);
+?>
+```
 
 #### tempDirExists
 
 Check that the PHP temporary directory is missing
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'tempDirExists',
-			'message' => 'The system temporary directory is missing'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'tempDirExists',
+		'message' => 'The system temporary directory is missing'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('tempDirExists', false),
-			'message' => 'The system temporary directory is missing'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('tempDirExists', false),
+		'message' => 'The system temporary directory is missing'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -575,21 +685,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file was successfully written to the server
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'isSuccessfulWrite',
-			'message' => 'File was unsuccessfully written to the server'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'isSuccessfulWrite',
+		'message' => 'File was unsuccessfully written to the server'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isSuccessfulWrite', false),
-			'message' => 'File was unsuccessfully written to the server'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isSuccessfulWrite', false),
+		'message' => 'File was unsuccessfully written to the server'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -597,21 +715,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that a PHP extension did not cause an error
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => 'noPhpExtensionErrors',
-			'message' => 'File was not uploaded because of a faulty PHP extension'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => 'noPhpExtensionErrors',
+		'message' => 'File was not uploaded because of a faulty PHP extension'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('noPhpExtensionErrors', 1024, false),
-			'message' => 'File was not uploaded because of a faulty PHP extension'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('noPhpExtensionErrors', 1024, false),
+		'message' => 'File was not uploaded because of a faulty PHP extension'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -619,21 +745,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is of a valid mimetype
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidMimeType', array('application/pdf', 'image/png')),
-			'message' => 'File is not a pdf or png'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidMimeType', array('application/pdf', 'image/png')),
+		'message' => 'File is not a pdf or png'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidMimeType', array('application/pdf', 'image/png'), false),
-			'message' => 'File is not a pdf or png'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidMimeType', array('application/pdf', 'image/png'), false),
+		'message' => 'File is not a pdf or png'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -641,21 +775,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the upload directory is writable
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isWritable'),
-			'message' => 'File upload directory was not writable'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isWritable'),
+		'message' => 'File upload directory was not writable'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isWritable', false),
-			'message' => 'File upload directory was not writable'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isWritable', false),
+		'message' => 'File upload directory was not writable'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -663,21 +805,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the upload directory exists
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidDir'),
-			'message' => 'File upload directory does not exist'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidDir'),
+		'message' => 'File upload directory does not exist'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidDir', false),
-			'message' => 'File upload directory does not exist'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidDir', false),
+		'message' => 'File upload directory does not exist'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -685,21 +835,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is below the maximum file upload size (checked in bytes)
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxSize', 1024),
-			'message' => 'File is larger than the maximum filesize'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxSize', 1024),
+		'message' => 'File is larger than the maximum filesize'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxSize', 1024, false),
-			'message' => 'File is larger than the maximum filesize'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxSize', 1024, false),
+		'message' => 'File is larger than the maximum filesize'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -707,21 +865,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is above the minimum file upload size (checked in bytes)
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinSize', 1024),
-			'message' => 'File is below the mimimum filesize'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinSize', 1024),
+		'message' => 'File is below the mimimum filesize'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinSize', 1024, false),
-			'message' => 'File is below the mimimum filesize'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinSize', 1024, false),
+		'message' => 'File is below the mimimum filesize'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -729,21 +895,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file has a valid extension
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidExtension', array('pdf', 'png', 'txt')),
-			'message' => 'File does not have a pdf, png, or txt extension'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidExtension', array('pdf', 'png', 'txt')),
+		'message' => 'File does not have a pdf, png, or txt extension'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isValidExtension', array('pdf', 'png', 'txt'), false),
-			'message' => 'File does not have a pdf, png, or txt extension'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isValidExtension', array('pdf', 'png', 'txt'), false),
+		'message' => 'File does not have a pdf, png, or txt extension'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -751,21 +925,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is above the minimum height requirement (checked in pixels)
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinHeight' 150),
-			'message' => 'File is below the minimum height'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinHeight' 150),
+		'message' => 'File is below the minimum height'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinHeight', 150, false),
-			'message' => 'File is below the minimum height'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinHeight', 150, false),
+		'message' => 'File is below the minimum height'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -773,21 +955,29 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is below the maximum height requirement (checked in pixels)
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxHeight', 150),
-			'message' => 'File is above the maximum height'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxHeight', 150),
+		'message' => 'File is above the maximum height'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxHeight', 150, false),
-			'message' => 'File is above the maximum height'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxHeight', 150, false),
+		'message' => 'File is above the maximum height'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -795,42 +985,59 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 
 Check that the file is above the minimum width requirement (checked in pixels)
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinWidth', 150),
-			'message' => 'File is below the minimum width'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinWidth', 150),
+		'message' => 'File is below the minimum width'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isAboveMinWidth', 150, false),
-			'message' => 'File is below the minimum width'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isAboveMinWidth', 150, false),
+		'message' => 'File is below the minimum width'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
 #### isBelowMaxWidth
 
 Check that the file is below the maximum width requirement (checked in pixels)
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxWidth', 150),
-			'message' => 'File is above the maximum width'
-		)
-	);
+
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxWidth', 150),
+		'message' => 'File is above the maximum width'
+	)
+);
+?>
+```
 
 If the argument `$requireUpload` is passed, we can skip this check when a file is not uploaded:
 
-	public $validate = array(
-		'photo' => array(
-			'rule' => array('isBelowMaxWidth', 150, false),
-			'message' => 'File is above the maximum width'
-		)
-	);
+```php
+<?php
+public $validate = array(
+	'photo' => array(
+		'rule' => array('isBelowMaxWidth', 150, false),
+		'message' => 'File is above the maximum width'
+	)
+);
+?>
+```
 
 In the above, the variable `$requireUpload` has a value of false. By default, `requireUpload` is set to true.
 
@@ -839,9 +1046,12 @@ In the above, the variable `$requireUpload` has a value of false. By default, `r
 In some cases you might want to remove a photo or uploaded file without having to
 remove the entire record from the Model.  In this case you would use the following code:
 
-    <?php
-    echo $this->Form->create('Model', array('type' => 'file'));
-    echo $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label' => 'Remove existing file'));
+```php
+<?php
+echo $this->Form->create('Model', array('type' => 'file'));
+echo $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label' => 'Remove existing file'));
+?>
+```
 
 ## License
 
