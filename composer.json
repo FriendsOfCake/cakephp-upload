@@ -1,6 +1,5 @@
 {
   "name": "josegonzalez/cakephp-upload",
-  "version": "1.0.0",
   "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
   "type": "cakephp-plugin",
   "keywords": [
