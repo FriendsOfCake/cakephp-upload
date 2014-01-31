@@ -514,7 +514,7 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 	* Default: (int) `75`
 * `thumbnailSizes`: Array of thumbnail sizes, with the size-name mapping to a geometry
 	* Default: (array) empty
-	* `thumbnailType`: Override the type of the generated thumbnail
+* `thumbnailType`: Override the type of the generated thumbnail
 	* Default: (mixed) `false` or `png` when the upload is a Media file
 	* Options:
 		* Any valid image type
@@ -732,7 +732,7 @@ If the argument `$requireUpload` is passed, we can skip this check when a file i
 <?php
 public $validate = array(
 	'photo' => array(
-		'rule' => array('noPhpExtensionErrors', 1024, false),
+		'rule' => array('noPhpExtensionErrors', false),
 		'message' => 'File was not uploaded because of a faulty PHP extension'
 	)
 );
@@ -929,7 +929,7 @@ Check that the file is above the minimum height requirement (checked in pixels)
 <?php
 public $validate = array(
 	'photo' => array(
-		'rule' => array('isAboveMinHeight' 150),
+		'rule' => array('isAboveMinHeight', 150),
 		'message' => 'File is below the minimum height'
 	)
 );
