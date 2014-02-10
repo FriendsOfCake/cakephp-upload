@@ -495,7 +495,7 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 		* php: Uses the built-in PHP methods (`GD` extension) to generate thumbnails. Does not support BMP images.
 * `thumbnailName`: Naming style for a thumbnail
 	* Default: `NULL`
-	* Note: The tokens `{size}` and `{filename}` are both valid for naming and will be auto-replaced with the actual terms.
+	* Note: The tokens `{size}`, `{geometry}` and `{filename}` are valid for naming and will be auto-replaced with the actual terms.
 	* Note: As well, the extension of the file will be automatically added.
 	* Note: When left unspecified, will be set to `{size}_{filename}` or `{filename}_{size}` depending upon the value of `thumbnailPrefixStyle`
 * `thumbnailPath`: A path relative to the `rootDir` where thumbnails will be saved. Should end in `{DS}`. If not set, thumbnails will be saved at `path`.
