@@ -450,7 +450,7 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 		* `primaryKey`: Path based upon the record's primaryKey is generated. Persists across a record update.
 		* `random`: Random path is generated for each file upload in the form `nn/nn/nn` where `nn` are random numbers. Does not persist across a record update.
 		* `randomCombined`: Random path - with model id - is generated for each file upload in the form `ID/nn/nn/nn` where `ID` is the current model's ID and `nn` are random numbers. Does not persist across a record update.
-* `path`: A path relative to the `APP_PATH`. Should end in `{DS}`
+* `path`: A path relative to the `rootDir`. Should end in `{DS}`
 	* Default: (string) `'{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}'`
 	* Tokens:
 		* {ROOT}: Replaced by a `rootDir` option
