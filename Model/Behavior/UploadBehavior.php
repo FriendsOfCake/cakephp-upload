@@ -1064,8 +1064,8 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$fileName = str_replace(
-			array('{size}', '{filename}', '{primaryKey}'),
-			array($size, $pathInfo['filename'], $model->id),
+			array('{size}', '{geometry}', '{filename}', '{primaryKey}'),
+			array($size, $geometry, $pathInfo['filename'], $model->id),
 			$this->settings[$model->alias][$field]['thumbnailName']
 		);
 
@@ -1096,8 +1096,8 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$fileName = str_replace(
-			array('{size}', '{filename}', '{primaryKey}'),
-			array($size, $pathInfo['filename'], $model->id),
+			array('{size}', '{geometry}', '{filename}', '{primaryKey}'),
+			array($size, $geometry, $pathInfo['filename'], $model->id),
 			$this->settings[$model->alias][$field]['thumbnailName']
 		);
 
@@ -1725,8 +1725,8 @@ class UploadBehavior extends ModelBehavior {
 
 		foreach ($options['thumbnailSizes'] as $size => $geometry) {
 			$fileName = str_replace(
-				array('{size}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
-				array($size, $pathInfo['filename'], $model->id, time(), microtime()),
+				array('{size}', '{geometry}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
+				array($size, $geometry, $pathInfo['filename'], $model->id, time(), microtime()),
 				$options['thumbnailName']
 			);
 
