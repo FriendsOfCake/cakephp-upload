@@ -332,9 +332,6 @@ class UploadBehavior extends ModelBehavior {
 				$settingsTemp = $this->settings[$model->alias][$field];
 				$settingsTemp['path'] = $settingsTemp['dir'];
 				$dir = $this->_path($model, $field, $settingsTemp);
-				if (substr($dir, 0, 1) === DIRECTORY_SEPARATOR) {
-					$dir = substr($dir, 1);
-				}
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
