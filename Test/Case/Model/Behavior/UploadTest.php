@@ -844,10 +844,10 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$basePath	= $this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']['path'];
 		$primaryKey = 1;
-		$this->assertEqual($result['TestUpload'][0], sprintf('%s%d/Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][1], sprintf('%s%d/xvga_Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][2], sprintf('%s%d/vga_Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][3], sprintf('%s%d/thumb_Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][0], sprintf('%s%d' . DS . 'Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][1], sprintf('%s%d' . DS . 'xvga_Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][2], sprintf('%s%d' . DS . 'vga_Photo.png', $basePath, $primaryKey));
+		$this->assertEqual($result['TestUpload'][3], sprintf('%s%d' . DS . 'thumb_Photo.png', $basePath, $primaryKey));
 	}
 
 	public function testPrepareFilesForDeletionWithoutDirDataFieldWithFlagPathMethod() {
