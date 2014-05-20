@@ -58,6 +58,7 @@ class UploadBehavior extends ModelBehavior {
 		'image/png',
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
+		'image/x-png',
 	);
 
 	protected $_mediaMimetypes = array(
