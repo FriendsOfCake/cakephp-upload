@@ -380,7 +380,7 @@ class Post extends AppModel {
 		$images = array();
 		if (!empty($data['Image'][0])) {
 			foreach ($data['Image'] as $i => $image) {
-				// check attachment size to filter out empty input fields
+				// check attachment size to filter out empty input fields 
 				if (is_array($data['Image'][$i]) && $image['attachment']['size'] > 0) {
 					// Force setting the `model` field to this model
 					$image['model'] = 'Post';
