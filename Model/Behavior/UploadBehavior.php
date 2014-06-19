@@ -47,6 +47,7 @@ class UploadBehavior extends ModelBehavior {
 		'mediaThumbnailType' => 'png',
 		'saveDir' => true,
 		'deleteFolderOnDelete' => false,
+		'keepFilesOnDelete' => false,
 		'mode' => 0777,
 	);
 
@@ -1644,6 +1645,10 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+		if ($options['keepFilesOnDelete'] === true) {
+			return array();
+		}
+
 		if (!strlen($data[$model->alias][$field])) {
 			return $this->__filesToRemove;
 		}

@@ -486,6 +486,8 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 	* Default: (int) `0`
 * `deleteOnUpdate`: Whether to delete files when uploading new versions (potentially dangerous due to naming conflicts)
 	* Default: (boolean) `false`
+* `keepFilesOnDelete`: Prevent to delete the uploaded files when record is deleted
+	* Default: (boolean) `false`
 * `thumbnails`: Whether to create thumbnails or not
 	* Default: (boolean) `true`
 * `thumbnailMethod`: The method to use for resizing thumbnails
