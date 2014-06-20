@@ -461,9 +461,10 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 		* {size}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
 		* {geometry}: Replaced by a zero-length string (the empty string) when used for the regular file upload path. Only available for resized thumbnails.
 * `fields`: An array of fields to use when uploading files
-	* Default: (array) `array('dir' => 'dir', 'type' => 'type', 'size' => 'size')`
+	* Default: (array) `array('dir' => 'dir', 'path' => 'path', 'type' => 'type', 'size' => 'size')`
 	* Options:
 		* dir: Field to use for storing the directory
+		* path: Field to use for storing the path (relative to the webroot)
 		* type: Field to use for storing the filetype
 		* size: Field to use for storing the filesize
 * `rootDir`: Root directory for moving images. Auto-prepended to `path` and `thumbnailPath` where necessary

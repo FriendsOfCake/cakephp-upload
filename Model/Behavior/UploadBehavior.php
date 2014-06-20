@@ -26,7 +26,7 @@ class UploadBehavior extends ModelBehavior {
 		'rootDir' => null,
 		'pathMethod' => 'primaryKey',
 		'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
-		'fields' => array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
+		'fields' => array('dir' => 'dir', 'path' => 'path', 'type' => 'type', 'size' => 'size'),
 		'mimetypes' => array(),
 		'extensions' => array(),
 		'maxSize' => 2097152,
@@ -157,6 +157,8 @@ class UploadBehavior extends ModelBehavior {
 				)));
 			}
 
+			$options['dir'] = str_replace('{ROOT}webroot{DS}', '{DS}', $options['path']);
+
 			$options['path'] = Folder::slashTerm($this->_path($model, $field, array(
 				'isThumbnail' => false,
 				'path' => $options['path'],
@@ -244,6 +246,7 @@ class UploadBehavior extends ModelBehavior {
 						$options['fields']['type'] => null,
 						$options['fields']['size'] => null,
 						$options['fields']['dir'] => null,
+						$options['fields']['path'] => null,
 					);
 
 					$this->_removingOnly[$field] = true;
@@ -326,6 +329,10 @@ class UploadBehavior extends ModelBehavior {
 			if (!empty($tempPath)) {
 				$path .= $tempPath . DS;
 				$thumbnailPath .= $tempPath . DS;
+
+				$settingsTemp = $this->settings[$model->alias][$field];
+				$settingsTemp['path'] = $settingsTemp['dir'];
+				$dir = $this->_path($model, $field, $settingsTemp);
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
@@ -343,6 +350,12 @@ class UploadBehavior extends ModelBehavior {
 				} elseif ($options['saveDir']) {
 					$db = $model->getDataSource();
 					$temp[$model->alias][$options['fields']['dir']] = $db->value($tempPath, 'string');
+				}
+			} elseif ($model->hasField($options['fields']['path'])) {
+				if ($created && $options['pathMethod'] == '_getPathFlat') {
+				} elseif ($options['saveDir']) {
+					$db = $model->getDataSource();
+					$temp[$model->alias][$options['fields']['path']] = $db->value($dir . $tempPath . DIRECTORY_SEPARATOR, 'string');
 				}
 			}
 		}
