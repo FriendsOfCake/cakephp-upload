@@ -210,7 +210,7 @@ class UploadBehavior extends ModelBehavior {
  * Handles setup of file uploads
  *
  * @param Model $model Model instance
- * @param array $options
+ * @param array $options Options passed from Model::save().
  * @return boolean
  */
 	public function beforeSave(Model $model, $options = array()) {
@@ -275,7 +275,7 @@ class UploadBehavior extends ModelBehavior {
  * for UploadBehavior plugin processing.
  *
  * @param Model $model Model instance
- * @param array $options
+ * @param array $options Options passed from Model::save().
  * @return boolean
  */
 	public function beforeValidate(Model $model, $options = array()) {
@@ -297,8 +297,8 @@ class UploadBehavior extends ModelBehavior {
  * Handles moving file uploads
  *
  * @param Model $model Model instance
- * @param boolean $created
- * @param array $options
+ * @param boolean $created True if this save created a new record
+ * @param array $options Options passed from Model::save().
  * @return boolean
  * @throws UploadException
  */
