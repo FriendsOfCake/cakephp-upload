@@ -470,7 +470,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that the file does not exceed the max
  * file size specified in the HTML Form
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -545,6 +545,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function tempDirExists(Model $model, $check, $requireUpload = true) {
@@ -567,6 +568,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isSuccessfulWrite(Model $model, $check, $requireUpload = true) {
@@ -589,6 +591,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function noPhpExtensionErrors(Model $model, $check, $requireUpload = true) {
@@ -612,6 +615,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $mimetypes file mimetypes to allow
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidMimeType(Model $model, $check, $mimetypes = array(), $requireUpload = true) {
@@ -656,7 +660,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param string $path Full upload path
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isWritable(Model $model, $check, $requireUpload = true) {
@@ -679,7 +683,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param string $path Full upload path
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidDir(Model $model, $check, $requireUpload = true) {
@@ -703,6 +707,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Maximum file size
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxSize(Model $model, $check, $size = null, $requireUpload = true) {
@@ -735,6 +740,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Minimum file size
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinSize(Model $model, $check, $size = null, $requireUpload = true) {
@@ -767,6 +773,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $extensions file extenstions to allow
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidExtension(Model $model, $check, $extensions = array(), $requireUpload = true) {
@@ -815,6 +822,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinHeight(Model $model, $check, $height = null, $requireUpload = true) {
@@ -848,6 +856,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxHeight(Model $model, $check, $height = null, $requireUpload = true) {
@@ -881,6 +890,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinWidth(Model $model, $check, $width = null, $requireUpload = true) {
@@ -914,6 +924,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxWidth(Model $model, $check, $width = null, $requireUpload = true) {
