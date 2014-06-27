@@ -657,7 +657,6 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the upload directory is writable
  *
- *
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param boolean $requireUpload Whether or not to require a file upload
@@ -1269,6 +1268,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Same as imagecreatefromjpeg, but honouring the file's Exif data.
  * See http://www.php.net/manual/en/function.imagecreatefromjpeg.php#112902
+ * 
+ * @param string $filename full path to file
+ * @return resource rotated image
  */
 	protected function _imagecreatefromjpegexif($filename) {
 		$image = imagecreatefromjpeg($filename);
@@ -1304,6 +1306,7 @@ class UploadBehavior extends ModelBehavior {
  * Determine what transformations need to be applied to an image,
  * in order to maintain it's orientation and get rid of it's Exif Orientation data
  * http://www.impulseadventure.com/photo/exif-orientation.html
+ * 
  * @param  int $orientation The exif orientation of the image
  * @return array of transformations - array keys are:
  * 'flip_vert' - true if the image needs to be flipped vertically
@@ -1357,8 +1360,8 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * Flip an image object. Code from http://www.roscripts.com/snippets/show/55
- * @param  resource $img An image resource, such as one returned by imagecreatefromjpeg()
- * @param  string $type 'horz' or 'vert'
+ * @param resource $img An image resource, such as one returned by imagecreatefromjpeg()
+ * @param string $type 'horz' or 'vert'
  * @return resource The flipped image
  */
 	protected function _flipImage($img, $type) {
