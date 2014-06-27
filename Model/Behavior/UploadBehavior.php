@@ -442,7 +442,7 @@ class UploadBehavior extends ModelBehavior {
  * is invalidated in afterSave(). Therefore it is possible
  * for save() to return true and this rule to fail.
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @return boolean Always true
  */
 	public function moveUploadedFile(Model $model) {
@@ -452,7 +452,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that the file does not exceed the max
  * file size specified by PHP
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -487,7 +487,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file was completely uploaded
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -504,7 +504,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that a file was uploaded
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -522,7 +522,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that either a file was uploaded,
  * or the existing value in the database is not blank.
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -543,7 +543,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the PHP temporary directory is missing
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -565,7 +565,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file was successfully written to the server
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -587,7 +587,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that a PHP extension did not cause an error
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -609,7 +609,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is of a valid mimetype
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $mimetypes file mimetypes to allow
  * @return boolean Success
@@ -654,7 +654,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that the upload directory is writable
  *
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param string $path Full upload path
  * @return boolean Success
@@ -677,7 +677,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the upload directory exists
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param string $path Full upload path
  * @return boolean Success
@@ -700,7 +700,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum file upload size
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Maximum file size
  * @return boolean Success
@@ -732,7 +732,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum file upload size
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Minimum file size
  * @return boolean Success
@@ -764,7 +764,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file has a valid extension
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $extensions file extenstions to allow
  * @return boolean Success
@@ -812,7 +812,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum height requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
  * @return boolean Success
@@ -845,7 +845,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum height requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
  * @return boolean Success
@@ -878,7 +878,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum width requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
  * @return boolean Success
@@ -911,7 +911,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum width requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
  * @return boolean Success
