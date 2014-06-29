@@ -329,7 +329,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
-			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
+			if (!$this->handleUploadedFile($model, $field, $tmp, $filePath)) {
 				CakeLog::error(sprintf('Model %s, Field %s: Unable to move the uploaded file to %s', $model->alias, $field, $filePath));
 				$model->invalidate($field, sprintf('Unable to move the uploaded file to %s', $filePath));
 				$db = $model->getDataSource();
@@ -363,7 +363,17 @@ class UploadBehavior extends ModelBehavior {
 		return $result;
 	}
 
-	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
+/**
+ * Moves the file into place from it's temporary directory
+ * to the specified file path
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param String $tmp a temporary filename path
+ * @param String $filePath the output filepath
+ * @return boolean
+ **/
+	public function handleUploadedFile(Model $model, $field, $tmp, $filePath) {
 		if (is_uploaded_file($tmp)) {
 			return move_uploaded_file($tmp, $filePath);
 		} else {
@@ -951,6 +961,17 @@ class UploadBehavior extends ModelBehavior {
 		return $width > 0 && $imgWidth <= $width;
 	}
 
+/**
+ * Resizes an image using imagemagick
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path
+ * @param string $size
+ * @param string $geometry
+ * @param string $thumbnailPath
+ * @return boolean
+ */
 	protected function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
@@ -1077,6 +1098,17 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Resizes an image using gd
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path
+ * @param string $size
+ * @param string $geometry
+ * @param string $thumbnailPath
+ * @return boolean
+ */
 	protected function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
@@ -1246,6 +1278,13 @@ class UploadBehavior extends ModelBehavior {
 		return false;
 	}
 
+/**
+ * Creates an image resource for a given file
+ *
+ * @param string $filename
+ * @param string $pathInfo
+ * @return boolean
+ */
 	protected function _createImageResource($filename, $pathInfo) {
 		switch (strtolower($pathInfo['extension'])) {
 			case 'gif':
@@ -1268,7 +1307,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Same as imagecreatefromjpeg, but honouring the file's Exif data.
  * See http://www.php.net/manual/en/function.imagecreatefromjpeg.php#112902
- * 
+ *
  * @param string $filename full path to file
  * @return resource rotated image
  */
@@ -1306,12 +1345,12 @@ class UploadBehavior extends ModelBehavior {
  * Determine what transformations need to be applied to an image,
  * in order to maintain it's orientation and get rid of it's Exif Orientation data
  * http://www.impulseadventure.com/photo/exif-orientation.html
- * 
+ *
  * @param  int $orientation The exif orientation of the image
  * @return array of transformations - array keys are:
- * 'flip_vert' - true if the image needs to be flipped vertically
- * 'flip_horz' - true if the image needs to be flipped horizontally
- * 'rotate_clockwise' - number of degrees image needs to be rotated, clockwise
+ *         'flip_vert' - true if the image needs to be flipped vertically
+ *         'flip_horz' - true if the image needs to be flipped horizontally
+ *         'rotate_clockwise' - number of degrees image needs to be rotated, clockwise
  */
 	protected function _exifOrientationTransformations($orientation) {
 		$trans = array(
@@ -1584,8 +1623,8 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Creates thumbnails for images
  *
- * @param Model $model
- * @param string $field
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
  * @param string $path
  * @param string $thumbnailPath
  * @return void
