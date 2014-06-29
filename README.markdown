@@ -89,6 +89,8 @@ If you are already using `CakePlugin::loadAll();`, then this is not necessary.
 
 ## Usage
 
+> Note: You may want to define the Upload behavior *before* the core Translate Behavior as they have been known to conflict with each other.
+
 ```sql
 CREATE table users (
 	id int(10) unsigned NOT NULL auto_increment,
