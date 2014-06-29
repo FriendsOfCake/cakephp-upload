@@ -403,8 +403,11 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ * Test file move exception
+ *
+ * @return void
  * @expectedException UploadException
- */
+ **/
 	public function testMoveFileExecption() {
 		$this->mockUpload(array('handleUploadedFile'));
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(false));
@@ -412,8 +415,14 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ * Test validation rules
+ *
+ * @param string $rule rule to test
+ * @param array $data validation data
+ * @param array $record record to test
+ * @return void
  * @dataProvider providerTestValidationRules
- */
+ **/
 	public function testValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -450,8 +459,14 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ * Test ignorable validation rules
+ *
+ * @param string $rule rule to test
+ * @param array $data validation data
+ * @param array $record record to test
+ * @return void
  * @dataProvider providerTestIgnorableValidationRules
- */
+ **/
 	public function testIgnorableValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -489,8 +504,12 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ * Test changing configuration when running validation rules
+ *
+ * @param string $rule rule to test
+ * @return void
  * @dataProvider providerTestChangeConfigurationValidationRules
- */
+ **/
 	public function testChangeConfigurationValidationRules($rule) {
 		$this->TestUpload->validate = array(
 			'photo' => array(
@@ -524,7 +543,9 @@ class UploadBehaviorTest extends CakeTestCase {
 /**
  * This simulates the case where we are uploading no file
  * to an existing record, which DOES have an existing value.
- */
+ *
+ * @return void
+ **/
 	public function testIsFileUploadOrHasExistingValueEditingWithExistingValue() {
 		$this->TestUpload->validate = array(
 			'photo' => array(
