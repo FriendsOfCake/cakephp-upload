@@ -399,7 +399,6 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
-
 /**
  * Unlinks a file on disk
  *
