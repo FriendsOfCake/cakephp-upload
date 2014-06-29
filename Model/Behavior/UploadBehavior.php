@@ -210,7 +210,7 @@ class UploadBehavior extends ModelBehavior {
  * Handles setup of file uploads
  *
  * @param Model $model Model instance
- * @param array $options
+ * @param array $options Options passed from Model::save().
  * @return boolean
  */
 	public function beforeSave(Model $model, $options = array()) {
@@ -275,12 +275,12 @@ class UploadBehavior extends ModelBehavior {
  * for UploadBehavior plugin processing.
  *
  * @param Model $model Model instance
- * @param array $options
+ * @param array $options Options passed from Model::save().
  * @return boolean
  */
 	public function beforeValidate(Model $model, $options = array()) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!empty($model->data[$model->alias][$field]) && $this->_isURI($model->data[$model->alias][$field])) {
+			if (!empty($model->data[$model->alias][$field]) && $this->_isUrl($model->data[$model->alias][$field])) {
 				$uri = $model->data[$model->alias][$field];
 				if (!$this->_grab($model, $field, $uri)) {
 					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
@@ -297,8 +297,8 @@ class UploadBehavior extends ModelBehavior {
  * Handles moving file uploads
  *
  * @param Model $model Model instance
- * @param boolean $created
- * @param array $options
+ * @param boolean $created True if this save created a new record
+ * @param array $options Options passed from Model::save().
  * @return boolean
  * @throws UploadException
  */
@@ -329,7 +329,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
-			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
+			if (!$this->handleUploadedFile($model, $field, $tmp, $filePath)) {
 				CakeLog::error(sprintf('Model %s, Field %s: Unable to move the uploaded file to %s', $model->alias, $field, $filePath));
 				$model->invalidate($field, sprintf('Unable to move the uploaded file to %s', $filePath));
 				$db = $model->getDataSource();
@@ -363,7 +363,17 @@ class UploadBehavior extends ModelBehavior {
 		return $result;
 	}
 
-	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
+/**
+ * Moves the file into place from it's temporary directory
+ * to the specified file path
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param String $tmp a temporary filename path
+ * @param String $filePath the output filepath
+ * @return boolean
+ **/
+	public function handleUploadedFile(Model $model, $field, $tmp, $filePath) {
 		if (is_uploaded_file($tmp)) {
 			return move_uploaded_file($tmp, $filePath);
 		} else {
@@ -371,6 +381,12 @@ class UploadBehavior extends ModelBehavior {
 		}
 	}
 
+/**
+ * Unlinks a file on disk
+ *
+ * @param string $file path to file
+ * @return boolean
+ **/
 	public function unlink($file) {
 		if (file_exists($file)) {
 			return unlink($file);
@@ -378,6 +394,13 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Removes a folder and it's contents from disk
+ *
+ * @param Model $model Model instance
+ * @param string $path path to directory
+ * @return boolean
+ **/
 	public function deleteFolder(Model $model, $path) {
 		if (!isset($this->__foldersToRemove[$model->alias])) {
 			return false;
@@ -405,6 +428,13 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Called before every deletion operation.
+ *
+ * @param Model $model Model instance
+ * @param boolean $cascade If true records that depend on this record will also be deleted
+ * @return boolean True if the operation should continue, false if it should abort
+ */
 	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
 			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
@@ -418,6 +448,12 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Called after every deletion operation.
+ *
+ * @param Model $model Model instance
+ * @return void
+ */
 	public function afterDelete(Model $model) {
 		$result = array();
 		if (!empty($this->__filesToRemove[$model->alias])) {
@@ -442,7 +478,7 @@ class UploadBehavior extends ModelBehavior {
  * is invalidated in afterSave(). Therefore it is possible
  * for save() to return true and this rule to fail.
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @return boolean Always true
  */
 	public function moveUploadedFile(Model $model) {
@@ -452,7 +488,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that the file does not exceed the max
  * file size specified by PHP
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -470,7 +506,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that the file does not exceed the max
  * file size specified in the HTML Form
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -487,7 +523,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file was completely uploaded
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -504,7 +540,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that a file was uploaded
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -522,7 +558,7 @@ class UploadBehavior extends ModelBehavior {
  * Check that either a file was uploaded,
  * or the existing value in the database is not blank.
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @return boolean Success
  */
@@ -543,8 +579,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the PHP temporary directory is missing
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function tempDirExists(Model $model, $check, $requireUpload = true) {
@@ -565,8 +602,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file was successfully written to the server
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isSuccessfulWrite(Model $model, $check, $requireUpload = true) {
@@ -587,8 +625,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that a PHP extension did not cause an error
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function noPhpExtensionErrors(Model $model, $check, $requireUpload = true) {
@@ -609,9 +648,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is of a valid mimetype
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $mimetypes file mimetypes to allow
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidMimeType(Model $model, $check, $mimetypes = array(), $requireUpload = true) {
@@ -653,10 +693,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the upload directory is writable
  *
- *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param string $path Full upload path
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isWritable(Model $model, $check, $requireUpload = true) {
@@ -677,9 +716,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the upload directory exists
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param string $path Full upload path
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidDir(Model $model, $check, $requireUpload = true) {
@@ -700,9 +739,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum file upload size
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Maximum file size
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxSize(Model $model, $check, $size = null, $requireUpload = true) {
@@ -732,9 +772,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum file upload size
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Minimum file size
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinSize(Model $model, $check, $size = null, $requireUpload = true) {
@@ -764,9 +805,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file has a valid extension
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $extensions file extenstions to allow
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isValidExtension(Model $model, $check, $extensions = array(), $requireUpload = true) {
@@ -812,9 +854,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum height requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinHeight(Model $model, $check, $height = null, $requireUpload = true) {
@@ -845,9 +888,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum height requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxHeight(Model $model, $check, $height = null, $requireUpload = true) {
@@ -878,9 +922,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is above the minimum width requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isAboveMinWidth(Model $model, $check, $width = null, $requireUpload = true) {
@@ -911,9 +956,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Check that the file is below the maximum width requirement
  *
- * @param Object $model
+ * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
+ * @param boolean $requireUpload Whether or not to require a file upload
  * @return boolean Success
  */
 	public function isBelowMaxWidth(Model $model, $check, $width = null, $requireUpload = true) {
@@ -941,6 +987,17 @@ class UploadBehavior extends ModelBehavior {
 		return $width > 0 && $imgWidth <= $width;
 	}
 
+/**
+ * Resizes an image using imagemagick
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Path to existing file on disk
+ * @param string $size Name of size to use
+ * @param string $geometry Dimensions for current size
+ * @param string $thumbnailPath Output thumbnail path
+ * @return boolean
+ */
 	protected function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
@@ -1067,6 +1124,17 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Resizes an image using gd
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Path to existing file on disk
+ * @param string $size Name of size to use
+ * @param string $geometry Dimensions for current size
+ * @param string $thumbnailPath Output thumbnail path
+ * @return boolean
+ */
 	protected function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
@@ -1236,6 +1304,13 @@ class UploadBehavior extends ModelBehavior {
 		return false;
 	}
 
+/**
+ * Creates an image resource for a given file
+ *
+ * @param string $filename full path to file
+ * @param string $pathInfo Array of path information
+ * @return boolean
+ */
 	protected function _createImageResource($filename, $pathInfo) {
 		switch (strtolower($pathInfo['extension'])) {
 			case 'gif':
@@ -1258,6 +1333,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Same as imagecreatefromjpeg, but honouring the file's Exif data.
  * See http://www.php.net/manual/en/function.imagecreatefromjpeg.php#112902
+ *
+ * @param string $filename full path to file
+ * @return resource rotated image
  */
 	protected function _imagecreatefromjpegexif($filename) {
 		$image = imagecreatefromjpeg($filename);
@@ -1293,11 +1371,12 @@ class UploadBehavior extends ModelBehavior {
  * Determine what transformations need to be applied to an image,
  * in order to maintain it's orientation and get rid of it's Exif Orientation data
  * http://www.impulseadventure.com/photo/exif-orientation.html
- * @param  int $orientation The exif orientation of the image
+ *
+ * @param int $orientation The exif orientation of the image
  * @return array of transformations - array keys are:
- * 'flip_vert' - true if the image needs to be flipped vertically
- * 'flip_horz' - true if the image needs to be flipped horizontally
- * 'rotate_clockwise' - number of degrees image needs to be rotated, clockwise
+ *         'flip_vert' - true if the image needs to be flipped vertically
+ *         'flip_horz' - true if the image needs to be flipped horizontally
+ *         'rotate_clockwise' - number of degrees image needs to be rotated, clockwise
  */
 	protected function _exifOrientationTransformations($orientation) {
 		$trans = array(
@@ -1306,7 +1385,7 @@ class UploadBehavior extends ModelBehavior {
 			'rotate_clockwise' => 0,
 		);
 
-		switch($orientation) {
+		switch ($orientation) {
 			case 1:
 				break;
 
@@ -1346,15 +1425,16 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * Flip an image object. Code from http://www.roscripts.com/snippets/show/55
- * @param  resource $img An image resource, such as one returned by imagecreatefromjpeg()
- * @param  string $type 'horz' or 'vert'
+ *
+ * @param resource $img An image resource, such as one returned by imagecreatefromjpeg()
+ * @param string $type 'horz' or 'vert'
  * @return resource The flipped image
  */
 	protected function _flipImage($img, $type) {
 		$width = imagesx($img);
 		$height = imagesy($img);
 		$dest = imagecreatetruecolor($width, $height);
-		switch($type){
+		switch ($type) {
 			case 'vert':
 				for ($i = 0; $i < $height; $i++) {
 					imagecopy($dest, $img, 0, ($height - $i - 1), 0, $i, $width, 1);
@@ -1371,7 +1451,9 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * rotate an imagick object based on it's exif data.
- * @param  imagick $image an instance of imagick
+ *
+ * @param imagick $image an instance of imagick
+ * @return void
  */
 	protected function _exifRotateImagick($image) {
 		$orientation = $image->getImageOrientation();
@@ -1392,6 +1474,13 @@ class UploadBehavior extends ModelBehavior {
 		$image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 	}
 
+/**
+ * Retrieves the output path for uploaded files
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @return string
+ */
 	protected function _getPath(Model $model, $field) {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
@@ -1403,18 +1492,42 @@ class UploadBehavior extends ModelBehavior {
 		return $this->_getPathPrimaryKey($model, $field, $path);
 	}
 
+/**
+ * Creates a path for file uploading
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathFlat(Model $model, $field, $path) {
 		$destDir = $path;
 		$this->_mkPath($model, $field, $destDir);
 		return '';
 	}
 
+/**
+ * Creates a path for file uploading based on the model primaryKey
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathPrimaryKey(Model $model, $field, $path) {
 		$destDir = $path . $model->id . DIRECTORY_SEPARATOR;
 		$this->_mkPath($model, $field, $destDir);
 		return $model->id;
 	}
 
+/**
+ * Creates a path for file uploading based on a random string
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathRandom(Model $model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
@@ -1431,6 +1544,14 @@ class UploadBehavior extends ModelBehavior {
 		return substr($endPath, 0, -1);
 	}
 
+/**
+ * Creates a path for file uploading based on a random string and model primaryKey
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathRandomCombined(Model $model, $field, $path) {
 		$endPath = $model->id . DIRECTORY_SEPARATOR;
 		$decrement = 0;
@@ -1449,6 +1570,11 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * Download remote file into PHP's TMP dir
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $uri URI for file to retrieve
+ * @return boolean
  */
 	protected function _grab(Model $model, $field, $uri) {
 		$socket = new HttpSocket(array(
@@ -1484,6 +1610,14 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Creates a directory
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $destDir directory to create
+ * @return boolean
+ */
 	protected function _mkPath(Model $model, $field, $destDir) {
 		if (!file_exists($destDir)) {
 			mkdir($destDir, $this->settings[$model->alias][$field]['mode'], true);
@@ -1495,9 +1629,12 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Returns a path based on settings configuration
  *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $options Options to use when building a path
  * @return string
  **/
-	protected function _path(Model $model, $fieldName, $options = array()) {
+	protected function _path(Model $model, $field, $options = array()) {
 		$defaults = array(
 			'isThumbnail' => true,
 			'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
@@ -1520,7 +1657,7 @@ class UploadBehavior extends ModelBehavior {
 			'{ROOT}'	=> $options['rootDir'],
 			'{primaryKey}'	=> $model->id,
 			'{model}'	=> Inflector::underscore($model->alias),
-			'{field}'	=> $fieldName,
+			'{field}'	=> $field,
 			'{time}'	=> time(),
 			'{microtime}'	=> microtime(),
 			'{DS}'		=> DIRECTORY_SEPARATOR,
@@ -1559,6 +1696,14 @@ class UploadBehavior extends ModelBehavior {
 		return $newPath;
 	}
 
+/**
+ * Returns the path for a given thumbnail size
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $params Array of parameters to use for the thumbnail
+ * @return string
+ **/
 	protected function _pathThumbnail(Model $model, $field, $params = array()) {
 		return str_replace(
 			array('{size}', '{geometry}'),
@@ -1570,10 +1715,10 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Creates thumbnails for images
  *
- * @param Model $model
- * @param string $field
- * @param string $path
- * @param string $thumbnailPath
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Path to existing file on disk
+ * @param string $thumbnailPath Output thumbnail path
  * @return void
  * @throws Exception
  */
@@ -1611,18 +1756,44 @@ class UploadBehavior extends ModelBehavior {
 		}
 	}
 
+/**
+ * Checks if a given mimetype is an image mimetype
+ *
+ * @param Model $model Model instance
+ * @param string $mimetype mimetype
+ * @return boolean
+ **/
 	protected function _isImage(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
-	protected function _isURI($string) {
+/**
+ * Checks if a given string is a url
+ *
+ * @param string $string string to check
+ * @return boolean
+ **/
+	protected function _isUrl($string) {
 		return (filter_var($string, FILTER_VALIDATE_URL) ? true : false);
 	}
 
+/**
+ * Checks if a given mimetype is a media mimetype
+ *
+ * @param Model $model Model instance
+ * @param string $mimetype mimetype
+ * @return boolean
+ **/
 	protected function _isMedia(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
+/**
+ * Retrieves the mimetype for a given file
+ *
+ * @param string $filePath path to file
+ * @return boolean
+ **/
 	protected function _getMimeType($filePath) {
 		if (class_exists('finfo')) {
 			$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
@@ -1643,7 +1814,16 @@ class UploadBehavior extends ModelBehavior {
 		return 'application/octet-stream';
 	}
 
-	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+/**
+ * Sets up an array of files to be deleted
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $data array of data
+ * @param array $options array of configuration settings for a field
+ * @return boolean
+ **/
+	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options = array()) {
 		if (!strlen($data[$model->alias][$field])) {
 			return $this->__filesToRemove;
 		}
@@ -1730,11 +1910,23 @@ class UploadBehavior extends ModelBehavior {
 		return $this->__filesToRemove;
 	}
 
+/**
+ * Returns the field to check
+ *
+ * @param array $check array of validation data
+ * @return string
+ **/
 	protected function _getField($check) {
 		$fieldKeys = array_keys($check);
 		return array_pop($fieldKeys);
 	}
 
+/**
+ * Returns the pathinfo for a file
+ *
+ * @param string $filename name of file on disk
+ * @return array
+ **/
 	protected function _pathinfo($filename) {
 		$pathInfo = pathinfo($filename);
 
