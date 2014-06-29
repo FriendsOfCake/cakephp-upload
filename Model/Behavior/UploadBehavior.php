@@ -239,12 +239,12 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if ($removing) {
-					$model->data[$model->alias] = array(
+					$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 						$field => null,
 						$options['fields']['type'] => null,
 						$options['fields']['size'] => null,
 						$options['fields']['dir'] => null,
-					);
+					));
 
 					$this->_removingOnly[$field] = true;
 					continue;
