@@ -385,7 +385,16 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	public function testKeepFilesOnDelete() {
 		$this->mockUpload();
-		$this->TestUpload->save($this->data['test_ok']);
+		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
+		$this->MockUpload->expects($this->never())->method('unlink');
+		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->with(
+			$this->TestUpload,
+			'photo',
+			$this->data['test_ok']['photo']['tmp_name'],
+			$this->MockUpload->settings['TestUpload']['photo']['path'] . 3 . DS . $this->data['test_ok']['photo']['name']
+		);
+		$result = $this->TestUpload->save($this->data['test_ok']);
+		$this->assertInternalType('array', $result);
 		$id = $this->TestUpload->id;
 
 		$existingRecord = $this->TestUpload->findById($id);
