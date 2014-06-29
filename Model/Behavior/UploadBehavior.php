@@ -427,6 +427,10 @@ class UploadBehavior extends ModelBehavior {
 
 		$folders = $this->__foldersToRemove[$model->alias];
 		foreach ($folders as $folder) {
+			if (strlen((string)$folder) === 0) {
+				continue;
+			}
+
 			$dir = $path . $folder;
 			$it = new RecursiveDirectoryIterator($dir);
 			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
