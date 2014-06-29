@@ -1399,6 +1399,7 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * Flip an image object. Code from http://www.roscripts.com/snippets/show/55
+ *
  * @param resource $img An image resource, such as one returned by imagecreatefromjpeg()
  * @param string $type 'horz' or 'vert'
  * @return resource The flipped image
