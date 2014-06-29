@@ -381,6 +381,12 @@ class UploadBehavior extends ModelBehavior {
 		}
 	}
 
+/**
+ * Unlinks a file on disk
+ *
+ * @param string $file path to file
+ * @return boolean
+ **/
 	public function unlink($file) {
 		if (file_exists($file)) {
 			return unlink($file);
@@ -388,6 +394,13 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Removes a folder and it's contents from disk
+ *
+ * @param Model $model Model instance
+ * @param string $path path to directory
+ * @return boolean
+ **/
 	public function deleteFolder(Model $model, $path) {
 		if (!isset($this->__foldersToRemove[$model->alias])) {
 			return false;
@@ -415,6 +428,13 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Called before every deletion operation.
+ *
+ * @param Model $model Model instance
+ * @param boolean $cascade If true records that depend on this record will also be deleted
+ * @return boolean True if the operation should continue, false if it should abort
+ */
 	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
 			'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
@@ -428,6 +448,12 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Called after every deletion operation.
+ *
+ * @param Model $model Model instance
+ * @return void
+ */
 	public function afterDelete(Model $model) {
 		$result = array();
 		if (!empty($this->__filesToRemove[$model->alias])) {
