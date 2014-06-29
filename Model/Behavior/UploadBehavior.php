@@ -387,6 +387,20 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
+ * Removes directory
+ *
+ * @param string $dirname Path to the directory
+ * @return boolean
+ **/
+	public function rmdir($dirname) {
+		if (is_dir($dirname)) {
+			return rmdir($dirname);
+		}
+		return true;
+	}
+
+
+/**
  * Unlinks a file on disk
  *
  * @param string $file path to file
@@ -422,12 +436,12 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if ($file->isDir()) {
-					rmdir($file->getRealPath());
+					$this->rmdir($file->getRealPath());
 				} else {
-					unlink($file->getRealPath());
+					$this->unlink($file->getRealPath());
 				}
 			}
-			rmdir($dir);
+			$this->rmdir($dir);
 		}
 
 		return true;
