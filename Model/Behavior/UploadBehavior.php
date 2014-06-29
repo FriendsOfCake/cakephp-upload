@@ -966,10 +966,10 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @param string $path
- * @param string $size
- * @param string $geometry
- * @param string $thumbnailPath
+ * @param string $path Path to existing file on disk
+ * @param string $size Name of size to use
+ * @param string $geometry Dimensions for current size
+ * @param string $thumbnailPath Output thumbnail path
  * @return boolean
  */
 	protected function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
@@ -1103,10 +1103,10 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @param string $path
- * @param string $size
- * @param string $geometry
- * @param string $thumbnailPath
+ * @param string $path Path to existing file on disk
+ * @param string $size Name of size to use
+ * @param string $geometry Dimensions for current size
+ * @param string $thumbnailPath Output thumbnail path
  * @return boolean
  */
 	protected function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
@@ -1636,8 +1636,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @param string $path
- * @param string $thumbnailPath
+ * @param string $path Path to existing file on disk
+ * @param string $thumbnailPath Output thumbnail path
  * @return void
  * @throws Exception
  */
