@@ -383,7 +383,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEmpty($this->TestUpload->findById($this->data['test_update']['id']));
 	}
 
-	public function testUnlinkFileOnDelete() {
+	public function testKeepFilesOnDelete() {
 		$this->mockUpload();
 		$this->TestUpload->save($this->data['test_ok']);
 		$id = $this->TestUpload->id;
