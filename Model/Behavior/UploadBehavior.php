@@ -318,6 +318,10 @@ class UploadBehavior extends ModelBehavior {
 				continue;
 			}
 
+			if (empty($model->data[$model->alias][$field])) {
+				continue;
+			}
+
 			$tempPath = $this->_getPath($model, $field);
 
 			$path = $this->settings[$model->alias][$field]['path'];

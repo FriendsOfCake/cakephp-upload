@@ -58,6 +58,9 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->TestUpload = ClassRegistry::init('TestUpload');
 		$this->TestUploadTwo = ClassRegistry::init('TestUploadTwo');
 		$this->currentTestMethod = $method;
+		$this->data['test_empty'] = array(
+			'photo' => ''
+		);
 		$this->data['test_ok'] = array(
 			'photo' => array(
 				'name' => 'Photo.png',
@@ -174,6 +177,30 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEquals($this->data['test_ok']['photo']['size'], $newRecord['TestUpload']['size']);
 	}
 
+	public function testEmptyUpload() {
+		$this->mockUpload();
+		$this->MockUpload->expects($this->never())->method('handleUploadedFile')->will($this->returnValue(true));
+		$this->MockUpload->expects($this->never())->method('unlink');
+		$result = $this->TestUpload->save($this->data['test_empty']);
+		$this->assertInternalType('array', $result);
+
+		$id = $this->TestUpload->id;
+		$newRecord = $this->TestUpload->findById($id);
+		$expectedRecord = array(
+			'TestUpload' => array(
+				'id' => $id,
+				'photo' => null,
+				'dir' => null,
+				'type' => null,
+				'size' => null,
+				'other_field' => null
+			)
+		);
+
+		$this->assertEquals($expectedRecord, $newRecord);
+	}
+
+
 	public function testSimpleUpload() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
@@ -186,10 +213,12 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 		$result = $this->TestUpload->save($this->data['test_ok']);
 		$this->assertInternalType('array', $result);
-		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
+
+		$id = $this->TestUpload->id;
+		$newRecord = $this->TestUpload->findById($id);
 		$expectedRecord = array(
 			'TestUpload' => array(
-				'id' => 3,
+				'id' => $id,
 				'photo' => 'Photo.png',
 				'dir' => 3,
 				'type' => 'image/png',
