@@ -280,7 +280,7 @@ class UploadBehavior extends ModelBehavior {
  */
 	public function beforeValidate(Model $model, $options = array()) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!empty($model->data[$model->alias][$field]) && $this->_isURI($model->data[$model->alias][$field])) {
+			if (!empty($model->data[$model->alias][$field]) && $this->_isUrl($model->data[$model->alias][$field])) {
 				$uri = $model->data[$model->alias][$field];
 				if (!$this->_grab($model, $field, $uri)) {
 					$model->invalidate($field, __d('upload', 'File was not downloaded.', true));
@@ -1474,6 +1474,13 @@ class UploadBehavior extends ModelBehavior {
 		$image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 	}
 
+/**
+ * Retrieves the output path for uploaded files
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @return string
+ */
 	protected function _getPath(Model $model, $field) {
 		$path = $this->settings[$model->alias][$field]['path'];
 		$pathMethod = $this->settings[$model->alias][$field]['pathMethod'];
@@ -1485,18 +1492,42 @@ class UploadBehavior extends ModelBehavior {
 		return $this->_getPathPrimaryKey($model, $field, $path);
 	}
 
+/**
+ * Creates a path for file uploading
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathFlat(Model $model, $field, $path) {
 		$destDir = $path;
 		$this->_mkPath($model, $field, $destDir);
 		return '';
 	}
 
+/**
+ * Creates a path for file uploading based on the model primaryKey
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathPrimaryKey(Model $model, $field, $path) {
 		$destDir = $path . $model->id . DIRECTORY_SEPARATOR;
 		$this->_mkPath($model, $field, $destDir);
 		return $model->id;
 	}
 
+/**
+ * Creates a path for file uploading based on a random string
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathRandom(Model $model, $field, $path) {
 		$endPath = null;
 		$decrement = 0;
@@ -1513,6 +1544,14 @@ class UploadBehavior extends ModelBehavior {
 		return substr($endPath, 0, -1);
 	}
 
+/**
+ * Creates a path for file uploading based on a random string and model primaryKey
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $path Base directory
+ * @return string
+ */
 	protected function _getPathRandomCombined(Model $model, $field, $path) {
 		$endPath = $model->id . DIRECTORY_SEPARATOR;
 		$decrement = 0;
@@ -1571,6 +1610,14 @@ class UploadBehavior extends ModelBehavior {
 		return true;
 	}
 
+/**
+ * Creates a directory
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $destDir directory to create
+ * @return boolean
+ */
 	protected function _mkPath(Model $model, $field, $destDir) {
 		if (!file_exists($destDir)) {
 			mkdir($destDir, $this->settings[$model->alias][$field]['mode'], true);
@@ -1649,6 +1696,14 @@ class UploadBehavior extends ModelBehavior {
 		return $newPath;
 	}
 
+/**
+ * Returns the path for a given thumbnail size
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $params Array of parameters to use for the thumbnail
+ * @return string
+ **/
 	protected function _pathThumbnail(Model $model, $field, $params = array()) {
 		return str_replace(
 			array('{size}', '{geometry}'),
@@ -1701,18 +1756,44 @@ class UploadBehavior extends ModelBehavior {
 		}
 	}
 
+/**
+ * Checks if a given mimetype is an image mimetype
+ *
+ * @param Model $model Model instance
+ * @param string $mimetype mimetype
+ * @return boolean
+ **/
 	protected function _isImage(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
-	protected function _isURI($string) {
+/**
+ * Checks if a given string is a url
+ *
+ * @param string $string string to check
+ * @return boolean
+ **/
+	protected function _isUrl($string) {
 		return (filter_var($string, FILTER_VALIDATE_URL) ? true : false);
 	}
 
+/**
+ * Checks if a given mimetype is a media mimetype
+ *
+ * @param Model $model Model instance
+ * @param string $mimetype mimetype
+ * @return boolean
+ **/
 	protected function _isMedia(Model $model, $mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
+/**
+ * Retrieves the mimetype for a given file
+ *
+ * @param string $filePath path to file
+ * @return boolean
+ **/
 	protected function _getMimeType($filePath) {
 		if (class_exists('finfo')) {
 			$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
@@ -1733,7 +1814,16 @@ class UploadBehavior extends ModelBehavior {
 		return 'application/octet-stream';
 	}
 
-	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+/**
+ * Sets up an array of files to be deleted
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $data array of data
+ * @param array $options array of configuration settings for a field
+ * @return boolean
+ **/
+	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options = array()) {
 		if (!strlen($data[$model->alias][$field])) {
 			return $this->__filesToRemove;
 		}
@@ -1820,11 +1910,23 @@ class UploadBehavior extends ModelBehavior {
 		return $this->__filesToRemove;
 	}
 
+/**
+ * Returns the field to check
+ *
+ * @param array $check array of validation data
+ * @return string
+ **/
 	protected function _getField($check) {
 		$fieldKeys = array_keys($check);
 		return array_pop($fieldKeys);
 	}
 
+/**
+ * Returns the pathinfo for a file
+ *
+ * @param string $filename name of file on disk
+ * @return array
+ **/
 	protected function _pathinfo($filename) {
 		$pathInfo = pathinfo($filename);
 
