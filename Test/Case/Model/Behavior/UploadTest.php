@@ -179,7 +179,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
 		$this->MockUpload->expects($this->never())->method('unlink');
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->with(
-			$this->TestUpload->alias,
+			$this->TestUpload,
 			'photo',
 			$this->data['test_ok']['photo']['tmp_name'],
 			$this->MockUpload->settings['TestUpload']['photo']['path'] . 3 . DS . $this->data['test_ok']['photo']['name']
@@ -229,7 +229,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->MockUpload->expects($this->once())
 			->method('handleUploadedFile')
 			->with(
-					$this->equalTo('TestUploadTwo'),
+					$this->equalTo($this->TestUploadTwo),
 					$this->equalTo('photo'),
 					$this->equalTo('image-png-tmp.png'),
 					$this->equalTo($destinationDir . 'image-png.png')
@@ -282,7 +282,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->MockUpload->settings['TestUpload']['photo']['path'] . $existingRecord['TestUpload']['dir'] . DS . $existingRecord['TestUpload']['photo']
 		);
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->with(
-			$this->TestUpload->alias,
+			$this->TestUpload,
 			'photo',
 			$this->data['test_update']['photo']['tmp_name'],
 			$this->MockUpload->settings['TestUpload']['photo']['path'] . $this->data['test_update']['id'] . DS . $this->data['test_update']['photo']['name']
