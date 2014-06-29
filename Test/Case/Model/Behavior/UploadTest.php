@@ -200,7 +200,6 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEquals($expectedRecord, $newRecord);
 	}
 
-
 	public function testSimpleUpload() {
 		$this->mockUpload();
 		$this->MockUpload->expects($this->once())->method('handleUploadedFile')->will($this->returnValue(true));
@@ -234,7 +233,9 @@ class UploadBehaviorTest extends CakeTestCase {
  * Tests Upload::save creates a new Upload record including
  * an upload of an PNG image file using the Upload.Upload behavior
  * with the default path and pathMethod (primaryKey)
- */
+ *
+ * @return void
+ **/
 	public function testSaveSuccessPngDefaultPathAndPathMethod() {
 		$this->mockUpload();
 		$nextId = (1 + $this->TestUploadTwo->field('id', array(), array('TestUploadTwo.id' => 'DESC')));
@@ -363,7 +364,9 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertInternalType('array', $runtime['TestUpload']['photo']);
 
 		$this->TestUpload->read(null, $this->data['test_update']['id']);
-		$this->TestUpload->save(); // intentionally don't pass an uploaded file in save data
+
+		// intentionally don't pass an uploaded file in save data
+		$this->TestUpload->save();
 		$runtime = $this->TestUpload->Behaviors->Upload->runtime;
 		$this->assertFalse(isset($runtime['TestUpload']['photo']));
 	}
@@ -585,8 +588,9 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
+		// Fixture record #1 has an existing value.
 		$data = array(
-			'id' => 1, // Fixture record #1 has an existing value.
+			'id' => 1,
 			'photo' => array(
 				'tmp_name' => 'Photo.png',
 				'dir' => '/tmp/php/file.tmp',
