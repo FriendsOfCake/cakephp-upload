@@ -499,7 +499,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_INI_SIZE;
+		return Hash::get($check[$field], 'error') !== UPLOAD_ERR_INI_SIZE;
 	}
 
 /**
@@ -517,7 +517,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_FORM_SIZE;
+		return Hash::get($check[$field], 'error') !== UPLOAD_ERR_FORM_SIZE;
 	}
 
 /**
@@ -534,7 +534,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_PARTIAL;
+		return Hash::get($check[$field], 'error') !== UPLOAD_ERR_PARTIAL;
 	}
 
 /**
@@ -551,7 +551,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_NO_FILE;
+		return Hash::get($check[$field], 'error') !== UPLOAD_ERR_NO_FILE;
 	}
 
 /**
@@ -591,12 +591,14 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_NO_TMP_DIR;
+		return $error !== UPLOAD_ERR_NO_TMP_DIR;
 	}
 
 /**
@@ -614,12 +616,14 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_CANT_WRITE;
+		return $error !== UPLOAD_ERR_CANT_WRITE;
 	}
 
 /**
@@ -637,12 +641,14 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
-		return $check[$field]['error'] !== UPLOAD_ERR_EXTENSION;
+		return $error !== UPLOAD_ERR_EXTENSION;
 	}
 
 /**
@@ -661,8 +667,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -705,8 +713,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -728,8 +738,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -752,8 +764,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -785,8 +799,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -818,8 +834,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -867,8 +885,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -901,8 +921,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -935,8 +957,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
@@ -969,8 +993,10 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
+		$error = Hash::get($check[$field], 'error');
+
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
 
