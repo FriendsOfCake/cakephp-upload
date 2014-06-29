@@ -1407,7 +1407,7 @@ class UploadBehavior extends ModelBehavior {
 		$width = imagesx($img);
 		$height = imagesy($img);
 		$dest = imagecreatetruecolor($width, $height);
-		switch($type){
+		switch ($type) {
 			case 'vert':
 				for ($i = 0; $i < $height; $i++) {
 					imagecopy($dest, $img, 0, ($height - $i - 1), 0, $i, $width, 1);
