@@ -404,6 +404,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 /**
  * @expectedException UploadException
+ * @return void
  */
 	public function testMoveFileExecption() {
 		$this->mockUpload(array('handleUploadedFile'));
@@ -412,7 +413,12 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ *
  * @dataProvider providerTestValidationRules
+ * @param string $rule rule to test
+ * @param array $data validation data
+ * @param array $record record to test
+ * @return void
  */
 	public function testValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
@@ -450,7 +456,12 @@ class UploadBehaviorTest extends CakeTestCase {
 	}
 
 /**
+ *
  * @dataProvider providerTestIgnorableValidationRules
+ * @param string $rule rule to test
+ * @param array $data validation data
+ * @param array $record record to test
+ * @return void
  */
 	public function testIgnorableValidationRules($rule, $data, $record = array()) {
 		$this->TestUpload->validate = array(
@@ -490,6 +501,8 @@ class UploadBehaviorTest extends CakeTestCase {
 
 /**
  * @dataProvider providerTestChangeConfigurationValidationRules
+ * @param string $rule rule to test
+ * @return void
  */
 	public function testChangeConfigurationValidationRules($rule) {
 		$this->TestUpload->validate = array(
@@ -524,6 +537,8 @@ class UploadBehaviorTest extends CakeTestCase {
 /**
  * This simulates the case where we are uploading no file
  * to an existing record, which DOES have an existing value.
+ *
+ * @return void
  */
 	public function testIsFileUploadOrHasExistingValueEditingWithExistingValue() {
 		$this->TestUpload->validate = array(
