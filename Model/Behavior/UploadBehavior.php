@@ -1359,7 +1359,7 @@ class UploadBehavior extends ModelBehavior {
 			'rotate_clockwise' => 0,
 		);
 
-		switch($orientation) {
+		switch ($orientation) {
 			case 1:
 				break;
 
