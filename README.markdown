@@ -525,6 +525,12 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 * `saveDir`: Can be used to turn off saving the directory
 	* Default: (boolean) `true`
 	* Note: Because of the way in which the directory is saved, if you are using a `pathMethod` other than flat and you set `saveDir` to false, you may end up in situations where the file is in a location that you cannot predict. This is more of an issue for a `pathMethod` of `random` and `randomCombined` than `primaryKey`, but keep this in mind when fiddling with this option
+* `deleteFolderOnDelete`: Delete folder related to current record on record delete
+	* Default: (boolean) `false`
+	* Note: Because of the way in which the directory is saved, if you are using a `pathMethod` of flat, turning this setting on will delete all your images. As such, setting this to true can be potentially dangerous.
+* `keepFilesOnDelete`: Keep *all* files when uploading/deleting a record.
+	* Default: (boolean) `false`
+	* Note: This does not override `deleteFolderOnDelete`. If you set that setting to true, your images may still be deleted. This is so that existing uploads are not deleted - unless overwritten.
 * `mode`: The UNIX permissions to set on the created upload directories.
 	* Default: (integer) `0777`
 
