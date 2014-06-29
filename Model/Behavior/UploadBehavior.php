@@ -1346,7 +1346,7 @@ class UploadBehavior extends ModelBehavior {
  * in order to maintain it's orientation and get rid of it's Exif Orientation data
  * http://www.impulseadventure.com/photo/exif-orientation.html
  *
- * @param  int $orientation The exif orientation of the image
+ * @param int $orientation The exif orientation of the image
  * @return array of transformations - array keys are:
  *         'flip_vert' - true if the image needs to be flipped vertically
  *         'flip_horz' - true if the image needs to be flipped horizontally
