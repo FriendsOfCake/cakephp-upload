@@ -139,30 +139,30 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	public function testSetup() {
 		$this->mockUpload(array('handleUploadedFile', 'unlink'));
-		$this->assertEqual('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
-		$this->assertEqual('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
+		$this->assertEquals('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
+		$this->assertEquals('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
 	}
 
 	public function testUploadSettings() {
 		$this->mockUpload(array('handleUploadedFile', 'unlink'));
-		$this->assertEqual('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
-		$this->assertEqual('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
+		$this->assertEquals('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
+		$this->assertEquals('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
 
 		$this->TestUpload->uploadSettings('photo', 'thumbnailMethod', '_resizePhp');
-		$this->assertEqual('_resizePhp', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
-		$this->assertEqual('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
+		$this->assertEquals('_resizePhp', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
+		$this->assertEquals('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
 
 		$this->TestUpload->uploadSettings('photo', array(
 			'thumbnailMethod' => '_resizeImagick',
 			'pathMethod' => '_getPathFlat',
 		));
-		$this->assertEqual('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
-		$this->assertEqual('_getPathFlat', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
+		$this->assertEquals('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
+		$this->assertEquals('_getPathFlat', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
 
 		$this->TestUpload->uploadSettings('photo', array('pathMethod', 'thumbnailQuality'), array('_getPathPrimaryKey', 100));
-		$this->assertEqual('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
-		$this->assertEqual('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
-		$this->assertEqual(100, $this->MockUpload->settings['TestUpload']['photo']['thumbnailQuality']);
+		$this->assertEquals('_resizeImagick', $this->MockUpload->settings['TestUpload']['photo']['thumbnailMethod']);
+		$this->assertEquals('_getPathPrimaryKey', $this->MockUpload->settings['TestUpload']['photo']['pathMethod']);
+		$this->assertEquals(100, $this->MockUpload->settings['TestUpload']['photo']['thumbnailQuality']);
 	}
 
 	public function testFileSize() {
@@ -171,7 +171,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_ok']);
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
-		$this->assertEqual($this->data['test_ok']['photo']['size'], $newRecord['TestUpload']['size']);
+		$this->assertEquals($this->data['test_ok']['photo']['size'], $newRecord['TestUpload']['size']);
 	}
 
 	public function testSimpleUpload() {
@@ -198,7 +198,7 @@ class UploadBehaviorTest extends CakeTestCase {
 			)
 		);
 
-		$this->assertEqual($expectedRecord, $newRecord);
+		$this->assertEquals($expectedRecord, $newRecord);
 	}
 
 /**
@@ -299,7 +299,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
-		$this->assertEqual($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
+		$this->assertEquals($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
 	public function testUpdateWithoutNewUpload() {
@@ -309,7 +309,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_update_other_field']);
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
-		$this->assertEqual($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
+		$this->assertEquals($this->data['test_update_other_field']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
 	public function testUpdateWithoutNewUploadWithoutFieldSet() {
@@ -319,7 +319,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		$result = $this->TestUpload->save($this->data['test_update_other_field_without_photo_set']);
 		$this->assertInternalType('array', $result);
 		$newRecord = $this->TestUpload->findById($this->TestUpload->id);
-		$this->assertEqual($this->data['test_update_other_field_without_photo_set']['other_field'], $newRecord['TestUpload']['other_field']);
+		$this->assertEquals($this->data['test_update_other_field_without_photo_set']['other_field'], $newRecord['TestUpload']['other_field']);
 	}
 
 	public function testRuntimeConfigIsResetBetweenSaves() {
@@ -547,7 +547,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 		$this->TestUpload->set($data);
 		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->assertEquals(0, count($this->TestUpload->validationErrors));
 
 		$this->__testOkAndRemoveCasesValidate();
 	}
@@ -619,7 +619,7 @@ class UploadBehaviorTest extends CakeTestCase {
 
 		$this->TestUpload->set($this->data['test_ok_bmp']);
 		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->assertEquals(0, count($this->TestUpload->validationErrors));
 
 		$this->TestUpload->Behaviors->detach('Upload.Upload');
 		$this->TestUpload->Behaviors->attach('Upload.Upload', array(
@@ -726,7 +726,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(0, strlen($result));
+		$this->assertEquals(0, strlen($result));
 	}
 
 	public function testGetPathPrimaryKey() {
@@ -737,8 +737,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('integer', $result);
-		$this->assertEqual(1, strlen($result));
-		$this->assertEqual($result, $this->TestUpload->id);
+		$this->assertEquals(1, strlen($result));
+		$this->assertEquals($result, $this->TestUpload->id);
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
 
@@ -749,7 +749,7 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(8, strlen($result));
+		$this->assertEquals(8, strlen($result));
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
 
@@ -761,8 +761,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(9 + strlen($this->TestUpload->id), strlen($result));
-		$this->assertEqual(substr($result, 0, strlen($this->TestUpload->id)), $this->TestUpload->id);
+		$this->assertEquals(9 + strlen($this->TestUpload->id), strlen($result));
+		$this->assertEquals(substr($result, 0, strlen($this->TestUpload->id)), $this->TestUpload->id);
 		$this->assertTrue(is_dir(TMP . $basePath . $result));
 	}
 
@@ -772,21 +772,21 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
+		$this->assertEquals(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_path', array(
 			$this->TestUpload, 'photo', array('path' => 'webroot{DS}files//{size}/{model}\\{field}{DS}{geometry}///')
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . '{size}' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR . '{geometry}' . DIRECTORY_SEPARATOR, $result);
+		$this->assertEquals(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . '{size}' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR . '{geometry}' . DIRECTORY_SEPARATOR, $result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_path', array(
 			$this->TestUpload, 'photo', array('isThumbnail' => false, 'path' => 'webroot{DS}files//{size}/{model}\\\\{field}{DS}{geometry}///')
 		));
 
 		$this->assertInternalType('string', $result);
-		$this->assertEqual(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
+		$this->assertEquals(WWW_ROOT . 'files' . DIRECTORY_SEPARATOR . 'test_upload' . DIRECTORY_SEPARATOR . 'photo' . DIRECTORY_SEPARATOR, $result);
 	}
 
 	public function testPrepareFilesForDeletion() {
@@ -812,8 +812,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 	}
 
 	public function testPrepareFilesForDeletionWithoutDirDataFieldWithPrimaryKeyPathMethod() {
@@ -839,15 +839,15 @@ class UploadBehaviorTest extends CakeTestCase {
 			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
 		));
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 
 		$basePath	= $this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']['path'];
 		$primaryKey = 1;
-		$this->assertEqual($result['TestUpload'][0], sprintf('%s%d' . DS . 'Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][1], sprintf('%s%d' . DS . 'xvga_Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][2], sprintf('%s%d' . DS . 'vga_Photo.png', $basePath, $primaryKey));
-		$this->assertEqual($result['TestUpload'][3], sprintf('%s%d' . DS . 'thumb_Photo.png', $basePath, $primaryKey));
+		$this->assertEquals($result['TestUpload'][0], sprintf('%s%d' . DS . 'Photo.png', $basePath, $primaryKey));
+		$this->assertEquals($result['TestUpload'][1], sprintf('%s%d' . DS . 'xvga_Photo.png', $basePath, $primaryKey));
+		$this->assertEquals($result['TestUpload'][2], sprintf('%s%d' . DS . 'vga_Photo.png', $basePath, $primaryKey));
+		$this->assertEquals($result['TestUpload'][3], sprintf('%s%d' . DS . 'thumb_Photo.png', $basePath, $primaryKey));
 	}
 
 	public function testPrepareFilesForDeletionWithoutDirDataFieldWithFlagPathMethod() {
@@ -874,15 +874,15 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 
 		$basePath	= $this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']['path'];
 		$primaryKey = 1;
-		$this->assertEqual($result['TestUpload'][0], sprintf('%sPhoto.png', $basePath));
-		$this->assertEqual($result['TestUpload'][1], sprintf('%sxvga_Photo.png', $basePath));
-		$this->assertEqual($result['TestUpload'][2], sprintf('%svga_Photo.png', $basePath));
-		$this->assertEqual($result['TestUpload'][3], sprintf('%sthumb_Photo.png', $basePath));
+		$this->assertEquals($result['TestUpload'][0], sprintf('%sPhoto.png', $basePath));
+		$this->assertEquals($result['TestUpload'][1], sprintf('%sxvga_Photo.png', $basePath));
+		$this->assertEquals($result['TestUpload'][2], sprintf('%svga_Photo.png', $basePath));
+		$this->assertEquals($result['TestUpload'][3], sprintf('%sthumb_Photo.png', $basePath));
 	}
 
 	public function testPrepareFilesForDeletionWithThumbnailType() {
@@ -909,8 +909,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 	}
 
 	public function testPrepareFilesForDeletionWithMediaFileAndFalseThumbnailType() {
@@ -937,8 +937,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 	}
 
 	public function testPrepareFilesForDeletionWithMediaFile() {
@@ -964,8 +964,8 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$this->assertInternalType('array', $result);
-		$this->assertEqual(1, count($result));
-		$this->assertEqual(4, count($result['TestUpload']));
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(4, count($result['TestUpload']));
 	}
 
 	private function __testOkAndRemoveCasesValidate() {
@@ -976,7 +976,7 @@ class UploadBehaviorTest extends CakeTestCase {
 	private function __testValidates($data) {
 		$this->TestUpload->set($data);
 		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->assertEquals(0, count($this->TestUpload->validationErrors));
 	}
 
 	private function __testOkCaseValidates() {
@@ -986,20 +986,20 @@ class UploadBehaviorTest extends CakeTestCase {
 	private function __testRemoveCaseValidates() {
 		$this->TestUpload->set($this->data['test_remove']);
 		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->assertEquals(0, count($this->TestUpload->validationErrors));
 	}
 
 	private function __testSkipValidationRule($ruleName, $data) {
 		$this->TestUpload->set($data);
 		$this->assertTrue($this->TestUpload->validates());
-		$this->assertEqual(0, count($this->TestUpload->validationErrors));
+		$this->assertEquals(0, count($this->TestUpload->validationErrors));
 	}
 
 	private function __testInvalidValidationRule($ruleName, $data) {
 		$this->TestUpload->set($data);
 		$this->assertFalse($this->TestUpload->validates());
-		$this->assertEqual(1, count($this->TestUpload->validationErrors));
-		$this->assertEqual($ruleName, current($this->TestUpload->validationErrors['photo']));
+		$this->assertEquals(1, count($this->TestUpload->validationErrors));
+		$this->assertEquals($ruleName, current($this->TestUpload->validationErrors['photo']));
 	}
 
 }
