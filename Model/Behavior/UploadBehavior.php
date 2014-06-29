@@ -317,6 +317,10 @@ class UploadBehavior extends ModelBehavior {
 			if (isset($this->_removingOnly[$field])) {
 				continue;
 			}
+			
+			if (isset($model->data[$model->alias][$field]) && empty($model->data[$model->alias][$field])) {
+				continue;
+			}
 
 			if (empty($model->data[$model->alias][$field])) {
 				continue;
