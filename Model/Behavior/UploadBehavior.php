@@ -1863,16 +1863,27 @@ class UploadBehavior extends ModelBehavior {
 			return $this->__filesToRemove;
 		}
 
+		if ($options['pathMethod'] == '_getPathFlat') {
+			CakeLog::error(sprintf('Cannot get directory to %s.%s: %s pathMethod is not supported.', $model->alias, $field, $options['pathMethod']));
+			return $this->__filesToRemove;
+		}
+
 		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
 			$dir = $data[$model->alias][$options['fields']['dir']];
 		} else {
-			if (in_array($options['pathMethod'], array('_getPathFlat', '_getPathPrimaryKey'))) {
+			if ($options['pathMethod'] == '_getPathPrimaryKey') {
 				$model->id = $data[$model->alias][$model->primaryKey];
 				$dir = call_user_func(array($this, '_getPath'), $model, $field);
 			} else {
 				CakeLog::error(sprintf('Cannot get directory to %s.%s: %s pathMethod is not supported.', $model->alias, $field, $options['pathMethod']));
 			}
 		}
+
+		if (strlen((string)$dir) === 0) {
+			CakeLog::error(sprintf('Cannot get directory to %s.%s: dir was found to be an empty string, causing unsafe deletion', $model->alias, $field));
+			return $this->__filesToRemove;
+		}
+
 		$filePathDir = $this->settings[$model->alias][$field]['path'] . (empty($dir) ? '' : $dir . DS);
 		$filePath = $filePathDir . $data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);

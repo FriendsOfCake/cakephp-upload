@@ -1045,6 +1045,31 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->assertEquals(4, count($result['TestUpload']));
 	}
 
+	public function testPrepareFilesForDeletionNoDirContents() {
+		$this->TestUpload->actsAs['Upload.Upload'] = array(
+			'photo' => array(
+				'thumbnailSizes' => array(
+					'xvga' => '1024x768',
+					'vga' => '640x480',
+					'thumb' => '80x80'
+				),
+				'fields' => array(
+					'dir' => 'dir'
+				)
+			)
+		);
+		$this->mockUpload();
+		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_prepareFilesForDeletion', array(
+			$this->TestUpload, 'photo',
+			array('TestUpload' => array('id' => 1, 'dir' => '', 'photo' => 'Photo.pdf')),
+			$this->TestUpload->Behaviors->Upload->settings['TestUpload']['photo']
+		));
+
+		$this->assertInternalType('array', $result);
+		$this->assertEquals(1, count($result));
+		$this->assertEmpty($result['TestUpload']);
+	}
+
 	private function __testOkAndRemoveCasesValidate() {
 		$this->__testOkCaseValidates();
 		$this->__testRemoveCaseValidates();
