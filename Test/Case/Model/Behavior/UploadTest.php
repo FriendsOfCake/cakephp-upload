@@ -57,7 +57,7 @@ class UploadBehaviorTest extends CakeTestCase {
 /**
  * Start Test callback
  *
- * @param string $method
+ * @param string $method Test method that is about to be executed
  * @return void
  */
 	public function startTest($method) {
@@ -154,7 +154,7 @@ class UploadBehaviorTest extends CakeTestCase {
 /**
  * Called when a test case method has been executed
  *
- * @param string $method Test method about that was executed.
+ * @param string $method Test method that was executed.
  * @return void
  */
 	public function endTest($method) {
