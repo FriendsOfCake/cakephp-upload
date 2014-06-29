@@ -54,6 +54,12 @@ class UploadBehaviorTest extends CakeTestCase {
 
 	public $currentTestMethod;
 
+/**
+ * Start Test callback
+ *
+ * @param string $method Test method that is about to be executed
+ * @return void
+ */
 	public function startTest($method) {
 		$this->TestUpload = ClassRegistry::init('TestUpload');
 		$this->TestUploadTwo = ClassRegistry::init('TestUploadTwo');
@@ -108,6 +114,12 @@ class UploadBehaviorTest extends CakeTestCase {
 		);
 	}
 
+/**
+ * Setup a MockUpload model with an attached behavior
+ *
+ * @param array $methods array of methods to mock
+ * @return void
+ */
 	public function mockUpload($methods = array()) {
 		if (!is_array($methods)) {
 			$methods = (array)$methods;
@@ -124,6 +136,14 @@ class UploadBehaviorTest extends CakeTestCase {
 		$this->TestUploadTwo->Behaviors->set('Upload', $this->MockUpload);
 	}
 
+/**
+ * Call a protected method on an object
+ *
+ * @param Object $object object
+ * @param string $name method to call
+ * @param array $args arguments to pass to the method
+ * @return mixed
+ */
 	public function protectedMethodCall($obj, $name, array $args) {
 		$class = new \ReflectionClass($obj);
 		$method = $class->getMethod($name);
@@ -131,6 +151,12 @@ class UploadBehaviorTest extends CakeTestCase {
 		return $method->invokeArgs($obj, $args);
 	}
 
+/**
+ * Called when a test case method has been executed
+ *
+ * @param string $method Test method that was executed.
+ * @return void
+ */
 	public function endTest($method) {
 		$folder = new Folder(TMP);
 		$folder->delete(ROOT . DS . APP_DIR . DS . 'webroot' . DS . 'files' . DS . 'test_upload');

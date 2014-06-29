@@ -387,6 +387,19 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
+ * Removes directory
+ *
+ * @param string $dirname Path to the directory
+ * @return boolean
+ **/
+	public function rmdir($dirname) {
+		if (is_dir($dirname)) {
+			return rmdir($dirname);
+		}
+		return true;
+	}
+
+/**
  * Unlinks a file on disk
  *
  * @param string $file path to file
@@ -413,6 +426,10 @@ class UploadBehavior extends ModelBehavior {
 
 		$folders = $this->__foldersToRemove[$model->alias];
 		foreach ($folders as $folder) {
+			if (strlen((string)$folder) === 0) {
+				continue;
+			}
+
 			$dir = $path . $folder;
 			$it = new RecursiveDirectoryIterator($dir);
 			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -422,12 +439,12 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if ($file->isDir()) {
-					rmdir($file->getRealPath());
+					$this->rmdir($file->getRealPath());
 				} else {
-					unlink($file->getRealPath());
+					$this->unlink($file->getRealPath());
 				}
 			}
-			rmdir($dir);
+			$this->rmdir($dir);
 		}
 
 		return true;
