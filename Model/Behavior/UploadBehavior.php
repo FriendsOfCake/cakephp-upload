@@ -1281,8 +1281,8 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Creates an image resource for a given file
  *
- * @param string $filename
- * @param string $pathInfo
+ * @param string $filename full path to file
+ * @param string $pathInfo Array of path information
  * @return boolean
  */
 	protected function _createImageResource($filename, $pathInfo) {
