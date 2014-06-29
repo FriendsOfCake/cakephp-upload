@@ -1561,7 +1561,7 @@ class UploadBehavior extends ModelBehavior {
  * @param array $options Options to use when building a path
  * @return string
  **/
-	protected function _path(Model $model, $fieldName, $options = array()) {
+	protected function _path(Model $model, $field, $options = array()) {
 		$defaults = array(
 			'isThumbnail' => true,
 			'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
@@ -1584,7 +1584,7 @@ class UploadBehavior extends ModelBehavior {
 			'{ROOT}'	=> $options['rootDir'],
 			'{primaryKey}'	=> $model->id,
 			'{model}'	=> Inflector::underscore($model->alias),
-			'{field}'	=> $fieldName,
+			'{field}'	=> $field,
 			'{time}'	=> time(),
 			'{microtime}'	=> microtime(),
 			'{DS}'		=> DIRECTORY_SEPARATOR,
