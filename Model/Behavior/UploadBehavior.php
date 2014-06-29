@@ -1424,7 +1424,9 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * rotate an imagick object based on it's exif data.
- * @param  imagick $image an instance of imagick
+ *
+ * @param imagick $image an instance of imagick
+ * @return void
  */
 	protected function _exifRotateImagick($image) {
 		$orientation = $image->getImageOrientation();
@@ -1502,6 +1504,11 @@ class UploadBehavior extends ModelBehavior {
 
 /**
  * Download remote file into PHP's TMP dir
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $uri URI for file to retrieve
+ * @return boolean
  */
 	protected function _grab(Model $model, $field, $uri) {
 		$socket = new HttpSocket(array(
@@ -1548,6 +1555,9 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Returns a path based on settings configuration
  *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $options Options to use when building a path
  * @return string
  **/
 	protected function _path(Model $model, $fieldName, $options = array()) {
