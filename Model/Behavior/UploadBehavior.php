@@ -341,7 +341,9 @@ class UploadBehavior extends ModelBehavior {
 				$db->rollback();
 				throw new UploadException('Unable to upload file');
 			}
-			if( ($key = array_search($filePath, $this->__filesToRemove[$model->alias])) !== false ) {
+			if( isset($this->__filesToRemove[$model->alias]) &&
+				($key = array_search($filePath, $this->__filesToRemove[$model->alias])) !== false
+			) {
 				unset($this->__filesToRemove[$model->alias][$key]);
 			}
 
@@ -1803,9 +1805,11 @@ class UploadBehavior extends ModelBehavior {
 				if ($valid === false) {
 					$model->invalidate($field, 'resizeFail');
 				} else {
-				    if ( ($key = array_search($valid, $this->__filesToRemove[$model->alias])) !== false ) {
-				        unset($this->__filesToRemove[$model->alias][$key]);
-	                }
+					if ( isset($this->__filesToRemove[$model->alias]) &&
+						 ($key = array_search($valid, $this->__filesToRemove[$model->alias])) !== false
+					) {
+						unset($this->__filesToRemove[$model->alias][$key]);
+					}
 				}
 			}
 		}
