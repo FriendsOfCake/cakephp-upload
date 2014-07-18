@@ -258,7 +258,7 @@ Please read about the Behavior options for more details as to how to configure t
 
 ### Using a Polymorphic Attachment Model for File Storage
 
-In some cases you will want to store multiple file uploads for a multiple models, but will not want to use multiple tables for some reason. For example, we might have a `Post` model that can have many images for a gallery, and a `Message` model that has many videos. In this case, we would use an `Attachment` model:
+In some cases you will want to store multiple file uploads for multiple models, but will not want to use multiple tables for some reason. For example, we might have a `Post` model that can have many images for a gallery, and a `Message` model that has many videos. In this case, we would use an `Attachment` model:
 
 Post hasMany Attachment
 
