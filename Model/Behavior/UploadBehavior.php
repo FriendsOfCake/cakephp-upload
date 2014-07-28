@@ -688,7 +688,8 @@ class UploadBehavior extends ModelBehavior {
 			$mimetypes = array($mimetypes);
 		}
 
-		foreach ($mimetypes as $key => $value) {
+		$keys = array_keys($mimetypes);
+		foreach ($keys as $key) {
 			if (!is_int($key)) {
 				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
 				break;
@@ -856,7 +857,8 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Sometimes a user does not specify any extensions in the validation rule
-		foreach ($extensions as $key => $value) {
+		$keys = array_keys($extensions);
+		foreach ($keys as $key) {
 			if (!is_int($key)) {
 				$extensions = $this->settings[$model->alias][$field]['extensions'];
 				break;
