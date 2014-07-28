@@ -1192,8 +1192,8 @@ class UploadBehavior extends ModelBehavior {
 		$src = null;
 		$outputHandler = null;
 
-		$supportsThumbnailQuality = false;
-		$adjustedThumbnailQuality = $this->settings[$model->alias][$field]['thumbnailQuality'];
+		$supportsQuality = false;
+		$adjustedQuality = $this->settings[$model->alias][$field]['thumbnailQuality'];
 		switch (strtolower($thumbnailType)) {
 			case 'gif':
 				$outputHandler = 'imagegif';
@@ -1201,13 +1201,13 @@ class UploadBehavior extends ModelBehavior {
 			case 'jpg':
 			case 'jpeg':
 				$outputHandler = 'imagejpeg';
-				$supportsThumbnailQuality = true;
+				$supportsQuality = true;
 				break;
 			case 'png':
 				$outputHandler = 'imagepng';
-				$supportsThumbnailQuality = true;
+				$supportsQuality = true;
 				// convert 0 (lowest) - 100 (highest) thumbnailQuality, to 0 (highest) - 9 (lowest) quality (see http://php.net/manual/en/function.imagepng.php)
-				$adjustedThumbnailQuality = intval((100 - $this->settings[$model->alias][$field]['thumbnailQuality']) / 100 * 9);
+				$adjustedQuality = intval((100 - $this->settings[$model->alias][$field]['thumbnailQuality']) / 100 * 9);
 				break;
 			default:
 				return false;
@@ -1325,8 +1325,8 @@ class UploadBehavior extends ModelBehavior {
 			imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
 			imagecopyresampled($img, $src, ($destW - $resizeW) / 2, ($destH - $resizeH) / 2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
 
-			if ($supportsThumbnailQuality) {
-				$outputHandler($img, $destFile, $adjustedThumbnailQuality);
+			if ($supportsQuality) {
+				$outputHandler($img, $destFile, $adjustedQuality);
 			} else {
 				$outputHandler($img, $destFile);
 			}
