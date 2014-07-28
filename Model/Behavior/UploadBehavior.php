@@ -1834,7 +1834,7 @@ class UploadBehavior extends ModelBehavior {
  * Retrieves the mimetype for a given file
  *
  * @param string $filePath path to file
- * @return boolean
+ * @return string
  **/
 	protected function _getMimeType($filePath) {
 		if (class_exists('finfo')) {
