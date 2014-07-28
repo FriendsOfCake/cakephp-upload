@@ -1902,7 +1902,7 @@ class UploadBehavior extends ModelBehavior {
 			return $this->__filesToRemove;
 		}
 
-		$DS = empty($dir) ? '' : DIRECTORY_SEPARATOR;
+		$DIRECTORY_SEPARATOR = empty($dir) ? '' : DIRECTORY_SEPARATOR;
 		$mimeType = $this->_getMimeType($filePath);
 		$isMedia = $this->_isMedia($model, $mimeType);
 		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
@@ -1950,7 +1950,7 @@ class UploadBehavior extends ModelBehavior {
 				'geometry', 'size', 'thumbnailPath'
 			));
 
-			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DS}{$fileName}.{$thumbnailType}";
+			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DIRECTORY_SEPARATOR}{$fileName}.{$thumbnailType}";
 			$this->__filesToRemove[$model->alias][] = $thumbnailFilePath;
 		}
 		return $this->__filesToRemove;
