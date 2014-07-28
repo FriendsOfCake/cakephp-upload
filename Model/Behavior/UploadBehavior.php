@@ -121,16 +121,6 @@ class UploadBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array)$options);
 
-			// HACK: Remove me in next major version
-			if (!empty($options['thumbsizes'])) {
-				$options['thumbnailSizes'] = $options['thumbsizes'];
-			}
-
-			if (!empty($options['prefixStyle'])) {
-				$options['thumbnailPrefixStyle'] = $options['prefixStyle'];
-			}
-			// ENDHACK
-
 			$options['fields'] += $this->defaults['fields'];
 			if ($options['rootDir'] === null) {
 				$options['rootDir'] = $this->defaults['rootDir'];
