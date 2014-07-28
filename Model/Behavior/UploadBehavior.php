@@ -336,8 +336,7 @@ class UploadBehavior extends ModelBehavior {
 
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
-				if ($created && $options['pathMethod'] == '_getPathFlat') {
-				} elseif ($options['saveDir']) {
+				if (!($created && $options['pathMethod'] == '_getPathFlat') && $options['saveDir']) {
 					$db = $model->getDataSource();
 					$temp[$model->alias][$options['fields']['dir']] = $db->value($tempPath, 'string');
 				}
