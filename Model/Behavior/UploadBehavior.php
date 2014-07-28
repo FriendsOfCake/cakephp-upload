@@ -460,7 +460,8 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			$this->_prepareFilesForDeletion($model, $field, $data, $options);
 		}
-		return true;
+
+		return parent::beforeDelete($model, $cascade);
 	}
 
 /**
