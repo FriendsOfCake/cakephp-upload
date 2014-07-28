@@ -907,7 +907,7 @@ class UploadBehavior extends ModelBehavior {
 			$height = $this->settings[$model->alias][$field]['minHeight'];
 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list(, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 		return $height > 0 && $imgHeight >= $height;
 	}
 
@@ -943,7 +943,7 @@ class UploadBehavior extends ModelBehavior {
 			$height = $this->settings[$model->alias][$field]['maxHeight'];
 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list(, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 		return $height > 0 && $imgHeight <= $height;
 	}
 
@@ -979,7 +979,7 @@ class UploadBehavior extends ModelBehavior {
 			$width = $this->settings[$model->alias][$field]['minWidth'];
 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list($imgWidth) = getimagesize($check[$field]['tmp_name']);
 		return $width > 0 && $imgWidth >= $width;
 	}
 
@@ -1015,7 +1015,7 @@ class UploadBehavior extends ModelBehavior {
 			$width = $this->settings[$model->alias][$field]['maxWidth'];
 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+		list($imgWidth) = getimagesize($check[$field]['tmp_name']);
 		return $width > 0 && $imgWidth <= $width;
 	}
 
