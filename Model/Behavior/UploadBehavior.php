@@ -1765,8 +1765,8 @@ class UploadBehavior extends ModelBehavior {
  * @throws Exception
  */
 	protected function _createThumbnails(Model $model, $field, $path, $thumbnailPath) {
-		$isImage = $this->_isImage($model, $this->runtime[$model->alias][$field]['type']);
-		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
+		$isImage = $this->_isImage($this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 		$createThumbnails = $this->settings[$model->alias][$field]['thumbnails'];
 		$hasThumbnails = !empty($this->settings[$model->alias][$field]['thumbnailSizes']);
 
@@ -1805,7 +1805,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $mimetype mimetype
  * @return boolean
  **/
-	protected function _isImage(Model $model, $mimetype) {
+	protected function _isImage($mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
 
@@ -1826,7 +1826,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $mimetype mimetype
  * @return boolean
  **/
-	protected function _isMedia(Model $model, $mimetype) {
+	protected function _isMedia($mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
 
@@ -1904,7 +1904,7 @@ class UploadBehavior extends ModelBehavior {
 
 		$DIRECTORY_SEPARATOR = empty($dir) ? '' : DIRECTORY_SEPARATOR;
 		$mimeType = $this->_getMimeType($filePath);
-		$isMedia = $this->_isMedia($model, $mimeType);
+		$isMedia = $this->_isMedia($mimeType);
 		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
 		$thumbnailType = $options['thumbnailType'];
 
