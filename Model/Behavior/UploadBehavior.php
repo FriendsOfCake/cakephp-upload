@@ -1053,10 +1053,10 @@ class UploadBehavior extends ModelBehavior {
 			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry) - 2));
 			$image->thumbnailImage($destW, $destH, true);
 			$imageGeometry = $image->getImageGeometry();
-			$x = ($imageGeometry['width'] - $destW) / 2;
-			$y = ($imageGeometry['height'] - $destH) / 2;
+			$xDimen = ($imageGeometry['width'] - $destW) / 2;
+			$yDimen = ($imageGeometry['height'] - $destH) / 2;
 			$image->setGravity(Imagick::GRAVITY_CENTER);
-			$image->extentImage($destW, $destH, $x, $y);
+			$image->extentImage($destW, $destH, $xDimen, $yDimen);
 		} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
 			// cropped resize (best fit)
 			list($destW, $destH) = explode('x', $geometry);
