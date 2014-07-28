@@ -479,7 +479,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 		}
 
-		foreach ($this->settings[$model->alias] as $field => $options) {
+		foreach ($this->settings[$model->alias] as $options) {
 			if ($options['deleteFolderOnDelete'] == true) {
 				$this->deleteFolder($model, $options['path']);
 				return true;
