@@ -489,18 +489,6 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 /**
- * Verify that the uploaded file has been moved to the
- * destination successfully. This rule is special that it
- * is invalidated in afterSave(). Therefore it is possible
- * for save() to return true and this rule to fail.
- *
- * @param Model $model Model instance
- * @return boolean Always true
- */
-	public function moveUploadedFile(Model $model) {
-		return true;
-	}
-/**
  * Check that the file does not exceed the max
  * file size specified by PHP
  *
