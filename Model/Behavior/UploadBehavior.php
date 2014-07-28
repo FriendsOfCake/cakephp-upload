@@ -20,6 +20,7 @@
 App::uses('Folder', 'Utility');
 App::uses('UploadException', 'Upload.Lib/Error/Exception');
 App::uses('HttpSocket', 'Network/Http');
+
 class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
@@ -322,6 +323,7 @@ class UploadBehavior extends ModelBehavior {
 				$path .= $tempPath . DS;
 				$thumbnailPath .= $tempPath . DS;
 			}
+
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model, $field, $tmp, $filePath)) {
@@ -351,10 +353,12 @@ class UploadBehavior extends ModelBehavior {
 		if (empty($this->__filesToRemove[$model->alias])) {
 			return true;
 		}
+
 		foreach ($this->__filesToRemove[$model->alias] as $i => $file) {
 			$result[] = $this->unlink($file);
 			unset($this->__filesToRemove[$model->alias][$i]);
 		}
+
 		return $result;
 	}
 
