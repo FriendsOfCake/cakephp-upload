@@ -1035,7 +1035,7 @@ class UploadBehavior extends ModelBehavior {
 		$pathInfo = $this->_pathinfo($srcFile);
 		$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['thumbnailType'];
 
-		$isMedia = $this->_isMedia($model, $this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 		$image = new imagick();
 
 		if ($isMedia) {
