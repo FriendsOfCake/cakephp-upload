@@ -123,31 +123,14 @@ class UploadBehavior extends ModelBehavior {
 			$options = array_merge($this->defaults, (array)$options);
 
 			$options['fields'] += $this->defaults['fields'];
-			if ($options['rootDir'] === null) {
-				$options['rootDir'] = $this->defaults['rootDir'];
-			}
+			$options['rootDir'] = $this->_getRootDir($options['rootDir']);
+			$options['thumbnailName'] = $this->_getThumbnailName($options['thumbnailName'], $options['thumbnailPrefixStyle']);
 
-			if ($options['thumbnailName'] === null) {
-				if ($options['thumbnailPrefixStyle']) {
-					$options['thumbnailName'] = '{size}_{filename}';
-				} else {
-					$options['thumbnailName'] = '{filename}_{size}';
-				}
-			}
-
-			if ($options['thumbnailPath'] === null) {
-				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
-					'isThumbnail' => true,
-					'path' => $options['path'],
-					'rootDir' => $options['rootDir']
-				)));
-			} else {
-				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
-					'isThumbnail' => true,
-					'path' => $options['thumbnailPath'],
-					'rootDir' => $options['rootDir']
-				)));
-			}
+			$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
+				'isThumbnail' => true,
+				'path' => ($options['thumbnailPath'] === null ? $options['path'] : $options['thumbnailPath']),
+				'rootDir' => $options['rootDir']
+			)));
 
 			$options['path'] = Folder::slashTerm($this->_path($model, $field, array(
 				'isThumbnail' => false,
@@ -158,9 +141,11 @@ class UploadBehavior extends ModelBehavior {
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
 			}
+
 			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
 				$options['pathMethod'] = 'primaryKey';
 			}
+
 			$options['pathMethod'] = '_getPath' . Inflector::camelize($options['pathMethod']);
 			$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
 			$this->settings[$model->alias][$field] = $options;
@@ -989,6 +974,39 @@ class UploadBehavior extends ModelBehavior {
 
 		list($imgWidth) = getimagesize($check[$field]['tmp_name']);
 		return $width > 0 && $imgWidth <= $width;
+	}
+
+/**
+ * Returns a root directory
+ *
+ * @param string $rootDir A specified root dir
+ * @return string
+ */
+	protected function _getRootDir($rootDir = null) {
+		if ($rootDir === null) {
+			$rootDir = $this->defaults['rootDir'];
+		}
+
+		return $rootDir;
+	}
+
+/**
+ * Returns the thumbnail name format
+ *
+ * @param string $thumbnailName Configured name
+ * @param string $usePrefixStyle Whether to use prefix style or not
+ * @return string
+ */
+	protected function _getThumbnailName($configuredName, $usePrefixStyle) {
+		if ($configuredName !== null) {
+			return $configuredName;
+		}
+
+		if ($usePrefixStyle) {
+			return '{size}_{filename}';
+		}
+
+		return '{filename}_{size}';
 	}
 
 /**
