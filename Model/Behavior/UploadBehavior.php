@@ -238,13 +238,13 @@ class UploadBehavior extends ModelBehavior {
 
 					$this->_removingOnly[$field] = true;
 					continue;
-				} else {
-					$model->data[$model->alias][$field] = array(
-						$field => null,
-						$options['fields']['type'] => null,
-						$options['fields']['size'] => null,
-					);
 				}
+
+				$model->data[$model->alias][$field] = array(
+					$field => null,
+					$options['fields']['type'] => null,
+					$options['fields']['size'] => null,
+				);
 			} elseif (!isset($model->data[$model->alias][$field]['name']) || !strlen($model->data[$model->alias][$field]['name'])) {
 				// if field is empty, don't delete/nullify existing file
 				unset($model->data[$model->alias][$field]);
