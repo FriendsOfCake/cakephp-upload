@@ -19,12 +19,12 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 
 _[Using [Composer](http://getcomposer.org/)]_
 
-[View on Packagist](https://packagist.org/packages/josegonzalez/cakephp-upload), and copy the json snippet for the latest version into your project's `composer.json`. Eg, v. 1.0.0 would look like this:
+[View on Packagist](https://packagist.org/packages/josegonzalez/cakephp-upload), and copy the json snippet for the latest version into your project's `composer.json`. Eg, v. 1.1.0 would look like this:
 
 ```javascript
 {
 	"require": {
-		"josegonzalez/cakephp-upload": "1.0.0"
+		"josegonzalez/cakephp-upload": "1.1.0"
 	}
 }
 ```
@@ -535,6 +535,29 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 	* Note: This does not override `deleteFolderOnDelete`. If you set that setting to true, your images may still be deleted. This is so that existing uploads are not deleted - unless overwritten.
 * `mode`: The UNIX permissions to set on the created upload directories.
 	* Default: (integer) `0777`
+* `handleUploadedFileCallback`: If set to a method name available on your model, this model method will handle the movement of the original file on disk. Can be used in conjunction with `thumbnailMethod` to store your files in alternative locations, such as S3.
+	* Default: `NULL`
+ 	* Available arguments:
+		* `string $field`: Field being manipulated
+		* `string $filename`: The filename of the uploaded file
+		* `string $destination`: The configured destination of the moved file
+* `nameCallback`: A callback that can be used to rename a file. Currently only handles original file naming.
+ 	* Default: `NULL`
+ 	* Available arguments:
+		* `string $field`: Field being manipulated
+		* `string $currentName`
+		* `array $data`
+		* `array options`:
+			* `isThumbnail` - a boolean field that is on when we are trying to infer a thumbnail path
+			* `rootDir` - root directory to replace `{ROOT}`
+			* `geometry`
+			* `size`
+			* `thumbnailType`
+			* `thumbnailName`
+			* `thumbnailMethod`
+			* `mediaThumbnailType`
+			* `dir` field name
+			* `saveType` - create, update, delete
 
 ## Thumbnail Sizes and Styles
 

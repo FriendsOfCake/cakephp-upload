@@ -778,17 +778,17 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isImage', array(
-			$this->TestUpload, 'image/bmp'
+			'image/bmp'
 		));
 		$this->assertTrue($result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isImage', array(
-			$this->TestUpload, 'image/jpeg'
+			'image/jpeg'
 		));
 		$this->assertTrue($result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isImage', array(
-			$this->TestUpload, 'application/zip'
+			'application/zip'
 		));
 		$this->assertFalse($result);
 	}
@@ -802,22 +802,22 @@ class UploadBehaviorTest extends CakeTestCase {
 		));
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isMedia', array(
-			$this->TestUpload, 'application/pdf'
+			'application/pdf'
 		));
 		$this->assertTrue($result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isMedia', array(
-			$this->TestUpload, 'application/postscript'
+			'application/postscript'
 		));
 		$this->assertTrue($result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isMedia', array(
-			$this->TestUpload, 'application/zip'
+			'application/zip'
 		));
 		$this->assertFalse($result);
 
 		$result = $this->protectedMethodCall($this->TestUpload->Behaviors->Upload, '_isMedia', array(
-			$this->TestUpload, 'image/jpeg'
+			'image/jpeg'
 		));
 		$this->assertFalse($result);
 	}
