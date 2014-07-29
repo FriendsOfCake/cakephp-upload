@@ -51,6 +51,7 @@ class UploadBehavior extends ModelBehavior {
 		'keepFilesOnDelete' => false,
 		'mode' => 0777,
 		'handleUploadedFileCallback' => null,
+		'nameCallback' => null,
 	);
 
 	protected $_imageMimetypes = array(
@@ -238,6 +239,11 @@ class UploadBehavior extends ModelBehavior {
 				unset($model->data[$model->alias][$field]);
 				continue;
 			}
+
+			$this->runtime[$model->alias][$field]['name'] = $this->_retrieveName(
+				$model, $field, $this->runtime[$model->alias][$field]['name'], $model->data, array(
+					'saveType' => $isUpdating ? 'update' : 'create',
+			));
 
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 				$field => $this->runtime[$model->alias][$field]['name'],
@@ -1033,6 +1039,50 @@ class UploadBehavior extends ModelBehavior {
 		$deleteOnUpdate = $this->settings[$model->alias][$field]['deleteOnUpdate'];
 		$isset = isset($model->data[$model->alias][$field]['name']);
 		return $deleteOnUpdate && $isset && strlen($model->data[$model->alias][$field]['name']);
+	}
+
+/**
+ * Checks whether we should process an update for a given upload field
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param string $currentName current filename
+ * @param array $data Array of data being manipulated in the current request
+ * @param array $options Array of options for the current rename
+ * @param boolean $removing Whether the record should be removed
+ * @return string
+ */
+	protected function _retrieveName(Model $model, $field, $currentName, $data, $options = array()) {
+		$options = array_merge(array(
+			'rootDir' => $this->settings[$model->alias][$field]['rootDir'],
+			'saveType' => 'create',
+			'geometry' => null,
+			'size' => null,
+			'thumbnailType' => null,
+			'thumbnailName' => null,
+			'thumbnailMethod' => null,
+			'mediaThumbnailType' => null,
+			'dir' => null,
+		), $options);
+
+		$name = $currentName;
+		$callback = Hash::get($this->settings[$model->alias][$field], 'nameCallback');
+
+		if (!empty($callback)) {
+			$newName = null;
+
+			if (is_callable(array($model, $callback), true)) {
+				$newName = $model->{$callback}($field, $currentName, $data, $options);
+			}
+
+			if (!is_string($_filename) || strlen($_filename) == 0) {
+				CakeLog::write('debug', sprintf(__('No filename after parsing. Function %s returned an invalid filename'), $callback));
+			} else {
+				$name = $newName;
+			}
+		}
+
+		return $name;
 	}
 
 /**

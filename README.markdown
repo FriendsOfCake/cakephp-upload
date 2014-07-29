@@ -541,6 +541,23 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 		* `string $field`: Field being manipulated
 		* `string $filename`: The filename of the uploaded file
 		* `string $destination`: The configured destination of the moved file
+* `nameCallback`: A callback that can be used to rename a file. Currently only handles original file naming.
+ 	* Default: `NULL`
+ 	* Available arguments:
+		* `string $field`: Field being manipulated
+		* `string $currentName`
+		* `array $data`
+		* `array options`:
+			* `isThumbnail` - a boolean field that is on when we are trying to infer a thumbnail path
+			* `rootDir` - root directory to replace `{ROOT}`
+			* `geometry`
+			* `size`
+			* `thumbnailType`
+			* `thumbnailName`
+			* `thumbnailMethod`
+			* `mediaThumbnailType`
+			* `dir` field name
+			* `saveType` - create, update, delete
 
 ## Thumbnail Sizes and Styles
 
