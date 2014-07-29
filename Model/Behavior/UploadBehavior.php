@@ -298,19 +298,7 @@ class UploadBehavior extends ModelBehavior {
 		$temp = array($model->alias => array());
 
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (!in_array($field, array_keys($model->data[$model->alias]))) {
-				continue;
-			}
-
-			if (empty($this->runtime[$model->alias][$field])) {
-				continue;
-			}
-
-			if (isset($this->_removingOnly[$field])) {
-				continue;
-			}
-
-			if (empty($model->data[$model->alias][$field])) {
+			if ($this->_shouldSkip($model, $field)) {
 				continue;
 			}
 
@@ -343,22 +331,8 @@ class UploadBehavior extends ModelBehavior {
 			}
 		}
 
-		if (!empty($temp[$model->alias])) {
-			$model->updateAll($temp[$model->alias], array(
-				$model->alias . '.' . $model->primaryKey => $model->id
-			));
-		}
-
-		if (empty($this->__filesToRemove[$model->alias])) {
-			return true;
-		}
-
-		foreach ($this->__filesToRemove[$model->alias] as $i => $file) {
-			$result[] = $this->unlink($file);
-			unset($this->__filesToRemove[$model->alias][$i]);
-		}
-
-		return $result;
+		$this->_updateRecord($model, $temp);
+		return $this->_unlinkFiles($model);
 	}
 
 /**
@@ -1017,6 +991,67 @@ class UploadBehavior extends ModelBehavior {
 
 		list($imgWidth) = getimagesize($check[$field]['tmp_name']);
 		return $width > 0 && $imgWidth <= $width;
+	}
+
+/**
+ * Unlinks files if necessary
+ *
+ * @param Model $model Model instance
+ * @return mixed
+ */
+	protected function _unlinkFiles($model) {
+		if (empty($this->__filesToRemove[$model->alias])) {
+			return true;
+		}
+
+		foreach ($this->__filesToRemove[$model->alias] as $i => $file) {
+			$result[] = $this->unlink($file);
+			unset($this->__filesToRemove[$model->alias][$i]);
+		}
+
+		return $result;
+	}
+
+/**
+ * Updates a database record with the necessary extra data
+ *
+ * @param Model $model Model instance
+ * @param array $data array containing data to be saved to the record
+ * @return void
+ */
+	protected function _updateRecord($model, $data) {
+		if (!empty($data[$model->alias])) {
+			$model->updateAll($data[$model->alias], array(
+				$model->alias . '.' . $model->primaryKey => $model->id
+			));
+		}
+	}
+
+/**
+ * Checks if we can skip processing of a field
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @return boolean
+ */
+	protected function _shouldSkip($model, $field) {
+		if (!in_array($field, array_keys($model->data[$model->alias]))) {
+			return true;
+		}
+
+		if (empty($this->runtime[$model->alias][$field])) {
+			return true;
+		}
+
+		if (isset($this->_removingOnly[$field])) {
+			return true;
+		}
+
+		if (empty($model->data[$model->alias][$field])) {
+			return true;
+		}
+
+		return false;
 	}
 
 /**
@@ -1872,6 +1907,7 @@ class UploadBehavior extends ModelBehavior {
 				CakeLog::error(sprintf('Cannot get directory to %s.%s: %s pathMethod is not supported.', $model->alias, $field, $options['pathMethod']));
 			}
 		}
+
 		$filePathDir = $this->settings[$model->alias][$field]['path'] . (empty($dir) ? '' : $dir . DS);
 		$filePath = $filePathDir . $data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($filePath);
