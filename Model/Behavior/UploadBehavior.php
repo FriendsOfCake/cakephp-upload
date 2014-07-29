@@ -1074,7 +1074,7 @@ class UploadBehavior extends ModelBehavior {
 				$newName = $model->{$callback}($field, $currentName, $data, $options);
 			}
 
-			if (!is_string($_filename) || strlen($_filename) == 0) {
+			if (!is_string($newName) || strlen($newName) == 0) {
 				CakeLog::write('debug', sprintf(__('No filename after parsing. Function %s returned an invalid filename'), $callback));
 			} else {
 				$name = $newName;
