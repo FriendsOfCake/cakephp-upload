@@ -341,7 +341,7 @@ class UploadBehavior extends ModelBehavior {
 				$db->rollback();
 				throw new UploadException('Unable to upload file');
 			}
-			if( isset($this->__filesToRemove[$model->alias]) &&
+			if ( isset($this->__filesToRemove[$model->alias]) &&
 				($key = array_search($filePath, $this->__filesToRemove[$model->alias])) !== false
 			) {
 				unset($this->__filesToRemove[$model->alias][$key]);
