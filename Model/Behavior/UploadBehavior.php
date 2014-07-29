@@ -1015,7 +1015,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @return mixed
  */
-	protected function _unlinkFiles($model) {
+	protected function _unlinkFiles(Model $model) {
 		if (empty($this->__filesToRemove[$model->alias])) {
 			return true;
 		}
@@ -1035,7 +1035,7 @@ class UploadBehavior extends ModelBehavior {
  * @param array $data array containing data to be saved to the record
  * @return void
  */
-	protected function _updateRecord($model, $data) {
+	protected function _updateRecord(Model $model, $data) {
 		if (!empty($data[$model->alias])) {
 			$model->updateAll($data[$model->alias], array(
 				$model->alias . '.' . $model->primaryKey => $model->id
@@ -1050,7 +1050,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $field Name of field being modified
  * @return boolean
  */
-	protected function _shouldSkip($model, $field) {
+	protected function _shouldSkip(Model $model, $field) {
 		if (!in_array($field, array_keys($model->data[$model->alias]))) {
 			return true;
 		}
