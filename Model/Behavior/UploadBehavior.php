@@ -217,9 +217,7 @@ class UploadBehavior extends ModelBehavior {
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
-			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
-			&& isset($model->data[$model->alias][$field]['name'])
-			&& strlen($model->data[$model->alias][$field]['name']))) {
+			if ($this->_shouldUpdate($model, $field, $removing)) {
 				// We're updating the file, remove old versions
 				if (!empty($model->id)) {
 					$data = $model->find('first', array(
@@ -991,6 +989,24 @@ class UploadBehavior extends ModelBehavior {
 
 		list($imgWidth) = getimagesize($check[$field]['tmp_name']);
 		return $width > 0 && $imgWidth <= $width;
+	}
+
+/**
+ * Checks whether we should process an update for a given upload field
+ *
+ * @param Model $model Model instance
+ * @param string $field Name of field being modified
+ * @param boolean $removing Whether the record should be removed
+ * @return string
+ */
+	protected function _shouldUpdate($model, $field, $removing) {
+		if ($removing) {
+			return true;
+		}
+
+		$deleteOnUpdate = $this->settings[$model->alias][$field]['deleteOnUpdate'];
+		$isset = isset($model->data[$model->alias][$field]['name']);
+		return $deleteOnUpdate && $isset && strlen($model->data[$model->alias][$field]['name']);
 	}
 
 /**
