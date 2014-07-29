@@ -374,9 +374,9 @@ class UploadBehavior extends ModelBehavior {
 	public function handleUploadedFile(Model $model, $field, $tmp, $filePath) {
 		if (is_uploaded_file($tmp)) {
 			return move_uploaded_file($tmp, $filePath);
-		} else {
-			return rename($tmp, $filePath);
 		}
+
+		return rename($tmp, $filePath);
 	}
 
 /**
