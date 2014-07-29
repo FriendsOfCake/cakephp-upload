@@ -1791,7 +1791,6 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Checks if a given mimetype is an image mimetype
  *
- * @param Model $model Model instance
  * @param string $mimetype mimetype
  * @return boolean
  **/
@@ -1812,7 +1811,6 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Checks if a given mimetype is a media mimetype
  *
- * @param Model $model Model instance
  * @param string $mimetype mimetype
  * @return boolean
  **/
@@ -1892,7 +1890,7 @@ class UploadBehavior extends ModelBehavior {
 			return $this->__filesToRemove;
 		}
 
-		$DIRECTORY_SEPARATOR = empty($dir) ? '' : DIRECTORY_SEPARATOR;
+		$directorySeparator = empty($dir) ? '' : DIRECTORY_SEPARATOR;
 		$mimeType = $this->_getMimeType($filePath);
 		$isMedia = $this->_isMedia($mimeType);
 		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
@@ -1940,7 +1938,7 @@ class UploadBehavior extends ModelBehavior {
 				'geometry', 'size', 'thumbnailPath'
 			));
 
-			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DIRECTORY_SEPARATOR}{$fileName}.{$thumbnailType}";
+			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$directorySeparator}{$fileName}.{$thumbnailType}";
 			$this->__filesToRemove[$model->alias][] = $thumbnailFilePath;
 		}
 		return $this->__filesToRemove;
