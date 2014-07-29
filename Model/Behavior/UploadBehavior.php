@@ -993,7 +993,7 @@ class UploadBehavior extends ModelBehavior {
 /**
  * Returns the thumbnail name format
  *
- * @param string $thumbnailName Configured name
+ * @param string $configuredName Configured name
  * @param string $usePrefixStyle Whether to use prefix style or not
  * @return string
  */
