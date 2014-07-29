@@ -50,6 +50,7 @@ class UploadBehavior extends ModelBehavior {
 		'deleteFolderOnDelete' => false,
 		'keepFilesOnDelete' => false,
 		'mode' => 0777,
+		'handleUploadedFileCallback' => null,
 	);
 
 	protected $_imageMimetypes = array(
@@ -326,16 +327,21 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @param String $tmp a temporary filename path
- * @param String $filePath the output filepath
+ * @param String $filename The filename of the uploaded file
+ * @param String $destination The configured destination of the moved file
  * @return boolean
  **/
-	public function handleUploadedFile(Model $model, $field, $tmp, $filePath) {
-		if (is_uploaded_file($tmp)) {
-			return move_uploaded_file($tmp, $filePath);
+	public function handleUploadedFile(Model $model, $field, $filename, $destination) {
+		$callback = Hash::get($this->settings[$model->alias][$field], 'handleUploadedFileCallback');
+		if (is_callable(array($model, $callback), true)) {
+			return $model->{$callback}($field, $filename, $destination);
 		}
 
-		return rename($tmp, $filePath);
+		if (is_uploaded_file($filename)) {
+			return move_uploaded_file($filename, $destination);
+		}
+
+		return rename($filename, $destination);
 	}
 
 /**

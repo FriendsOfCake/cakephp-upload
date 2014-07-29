@@ -535,6 +535,12 @@ The Upload plugin also comes with a `FileImport` behavior and a `FileGrabber` be
 	* Note: This does not override `deleteFolderOnDelete`. If you set that setting to true, your images may still be deleted. This is so that existing uploads are not deleted - unless overwritten.
 * `mode`: The UNIX permissions to set on the created upload directories.
 	* Default: (integer) `0777`
+* `handleUploadedFileCallback`: If set to a method name available on your model, this model method will handle the movement of the original file on disk. Can be used in conjunction with `thumbnailMethod` to store your files in alternative locations, such as S3.
+	* Default: `NULL`
+ 	* Available arguments:
+		* `string $field`: Field being manipulated
+		* `string $filename`: The filename of the uploaded file
+		* `string $destination`: The configured destination of the moved file
 
 ## Thumbnail Sizes and Styles
 
