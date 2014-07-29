@@ -192,6 +192,8 @@ class UploadBehavior extends ModelBehavior {
  */
 	public function beforeSave(Model $model, $options = array()) {
 		$this->_removingOnly = array();
+		$isUpdating = !empty($model->id);
+
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field]) || !is_array($model->data[$model->alias][$field])) {
 				// it may have previously been set by a prior save using this same instance
@@ -204,7 +206,7 @@ class UploadBehavior extends ModelBehavior {
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($this->_shouldUpdate($model, $field, $removing)) {
 				// We're updating the file, remove old versions
-				if (!empty($model->id)) {
+				if ($isUpdating) {
 					$data = $model->find('first', array(
 						'conditions' => array("{$model->alias}.{$model->primaryKey}" => $model->id),
 						'contain' => false,
