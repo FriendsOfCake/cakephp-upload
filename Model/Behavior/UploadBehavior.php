@@ -554,7 +554,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -579,7 +579,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -604,7 +604,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -630,7 +630,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -677,7 +677,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -702,7 +702,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -728,7 +728,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -763,7 +763,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -798,7 +798,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -850,7 +850,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -886,7 +886,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -922,7 +922,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
@@ -958,7 +958,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$error = (int) Hash::get($check[$field], 'error');
+		$error = (int)Hash::get($check[$field], 'error');
 
 		// Allow circumvention of this rule if uploads is not required
 		if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
