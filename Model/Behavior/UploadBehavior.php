@@ -1049,7 +1049,6 @@ class UploadBehavior extends ModelBehavior {
  * @param string $currentName current filename
  * @param array $data Array of data being manipulated in the current request
  * @param array $options Array of options for the current rename
- * @param boolean $removing Whether the record should be removed
  * @return string
  */
 	protected function _retrieveName(Model $model, $field, $currentName, $data, $options = array()) {
