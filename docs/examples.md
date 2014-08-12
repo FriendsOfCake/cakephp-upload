@@ -163,7 +163,7 @@ class User extends AppModel {
 
 Keep in mind that while this plugin does not have any limits in terms of number of files uploaded per request, you should keep this down in order to decrease the ability of your users to block other requests.
 
-If you are looking to add an unknown or high number of uploads to a model it's worth considering using a [polymorphic attachment](docs/polymorphic.md).
+If you are looking to add an unknown or high number of uploads to a model it's worth considering using a [polymorphic attachment](polymorphic.md).
 
 ### Remove a current file without deleting the entire record
 
@@ -178,7 +178,7 @@ echo $this->Form->input('Model.file.remove', array('type' => 'checkbox', 'label'
 ```
 
 ### Saving two uploads into different folders
-Sometimes you might want to upload more than one file, but upload each file into a different folder. This is actually very simple. By simply using the behavior configuration for _each file_ you can change the path. Don't forget to make sure [the plugin is installed first](docs/installation.md).
+Sometimes you might want to upload more than one file, but upload each file into a different folder. This is actually very simple. By simply using the behavior configuration for _each file_ you can change the path. Don't forget to make sure [the plugin is installed first](installation.md).
 
 Let's assume for this example that we want to upload a picture of a user, and say, a picture of their car. For the sake of simplicity we'll also assume that these files are just stored in the `User` model.
 
