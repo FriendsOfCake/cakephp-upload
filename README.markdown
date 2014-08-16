@@ -148,6 +148,8 @@ class User extends AppModel {
 
 In the above example, photo can be a file upload via a file input within a form, a file grabber (from a url) via a text input, OR programatically used on the controller to file grab via a url.
 
+Files are stored in path `app/webroot/files/<YourModelName>/<ModelEntryId>/`.
+
 ### File Upload Example
 
 ```php
