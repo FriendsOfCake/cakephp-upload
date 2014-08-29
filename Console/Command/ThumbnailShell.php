@@ -47,24 +47,29 @@ class ThumbnailShell extends AppShell {
 				'path' => $mergedConfig['path'],
 				'rootDir' => $mergedConfig['rootDir'],
 			);
-			$filePath = APP . $this->{$modelName}->path($field, $options);
 
 			$files = $this->{$modelName}->find('all', [
-				'fields' => [$field, $mergedConfig['fields']['dir']]
+				'fields' => [$this->{$modelName}->primaryKey, $field, $mergedConfig['fields']['dir']]
 			]);
 
-			foreach ($files as $sourceFile) {
-				$sourceFilePath = $filePath . DS . $sourceFile[$modelName][$mergedConfig['fields']['dir']] . DS . $sourceFile[$modelName][$field];
+			foreach ($files as $file) {
+				$sourceFilePath = $this->{$modelName}->path($field, $options) . $file[$modelName][$mergedConfig['fields']['dir']] . DS . $file[$modelName][$field];
 
-				try {
-					$this->{$modelName}->createThumbnails($field, $sourceFilePath, $sourceFilePath);
-				} catch (Exception $exc) {
-					$this->out(__('<error>' . $exc->getMessage() . '</error>'));
-					exit;
+				$data = [
+					[
+						$this->{$modelName}->primaryKey => $file[$modelName][$this->{$modelName}->primaryKey],
+						$field => $sourceFilePath
+					]
+				];
+
+				if ($this->{$modelName}->save($data, false)) {
+					$this->out(__("Created thumbnails in {$file[$modelName][$mergedConfig['fields']['dir']]} for {$file[$modelName][$field]}"));
+				} else {
+					$this->out(__("<error> Could not create thumbnails in {$file[$modelName][$mergedConfig['fields']['dir']]} for {$file[$modelName][$field]}</error>"));
 				}
-				$this->out('Created thumbnails for ' . $sourceFile[$modelName][$field]);
+
+				exit;
 			}
 		}
 	}
-
 }
