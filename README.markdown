@@ -628,6 +628,15 @@ You can specify any of the following resize modes for your sizes:
 * `600mw` - maintain original aspect ratio, resize to max 600 pixels wide, or copy the original image if it is less than 600 pixels wide
 * `800mh` - maintain original aspect ratio, resize to max 800 pixels high, or copy the original image if it is less than 800 pixels high
 * `960ml` - maintain original aspect ratio, resize so that longest side is max 960 pixels, or copy the original image if the thumbnail would be bigger than the origina
+ 
+## Dynamically Changing the Upload Path
+
+You can change the upload path dynamically in controller by simply attaching the upload behavior and passing path in the upload settings. For example, if you are saving users profile pic, you can change the upload path using following piece of code.
+
+```
+$this->User->Behaviors->attach('Upload');
+$this->User->uploadSettings('profile_pic', 'path', 'Your new upload path');
+```
 
 ## Validation rules
 
