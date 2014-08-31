@@ -631,7 +631,7 @@ You can specify any of the following resize modes for your sizes:
  
 ## Dynamically Changing the Upload Path
 
-You can change the upload path dynamically in controller by simply attaching the upload behavior and passing path in the upload settings. Use these lines just before saving the data.
+You can change the upload path dynamically in controller by simply attaching the upload behavior and passing path in the upload settings. For example, if you are saving users profile pic, you can change the upload path using following piece of code.
 
 ```
 $this->User->Behaviors->attach('Upload');
