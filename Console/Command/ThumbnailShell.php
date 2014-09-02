@@ -37,8 +37,6 @@ class ThumbnailShell extends AppShell {
 		$uploadBehavior = new ShellUploadBehavior;
 		$behaviorConfig = $this->{$modelName}->actsAs['Upload.Upload'];
 		
-		$this->{$modelName}->Behaviors->load('ShellUpload', $behaviorConfig);
-
 		foreach ($behaviorConfig as $field => $config) {
 			$mergedConfig = array_merge($uploadBehavior->defaults, $config);
 
@@ -53,16 +51,18 @@ class ThumbnailShell extends AppShell {
 			]);
 
 			foreach ($files as $file) {
+				$this->{$modelName}->Behaviors->load('ShellUpload', $behaviorConfig);
 				$sourceFilePath = $this->{$modelName}->path($field, $options) . $file[$modelName][$mergedConfig['fields']['dir']] . DS . $file[$modelName][$field];
+				$this->{$modelName}->Behaviors->unload('ShellUpload');
 
 				$data = [
-					[
-						$this->{$modelName}->primaryKey => $file[$modelName][$this->{$modelName}->primaryKey],
-						$field => $sourceFilePath
-					]
+					$this->{$modelName}->primaryKey => $file[$modelName][$this->{$modelName}->primaryKey],
+					$field => $sourceFilePath,
+					$config['fields']['dir'] => $file[$modelName][$this->{$modelName}->primaryKey]
 				];
+				$this->{$modelName}->set($data);
 
-				if ($this->{$modelName}->save($data, false)) {
+				if ($this->{$modelName}->save(null, false)) {
 					$this->out(__("Created thumbnails in {$file[$modelName][$mergedConfig['fields']['dir']]} for {$file[$modelName][$field]}"));
 				} else {
 					$this->out(__("<error> Could not create thumbnails in {$file[$modelName][$mergedConfig['fields']['dir']]} for {$file[$modelName][$field]}</error>"));
