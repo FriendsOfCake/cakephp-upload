@@ -14,6 +14,12 @@ App::uses('ShellUploadBehavior', 'Upload.Model/Behavior');
  */
 class ThumbnailShell extends AppShell {
 
+	public function getOptionParser() {
+		$parser = parent::getOptionParser();
+		$parser->addSubcommand('generate', ['help' => 'Find models and regenerate the thumbnails.']);
+		return $parser;
+	}
+
 	public function generate() {
 		$modelName = $this->in(__('Which model would you like to regenerate thumbnails for?'));
 
@@ -55,11 +61,25 @@ class ThumbnailShell extends AppShell {
 				$sourceFilePath = $this->{$modelName}->path($field, $options) . $file[$modelName][$mergedConfig['fields']['dir']] . DS . $file[$modelName][$field];
 				$this->{$modelName}->Behaviors->unload('ShellUpload');
 
+				// $field needs to be an array like uploading an image
+				$fieldData = [
+					'name' => basename($sourceFilePath),
+					'type' => mime_content_type($sourceFilePath),
+					'size' => filesize($sourceFilePath),
+					'tmp_name' => $sourceFilePath,
+					'error' => UPLOAD_ERR_OK
+				];
+
 				$data = [
 					$this->{$modelName}->primaryKey => $file[$modelName][$this->{$modelName}->primaryKey],
-					$field => $sourceFilePath,
-					$config['fields']['dir'] => $file[$modelName][$this->{$modelName}->primaryKey]
+					$field => $fieldData,
+					$config['fields']['dir'] => $file[$modelName][$this->{$modelName}->primaryKey],
 				];
+
+				if ($this->{$modelName}->hasField('modified')) {
+					$data['modified'] = false;
+				}
+
 				$this->{$modelName}->set($data);
 
 				if ($this->{$modelName}->save(null, false)) {
@@ -67,8 +87,6 @@ class ThumbnailShell extends AppShell {
 				} else {
 					$this->out(__("<error> Could not create thumbnails in {$file[$modelName][$mergedConfig['fields']['dir']]} for {$file[$modelName][$field]}</error>"));
 				}
-
-				exit;
 			}
 		}
 	}
