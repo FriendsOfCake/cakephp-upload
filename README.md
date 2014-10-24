@@ -16,7 +16,7 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 * Patience
 
 ## Documentation
-For documentation, please see the [/docs/index.md](docs folder).
+For documentation, please see the [the docs](http://cakephp-upload.readthedocs.org/en/latest/).
 
 ## License
 
