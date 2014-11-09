@@ -1812,16 +1812,16 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$replacements = array(
-			'{ROOT}'    => $options['rootDir'],
-			'{primaryKey}'  => $model->id,
-			'{model}'   => Inflector::underscore($model->alias),
-			'{field}'   => $field,
-			'{time}'    => time(),
-			'{microtime}'   => microtime(),
-			'{DS}'      => DIRECTORY_SEPARATOR,
-			'//'        => DIRECTORY_SEPARATOR,
-			'/'         => DIRECTORY_SEPARATOR,
-			'\\'        => DIRECTORY_SEPARATOR,
+			'{ROOT}' => $options['rootDir'],
+			'{primaryKey}' => $model->id,
+			'{model}' => Inflector::underscore($model->alias),
+			'{field}' => $field,
+			'{time}' => time(),
+			'{microtime}' => microtime(),
+			'{DS}' => DIRECTORY_SEPARATOR,
+			'//' => DIRECTORY_SEPARATOR,
+			'/' => DIRECTORY_SEPARATOR,
+			'\\' => DIRECTORY_SEPARATOR,
 		);
 
 		$newPath = Folder::slashTerm(str_replace(
