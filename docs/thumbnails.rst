@@ -18,7 +18,7 @@ option under the field you are configuring.
                 'photo' => array( // The field we are configuring for
                     'thumbnailSizes' => array( // Various sizes of thumbnail to generate
                         'big' => '200x200', // Resize for best fit to 200px by 200px, cropped from the center of the image. Prefix with big_
-                        'small' => '120x120'
+                        'small' => '120x120',
                         'thumb' => '80x80'
                     )
                 )
