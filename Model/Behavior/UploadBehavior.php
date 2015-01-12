@@ -1984,7 +1984,7 @@ class UploadBehavior extends ModelBehavior {
 			return array();
 		}
 
-		if (!strlen($data[$model->alias][$field])) {
+		if (empty($data[$model->alias][$field])) {
 			return $this->__filesToRemove;
 		}
 
