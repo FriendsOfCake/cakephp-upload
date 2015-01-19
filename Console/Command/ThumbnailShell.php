@@ -14,12 +14,22 @@ App::uses('ShellUploadBehavior', 'Upload.Model/Behavior');
  */
 class ThumbnailShell extends AppShell {
 
+/**
+ * Return the shell options
+ *
+ * @return ConsoleOptionParser
+ */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
 		$parser->addSubcommand('generate', ['help' => 'Find models and regenerate the thumbnails.']);
 		return $parser;
 	}
 
+/**
+ * Regenerate thumbnails for images linked in the database
+ *
+ * @return void
+ */
 	public function generate() {
 		$modelName = $this->in(__('Which model would you like to regenerate thumbnails for?'));
 
@@ -42,7 +52,7 @@ class ThumbnailShell extends AppShell {
 
 		$uploadBehavior = new ShellUploadBehavior;
 		$behaviorConfig = $this->{$modelName}->actsAs['Upload.Upload'];
-		
+
 		foreach ($behaviorConfig as $field => $config) {
 			$mergedConfig = array_merge($uploadBehavior->defaults, $config);
 
