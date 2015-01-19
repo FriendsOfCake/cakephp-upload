@@ -28,6 +28,7 @@ class ShellUploadBehavior extends UploadBehavior {
  * @param string $path The path to the source image
  * @param string $thumbnailPath The path in which to create the thumbnails
  * @throws Exception
+ * @return void
  */
 	public function createThumbnails(Model $model, $field, $path, $thumbnailPath) {
 		return parent::_createThumbnails($model, $field, $path, $thumbnailPath);
