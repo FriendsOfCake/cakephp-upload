@@ -389,27 +389,22 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$folders = $this->__foldersToRemove[$model->alias];
-		foreach ($folders as $folder) {
-			if (strlen((string)$folder) === 0) {
-				continue;
-			}
-
-			$dir = $path . $folder;
-			$it = new RecursiveDirectoryIterator($dir);
-			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($files as $file) {
-				if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-					continue;
-				}
-
-				if ($file->isDir()) {
-					$this->rmdir($file->getRealPath());
-				} else {
-					$this->unlink($file->getRealPath());
-				}
-			}
-			$this->rmdir($dir);
-		}
+		$folder = $folders[0];
+	        $dir = $path . $folder;
+	        $it = new RecursiveDirectoryIterator($dir);
+	        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+	        foreach ($files as $file) {
+	            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+	                continue;
+	            }
+	
+	            if ($file->isDir()) {
+	                $this->rmdir($file->getRealPath());
+	            } else {
+	                $this->unlink($file->getRealPath());
+	            }
+	        }
+	        $this->rmdir($dir);
 
 		return true;
 	}
@@ -453,7 +448,6 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $options) {
 			if ($options['deleteFolderOnDelete'] == true) {
 				$this->deleteFolder($model, $options['path']);
-				return true;
 			}
 		}
 		return $result;
