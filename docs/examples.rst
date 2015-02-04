@@ -126,6 +126,31 @@ Example: ``'thumbnailMethod'  => 'php'``.
     }
     ?>
 
+Displaying links to files in your view
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Once your files have been uploaded you can link to them using the ``HtmlHelper`` by specifying the path and using the file information from the database.
+
+This example uses the `default behaviour configuration <configuration.md>`__ using the model ``Example``.
+
+.. code:: php
+    <?php
+    $exampleData = [
+        'Example' => [
+            'image' => 'imageFile.jpg',
+            'dir' => '7'
+        ]
+    ];
+
+    echo $this->Html->link('../files/example/image/' . $exampleData['Example']['dir'] . '/' . $exampleData['Example']['image']);
+    ?>
+
+If we have configured a thumbnail in our application. We can simply prefix our file with the name of that thumbnail.
+
+.. code:: php
+    <?php
+    echo $this->Html->link('../files/example/image/' . $exampleData['Example']['dir'] . '/thumb_' . $exampleData['Example']['image']);
+    ?>
+
 Uploading Multiple files
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -234,3 +259,13 @@ also assume that these files are just stored in the ``User`` model.
         )
     )
 
+Changing the upload path dynamically
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you need to change the path of the upload dynamically you can do that by changing the behavior settings in your model.
+Perhaps in a model callback such as ``beforeSave()``.
+
+.. code:: php
+    <?php
+    // app/Model/User.php
+    $this->Behaviors->Upload->settings['field']['path'] = $newPath;
+    ?>
