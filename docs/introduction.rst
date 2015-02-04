@@ -18,8 +18,7 @@ Requirements
 
 What does this plugin do?
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-* The Upload plugin will transfer files from a form in your application to (by default) the ``webroot/files`` directory organised by the model
-name and primaryKey field.
+* The Upload plugin will transfer files from a form in your application to (by default) the ``webroot/files`` directory organised by the model name and primaryKey field.
 * It can also move files around programatically. Such as from the filesystem.
 * The path to which the files are saved can be customised.
 * It can also create thumbnails for image files if the ``thumbnails`` option is set in the behaviour options.
