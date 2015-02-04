@@ -267,6 +267,7 @@ If you need to change the path of the upload dynamically you can do that by chan
 Perhaps in a model callback such as ``beforeSave()``.
 
 .. code:: php
+
     <?php
     // app/Model/User.php
     $this->Behaviors->Upload->settings['field']['path'] = $newPath;
