@@ -133,6 +133,7 @@ Once your files have been uploaded you can link to them using the ``HtmlHelper``
 This example uses the `default behaviour configuration <configuration.md>`__ using the model ``Example``.
 
 .. code:: php
+
     <?php
     $exampleData = [
         'Example' => [
@@ -147,6 +148,7 @@ This example uses the `default behaviour configuration <configuration.md>`__ usi
 If we have configured a thumbnail in our application. We can simply prefix our file with the name of that thumbnail.
 
 .. code:: php
+
     <?php
     echo $this->Html->link('../files/example/image/' . $exampleData['Example']['dir'] . '/thumb_' . $exampleData['Example']['image']);
     ?>
