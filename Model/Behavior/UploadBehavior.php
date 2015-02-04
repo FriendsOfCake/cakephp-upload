@@ -1740,7 +1740,7 @@ class UploadBehavior extends ModelBehavior {
 		));
 		$file = $socket->get($uri, array(), array('redirect' => true));
 		$headers = $socket->response['header'];
-		$fileName = basename($socket->request['uri']['path']);
+		$fileName = urldecode(basename($socket->request['uri']['path']));
 		$tmpFile = sys_get_temp_dir() . '/' . $fileName;
 
 		if ($socket->response['status']['code'] != 200) {
