@@ -64,9 +64,9 @@ class ThumbnailShell extends AppShell {
 
 			$files = $this->{$modelName}->find('all', [
 				'fields' => [$this->{$modelName}->primaryKey, $field, $mergedConfig['fields']['dir']],
-                'conditions' => [
-                    $field . " IS NOT NULL"
-                ]
+				'conditions' => [
+					$field . " IS NOT NULL"
+				]
 			]);
 
 			foreach ($files as $file) {
@@ -74,9 +74,9 @@ class ThumbnailShell extends AppShell {
 				$sourceFilePath = $this->{$modelName}->path($field, $options) . $file[$modelName][$mergedConfig['fields']['dir']] . DS . $file[$modelName][$field];
 				$this->{$modelName}->Behaviors->unload('ShellUpload');
 
-                if (!file_exists($sourceFilePath)){
-                    continue;
-                }
+				if (!file_exists($sourceFilePath)) {
+					continue;
+				}
 
 				// $field needs to be an array like uploading an image
 				$fieldData = [
