@@ -190,7 +190,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param array $options Options passed from Model::save().
- * @return boolean
+ * @return bool
  */
 	public function beforeSave(Model $model, $options = array()) {
 		$this->_removingOnly = array();
@@ -260,7 +260,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param array $options Options passed from Model::save().
- * @return boolean
+ * @return bool
  */
 	public function beforeValidate(Model $model, $options = array()) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
@@ -281,9 +281,9 @@ class UploadBehavior extends ModelBehavior {
  * Handles moving file uploads
  *
  * @param Model $model Model instance
- * @param boolean $created True if this save created a new record
+ * @param bool $created True if this save created a new record
  * @param array $options Options passed from Model::save().
- * @return boolean
+ * @return bool
  * @throws UploadException
  */
 	public function afterSave(Model $model, $created, $options = array()) {
@@ -335,7 +335,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $field Name of field being modified
  * @param String $filename The filename of the uploaded file
  * @param String $destination The configured destination of the moved file
- * @return boolean
+ * @return bool
  **/
 	public function handleUploadedFile(Model $model, $field, $filename, $destination) {
 		$callback = Hash::get($this->settings[$model->alias][$field], 'handleUploadedFileCallback');
@@ -354,7 +354,7 @@ class UploadBehavior extends ModelBehavior {
  * Removes directory
  *
  * @param string $dirname Path to the directory
- * @return boolean
+ * @return bool
  **/
 	public function rmdir($dirname) {
 		if (is_dir($dirname)) {
@@ -367,7 +367,7 @@ class UploadBehavior extends ModelBehavior {
  * Unlinks a file on disk
  *
  * @param string $file path to file
- * @return boolean
+ * @return bool
  **/
 	public function unlink($file) {
 		if (file_exists($file)) {
@@ -381,7 +381,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $path path to directory
- * @return boolean
+ * @return bool
  **/
 	public function deleteFolder(Model $model, $path) {
 		if (!isset($this->__foldersToRemove[$model->alias])) {
@@ -418,8 +418,8 @@ class UploadBehavior extends ModelBehavior {
  * Called before every deletion operation.
  *
  * @param Model $model Model instance
- * @param boolean $cascade If true records that depend on this record will also be deleted
- * @return boolean True if the operation should continue, false if it should abort
+ * @param bool $cascade If true records that depend on this record will also be deleted
+ * @return bool True if the operation should continue, false if it should abort
  */
 	public function beforeDelete(Model $model, $cascade = true) {
 		$data = $model->find('first', array(
@@ -465,7 +465,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @return boolean Success
+ * @return bool Success
  */
 	public function isUnderPhpSizeLimit(Model $model, $check) {
 		$field = $this->_getField($check);
@@ -483,7 +483,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @return boolean Success
+ * @return bool Success
  */
 	public function isUnderFormSizeLimit(Model $model, $check) {
 		$field = $this->_getField($check);
@@ -500,7 +500,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @return boolean Success
+ * @return bool Success
  */
 	public function isCompletedUpload(Model $model, $check) {
 		$field = $this->_getField($check);
@@ -517,7 +517,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @return boolean Success
+ * @return bool Success
  */
 	public function isFileUpload(Model $model, $check) {
 		$field = $this->_getField($check);
@@ -535,7 +535,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @return boolean Success
+ * @return bool Success
  */
 	public function isFileUploadOrHasExistingValue(Model $model, $check) {
 		if (!$this->isFileUpload($model, $check)) {
@@ -556,8 +556,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function tempDirExists(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -581,8 +581,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isSuccessfulWrite(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -606,8 +606,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function noPhpExtensionErrors(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -632,8 +632,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $mimetypes file mimetypes to allow
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isValidMimeType(Model $model, $check, $mimetypes = array(), $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -679,8 +679,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isWritable(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -704,8 +704,8 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param mixed $check Value to check
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isValidDir(Model $model, $check, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -730,8 +730,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Maximum file size
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isBelowMaxSize(Model $model, $check, $size = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -765,8 +765,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $size Minimum file size
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isAboveMinSize(Model $model, $check, $size = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -800,8 +800,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param array $extensions file extenstions to allow
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isValidExtension(Model $model, $check, $extensions = array(), $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -852,8 +852,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isAboveMinHeight(Model $model, $check, $height = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -888,8 +888,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $height Height of Image
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isBelowMaxHeight(Model $model, $check, $height = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -924,8 +924,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isAboveMinWidth(Model $model, $check, $width = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -960,8 +960,8 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param mixed $check Value to check
  * @param int $width Width of Image
- * @param boolean $requireUpload Whether or not to require a file upload
- * @return boolean Success
+ * @param bool $requireUpload Whether or not to require a file upload
+ * @return bool Success
  */
 	public function isBelowMaxWidth(Model $model, $check, $width = null, $requireUpload = true) {
 		$field = $this->_getField($check);
@@ -1028,7 +1028,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @param boolean $removing Whether the record should be removed
+ * @param bool $removing Whether the record should be removed
  * @return string
  */
 	protected function _shouldUpdate($model, $field, $removing) {
@@ -1123,7 +1123,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param Model $model Model instance
  * @param string $field Name of field being modified
- * @return boolean
+ * @return bool
  */
 	protected function _shouldSkip(Model $model, $field) {
 		if (!in_array($field, array_keys($model->data[$model->alias]))) {
@@ -1154,7 +1154,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $size Name of size to use
  * @param string $geometry Dimensions for current size
  * @param string $thumbnailPath Output thumbnail path
- * @return boolean
+ * @return bool
  */
 	protected function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
@@ -1291,7 +1291,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $size Name of size to use
  * @param string $geometry Dimensions for current size
  * @param string $thumbnailPath Output thumbnail path
- * @return boolean
+ * @return bool
  */
 	protected function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
 		$srcFile = $path . $model->data[$model->alias][$field];
@@ -1467,7 +1467,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $filename full path to file
  * @param string $pathInfo Array of path information
- * @return boolean
+ * @return bool
  */
 	protected function _createImageResource($filename, $pathInfo) {
 		switch (strtolower($pathInfo['extension'])) {
@@ -1732,7 +1732,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param string $field Name of field being modified
  * @param string $uri URI for file to retrieve
- * @return boolean
+ * @return bool
  */
 	protected function _grab(Model $model, $field, $uri) {
 		$socket = new HttpSocket(array(
@@ -1740,7 +1740,7 @@ class UploadBehavior extends ModelBehavior {
 		));
 		$file = $socket->get($uri, array(), array('redirect' => true));
 		$headers = $socket->response['header'];
-		$fileName = basename($socket->request['uri']['path']);
+		$fileName = urldecode(basename($socket->request['uri']['path']));
 		$tmpFile = sys_get_temp_dir() . '/' . $fileName;
 
 		if ($socket->response['status']['code'] != 200) {
@@ -1774,7 +1774,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param string $field Name of field being modified
  * @param string $destDir directory to create
- * @return boolean
+ * @return bool
  */
 	protected function _mkPath(Model $model, $field, $destDir) {
 		if (!file_exists($destDir)) {
@@ -1812,16 +1812,16 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$replacements = array(
-			'{ROOT}'	=> $options['rootDir'],
-			'{primaryKey}'	=> $model->id,
-			'{model}'	=> Inflector::underscore($model->alias),
-			'{field}'	=> $field,
-			'{time}'	=> time(),
-			'{microtime}'	=> microtime(),
-			'{DS}'		=> DIRECTORY_SEPARATOR,
-			'//'		=> DIRECTORY_SEPARATOR,
-			'/'			=> DIRECTORY_SEPARATOR,
-			'\\'		=> DIRECTORY_SEPARATOR,
+			'{ROOT}' => $options['rootDir'],
+			'{primaryKey}' => $model->id,
+			'{model}' => Inflector::underscore($model->alias),
+			'{field}' => $field,
+			'{time}' => time(),
+			'{microtime}' => microtime(),
+			'{DS}' => DIRECTORY_SEPARATOR,
+			'//' => DIRECTORY_SEPARATOR,
+			'/' => DIRECTORY_SEPARATOR,
+			'\\' => DIRECTORY_SEPARATOR,
 		);
 
 		$newPath = Folder::slashTerm(str_replace(
@@ -1918,7 +1918,7 @@ class UploadBehavior extends ModelBehavior {
  * Checks if a given mimetype is an image mimetype
  *
  * @param string $mimetype mimetype
- * @return boolean
+ * @return bool
  **/
 	protected function _isImage($mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
@@ -1928,7 +1928,7 @@ class UploadBehavior extends ModelBehavior {
  * Checks if a given string is a url
  *
  * @param string $string string to check
- * @return boolean
+ * @return bool
  **/
 	protected function _isUrl($string) {
 		return (filter_var($string, FILTER_VALIDATE_URL) ? true : false);
@@ -1938,7 +1938,7 @@ class UploadBehavior extends ModelBehavior {
  * Checks if a given mimetype is a media mimetype
  *
  * @param string $mimetype mimetype
- * @return boolean
+ * @return bool
  **/
 	protected function _isMedia($mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
@@ -1977,14 +1977,14 @@ class UploadBehavior extends ModelBehavior {
  * @param string $field Name of field being modified
  * @param array $data array of data
  * @param array $options array of configuration settings for a field
- * @return boolean
+ * @return bool
  **/
 	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options = array()) {
 		if ($options['keepFilesOnDelete'] === true) {
 			return array();
 		}
 
-		if (!strlen($data[$model->alias][$field])) {
+		if (empty($data[$model->alias][$field])) {
 			return $this->__filesToRemove;
 		}
 
