@@ -19,6 +19,7 @@ Contents:
     Generating thumbnails <thumbnails>
     Validating uploads <validation>
     File import behavior <file-import-behavior>
+    Thumbnail generation shell <thumbnail-shell>
 
 
 Indices and tables
