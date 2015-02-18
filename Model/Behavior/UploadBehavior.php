@@ -313,6 +313,11 @@ class UploadBehavior extends ModelBehavior {
 				$db->rollback();
 				throw new UploadException('Unable to upload file');
 			}
+			if ( isset($this->__filesToRemove[$model->alias]) &&
+				($key = array_search($filePath, $this->__filesToRemove[$model->alias])) !== false
+			) {
+				unset($this->__filesToRemove[$model->alias][$key]);
+			}
 
 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
 			if ($model->hasField($options['fields']['dir'])) {
@@ -1279,7 +1284,7 @@ class UploadBehavior extends ModelBehavior {
 
 		$image->clear();
 		$image->destroy();
-		return true;
+		return $destFile;
 	}
 
 /**
@@ -1457,7 +1462,7 @@ class UploadBehavior extends ModelBehavior {
 				$outputHandler($img, $destFile);
 			}
 
-			return true;
+			return $destFile;
 		}
 		return false;
 	}
@@ -1907,8 +1912,14 @@ class UploadBehavior extends ModelBehavior {
 					throw new Exception("Invalid thumbnailMethod %s", $method);
 				}
 
-				if (!$valid) {
+				if ($valid === false) {
 					$model->invalidate($field, 'resizeFail');
+				} else {
+					if ( isset($this->__filesToRemove[$model->alias]) &&
+						 ($key = array_search($valid, $this->__filesToRemove[$model->alias])) !== false
+					) {
+						unset($this->__filesToRemove[$model->alias][$key]);
+					}
 				}
 			}
 		}
