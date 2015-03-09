@@ -58,6 +58,7 @@ class UploadBehavior extends ModelBehavior {
 		'image/bmp',
 		'image/gif',
 		'image/jpeg',
+		'image/jpg',
 		'image/pjpeg',
 		'image/png',
 		'image/vnd.microsoft.icon',
