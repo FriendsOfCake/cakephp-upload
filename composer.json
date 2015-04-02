@@ -1,5 +1,5 @@
 {
-  "name": "josegonzalez/cakephp-upload",
+  "name": "a2design-inc/upload",
   "version": "1.0.0",
   "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
   "type": "cakephp-plugin",
@@ -9,7 +9,7 @@
     "files",
     "behavior"
   ],
-  "homepage": "http://github.com/josegonzalez/cakephp-upload",
+  "homepage": "https://github.com/a2design-inc/upload",
   "license": "MIT",
   "authors": [
     {
@@ -143,9 +143,8 @@
     "composer/installers": "*"
   },
   "support": {
-    "email": "cakephp+upload@josediazgonzalez.com",
-    "issues": "https://github.com/josegonzalez/cakephp-upload/issues",
-    "source": "https://github.com/josegonzalez/cakephp-upload"
+    "issues": "https://github.com/a2design-inc/upload/issues",
+    "source": "https://github.com/a2design-inc/upload"
   },
   "extra": {
     "installer-name": "Upload"
