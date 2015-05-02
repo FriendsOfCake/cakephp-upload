@@ -88,6 +88,17 @@ class UploadBehavior extends ModelBehavior {
 	public $runtime;
 
 /**
+ * Constructor.
+ *
+ * Set default root directory.
+ */
+	public function __construct() {
+		if ($this->defaults['rootDir'] === null) {
+			$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
+		}
+	}
+
+/**
  * Initiate Upload behavior
  *
  * @param object $model instance of model
@@ -120,7 +131,6 @@ class UploadBehavior extends ModelBehavior {
 			$options = array();
 		}
 
-		$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array)$options);
 
