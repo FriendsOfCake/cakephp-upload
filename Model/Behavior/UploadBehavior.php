@@ -84,8 +84,19 @@ class UploadBehavior extends ModelBehavior {
  * Runtime configuration for this behavior
  *
  * @var array
- **/
+ */
 	public $runtime;
+
+/**
+ * Constructor.
+ *
+ * Set default root directory.
+ */
+	public function __construct() {
+		if ($this->defaults['rootDir'] === null) {
+			$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
+		}
+	}
 
 /**
  * Initiate Upload behavior
@@ -120,7 +131,6 @@ class UploadBehavior extends ModelBehavior {
 			$options = array();
 		}
 
-		$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array)$options);
 
@@ -336,7 +346,7 @@ class UploadBehavior extends ModelBehavior {
  * @param String $filename The filename of the uploaded file
  * @param String $destination The configured destination of the moved file
  * @return bool
- **/
+ */
 	public function handleUploadedFile(Model $model, $field, $filename, $destination) {
 		$callback = Hash::get($this->settings[$model->alias][$field], 'handleUploadedFileCallback');
 		if (is_callable(array($model, $callback), true)) {
@@ -355,7 +365,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $dirname Path to the directory
  * @return bool
- **/
+ */
 	public function rmdir($dirname) {
 		if (is_dir($dirname)) {
 			return rmdir($dirname);
@@ -368,7 +378,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $file path to file
  * @return bool
- **/
+ */
 	public function unlink($file) {
 		if (file_exists($file)) {
 			return unlink($file);
@@ -382,7 +392,7 @@ class UploadBehavior extends ModelBehavior {
  * @param Model $model Model instance
  * @param string $path path to directory
  * @return bool
- **/
+ */
 	public function deleteFolder(Model $model, $path) {
 		if (!isset($this->__foldersToRemove[$model->alias])) {
 			return false;
@@ -538,17 +548,18 @@ class UploadBehavior extends ModelBehavior {
  * @return bool Success
  */
 	public function isFileUploadOrHasExistingValue(Model $model, $check) {
-		if (!$this->isFileUpload($model, $check)) {
-			$pkey = $model->primaryKey;
-			if (!empty($model->data[$model->alias][$pkey])) {
-				$field = $this->_getField($check);
-				$fieldValue = $model->field($field, array($pkey => $model->data[$model->alias][$pkey]));
-				return !empty($fieldValue);
-			}
-
-			return false;
+		if ($this->isFileUpload($model, $check)) {
+			return true;
 		}
-		return true;
+
+		$pkey = $model->primaryKey;
+		if (!empty($model->data[$model->alias][$pkey])) {
+			$field = $this->_getField($check);
+			$fieldValue = $model->field($field, array($pkey => $model->data[$model->alias][$pkey]));
+			return !empty($fieldValue);
+		}
+
+		return false;
 	}
 
 /**
@@ -1791,7 +1802,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $field Name of field being modified
  * @param array $options Options to use when building a path
  * @return string
- **/
+ */
 	protected function _path(Model $model, $field, $options = array()) {
 		$defaults = array(
 			'isThumbnail' => true,
@@ -1819,6 +1830,22 @@ class UploadBehavior extends ModelBehavior {
 			'{time}' => time(),
 			'{microtime}' => microtime(),
 			'{DS}' => DIRECTORY_SEPARATOR,
+		);
+
+		$newPath = str_replace(
+			array_keys($replacements),
+			array_values($replacements),
+			$options['path']
+		);
+
+		if (strpos($newPath, '://') !== false) {
+			if (substr($newPath, -1) !== '/') {
+				$newPath .= '/';
+			}
+			continue;
+		}
+
+		$replacements = array(
 			'//' => DIRECTORY_SEPARATOR,
 			'/' => DIRECTORY_SEPARATOR,
 			'\\' => DIRECTORY_SEPARATOR,
@@ -1827,7 +1854,7 @@ class UploadBehavior extends ModelBehavior {
 		$newPath = Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
-			$options['path']
+			$newPath
 		));
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -1861,7 +1888,7 @@ class UploadBehavior extends ModelBehavior {
  * @param string $field Name of field being modified
  * @param array $params Array of parameters to use for the thumbnail
  * @return string
- **/
+ */
 	protected function _pathThumbnail(Model $model, $field, $params = array()) {
 		return str_replace(
 			array('{size}', '{geometry}'),
@@ -1881,35 +1908,42 @@ class UploadBehavior extends ModelBehavior {
  * @throws Exception
  */
 	protected function _createThumbnails(Model $model, $field, $path, $thumbnailPath) {
-		$isImage = $this->_isImage($this->runtime[$model->alias][$field]['type']);
-		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 		$createThumbnails = $this->settings[$model->alias][$field]['thumbnails'];
 		$hasThumbnails = !empty($this->settings[$model->alias][$field]['thumbnailSizes']);
 
-		if (($isImage || $isMedia) && $createThumbnails && $hasThumbnails) {
-			$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
+		if (!($createThumbnails && $hasThumbnails)) {
+			return;
+		}
 
-			foreach ($this->settings[$model->alias][$field]['thumbnailSizes'] as $size => $geometry) {
-				$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
-					'geometry', 'size', 'thumbnailPath'
-				));
-				$this->_mkPath($model, $field, $thumbnailPathSized);
+		$isImage = $this->_isImage($this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 
-				$valid = false;
-				if (method_exists($model, $method)) {
-					$valid = $model->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
-				} elseif (method_exists($this, $method)) {
-					$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
-				} else {
-					CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $method));
-					$db = $model->getDataSource();
-					$db->rollback();
-					throw new Exception("Invalid thumbnailMethod %s", $method);
-				}
+		if (!($isImage || $isMedia)) {
+			return;
+		}
 
-				if (!$valid) {
-					$model->invalidate($field, 'resizeFail');
-				}
+		$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
+
+		foreach ($this->settings[$model->alias][$field]['thumbnailSizes'] as $size => $geometry) {
+			$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
+				'geometry', 'size', 'thumbnailPath'
+			));
+			$this->_mkPath($model, $field, $thumbnailPathSized);
+
+			$valid = false;
+			if (method_exists($model, $method)) {
+				$valid = $model->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+			} elseif (method_exists($this, $method)) {
+				$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+			} else {
+				CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $method));
+				$db = $model->getDataSource();
+				$db->rollback();
+				throw new Exception("Invalid thumbnailMethod %s", $method);
+			}
+
+			if (!$valid) {
+				$model->invalidate($field, 'resizeFail');
 			}
 		}
 	}
@@ -1919,7 +1953,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $mimetype mimetype
  * @return bool
- **/
+ */
 	protected function _isImage($mimetype) {
 		return in_array($mimetype, $this->_imageMimetypes);
 	}
@@ -1929,7 +1963,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $string string to check
  * @return bool
- **/
+ */
 	protected function _isUrl($string) {
 		return (filter_var($string, FILTER_VALIDATE_URL) ? true : false);
 	}
@@ -1939,7 +1973,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $mimetype mimetype
  * @return bool
- **/
+ */
 	protected function _isMedia($mimetype) {
 		return in_array($mimetype, $this->_mediaMimetypes);
 	}
@@ -1949,7 +1983,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $filePath path to file
  * @return string
- **/
+ */
 	protected function _getMimeType($filePath) {
 		if (class_exists('finfo')) {
 			$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
@@ -1978,7 +2012,7 @@ class UploadBehavior extends ModelBehavior {
  * @param array $data array of data
  * @param array $options array of configuration settings for a field
  * @return bool
- **/
+ */
 	protected function _prepareFilesForDeletion(Model $model, $field, $data, $options = array()) {
 		if ($options['keepFilesOnDelete'] === true) {
 			return array();
@@ -2076,7 +2110,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param array $check array of validation data
  * @return string
- **/
+ */
 	protected function _getField($check) {
 		$fieldKeys = array_keys($check);
 		return array_pop($fieldKeys);
@@ -2087,7 +2121,7 @@ class UploadBehavior extends ModelBehavior {
  *
  * @param string $filename name of file on disk
  * @return array
- **/
+ */
 	protected function _pathinfo($filename) {
 		$pathInfo = pathinfo($filename);
 
