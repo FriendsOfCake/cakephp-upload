@@ -1829,6 +1829,22 @@ class UploadBehavior extends ModelBehavior {
 			'{time}' => time(),
 			'{microtime}' => microtime(),
 			'{DS}' => DIRECTORY_SEPARATOR,
+		);
+
+		$newPath = str_replace(
+			array_keys($replacements),
+			array_values($replacements),
+			$options['path']
+		);
+
+		if (strpos($newPath, '://') !== false) {
+			if (substr($newPath, -1) !== '/') {
+				$newPath .= '/';
+			}
+			continue;
+		}
+
+		$replacements = array(
 			'//' => DIRECTORY_SEPARATOR,
 			'/' => DIRECTORY_SEPARATOR,
 			'\\' => DIRECTORY_SEPARATOR,
@@ -1837,7 +1853,7 @@ class UploadBehavior extends ModelBehavior {
 		$newPath = Folder::slashTerm(str_replace(
 			array_keys($replacements),
 			array_values($replacements),
-			$options['path']
+			$newPath
 		));
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
