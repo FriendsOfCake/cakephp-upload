@@ -1891,35 +1891,42 @@ class UploadBehavior extends ModelBehavior {
  * @throws Exception
  */
 	protected function _createThumbnails(Model $model, $field, $path, $thumbnailPath) {
-		$isImage = $this->_isImage($this->runtime[$model->alias][$field]['type']);
-		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 		$createThumbnails = $this->settings[$model->alias][$field]['thumbnails'];
 		$hasThumbnails = !empty($this->settings[$model->alias][$field]['thumbnailSizes']);
 
-		if (($isImage || $isMedia) && $createThumbnails && $hasThumbnails) {
-			$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
+		if (!($createThumbnails && $hasThumbnails)) {
+			return;
+		}
 
-			foreach ($this->settings[$model->alias][$field]['thumbnailSizes'] as $size => $geometry) {
-				$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
-					'geometry', 'size', 'thumbnailPath'
-				));
-				$this->_mkPath($model, $field, $thumbnailPathSized);
+		$isImage = $this->_isImage($this->runtime[$model->alias][$field]['type']);
+		$isMedia = $this->_isMedia($this->runtime[$model->alias][$field]['type']);
 
-				$valid = false;
-				if (method_exists($model, $method)) {
-					$valid = $model->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
-				} elseif (method_exists($this, $method)) {
-					$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
-				} else {
-					CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $method));
-					$db = $model->getDataSource();
-					$db->rollback();
-					throw new Exception("Invalid thumbnailMethod %s", $method);
-				}
+		if (!($isImage || $isMedia)) {
+			return;
+		}
 
-				if (!$valid) {
-					$model->invalidate($field, 'resizeFail');
-				}
+		$method = $this->settings[$model->alias][$field]['thumbnailMethod'];
+
+		foreach ($this->settings[$model->alias][$field]['thumbnailSizes'] as $size => $geometry) {
+			$thumbnailPathSized = $this->_pathThumbnail($model, $field, compact(
+				'geometry', 'size', 'thumbnailPath'
+			));
+			$this->_mkPath($model, $field, $thumbnailPathSized);
+
+			$valid = false;
+			if (method_exists($model, $method)) {
+				$valid = $model->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+			} elseif (method_exists($this, $method)) {
+				$valid = $this->$method($model, $field, $path, $size, $geometry, $thumbnailPathSized);
+			} else {
+				CakeLog::error(sprintf('Model %s, Field %s: Invalid thumbnailMethod %s', $model->alias, $field, $method));
+				$db = $model->getDataSource();
+				$db->rollback();
+				throw new Exception("Invalid thumbnailMethod %s", $method);
+			}
+
+			if (!$valid) {
+				$model->invalidate($field, 'resizeFail');
 			}
 		}
 	}
