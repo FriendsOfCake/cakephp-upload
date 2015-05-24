@@ -210,7 +210,7 @@ to decrease the ability of your users to block other requests.
 
 If you are looking to add an unknown or high number of uploads to a
 model it's worth considering using a `polymorphic
-attachment <polymorphic.md>`__.
+attachment <polymorphic.html>`__.
 
 Remove a current file without deleting the entire record
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
