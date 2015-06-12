@@ -1985,20 +1985,22 @@ class UploadBehavior extends ModelBehavior {
  * @return string
  */
 	protected function _getMimeType($filePath) {
-		if (class_exists('finfo')) {
-			$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
-			return $finfo->file($filePath);
-		}
-
-		if (function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
-			$mimetype = image_type_to_mime_type(exif_imagetype($filePath));
-			if ($mimetype !== false) {
-				return $mimetype;
+		if(is_file($filePath)) {
+			if (class_exists('finfo')) {
+				$finfo = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME);
+				return $finfo->file($filePath);
 			}
-		}
-
-		if (function_exists('mime_content_type')) {
-			return mime_content_type($filePath);
+	
+			if (function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
+				$mimetype = image_type_to_mime_type(exif_imagetype($filePath));
+				if ($mimetype !== false) {
+					return $mimetype;
+				}
+			}
+	
+			if (function_exists('mime_content_type')) {
+				return mime_content_type($filePath);
+			}
 		}
 
 		return 'application/octet-stream';
