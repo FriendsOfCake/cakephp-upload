@@ -129,9 +129,7 @@ class UploadBehavior extends Behavior
 
     public function getBasepath($entity, $field, $settings)
     {
-        $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
         $defaultProcessor = new DefaultPathProcessor;
-        $path = Hash::get($settings, 'path', $defaultPath);
         $processor = Hash::get($settings, 'processor', $defaultProcessor);
         return $processor($this->_table, $entity, $field, $settings);
     }
