@@ -2,10 +2,11 @@
 namespace Josegonzalez\Upload\Model\Behavior;
 
 use ArrayObject;
+use Cake\Collection\Collection;
+use Cake\Database\Type;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
-use Cake\Collection\Collection;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
@@ -22,7 +23,7 @@ class UploadBehavior extends Behavior
         $this->_config = [];
         $this->config(Hash::normalize($config));
 
-        \Cake\Database\Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
+        Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
         $schema = $this->_table->schema();
         foreach (array_keys($this->config()) as $field) {
             $schema->columnType($field, 'upload.file');
