@@ -2,13 +2,13 @@
   "name": "josegonzalez/cakephp-upload",
   "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
   "type": "cakephp-plugin",
+  "homepage": "http://github.com/josegonzalez/cakephp-upload",
   "keywords": [
     "cakephp",
     "upload",
     "files",
     "behavior"
   ],
-  "homepage": "http://github.com/josegonzalez/cakephp-upload",
   "license": "MIT",
   "authors": [
     {
@@ -16,130 +16,26 @@
       "email": "email@josediazgonzalez.com",
       "homepage": "http://josediazgonzalez.com",
       "role": "Maintainer"
-    },
-    {
-      "name": "sdoney",
-      "role": "Contributor",
-      "homepage": "https://github.com/sdoney"
-    },
-    {
-      "name": "Giuliano B",
-      "role": "Contributor",
-      "homepage": "https://github.com/giulianob"
-    },
-    {
-      "name": "Justin Slamka",
-      "role": "Contributor",
-      "homepage": "https://github.com/slamkajs"
-    },
-    {
-      "name": "Nathan Tyler",
-      "role": "Contributor",
-      "homepage": "https://github.com/tylerdigital"
-    },
-    {
-      "name": "Joshua Paling",
-      "role": "Contributor",
-      "homepage": "https://github.com/joshuapaling"
-    },
-    {
-      "name": "Mirko Chialastri",
-      "role": "Contributor",
-      "homepage": "https://github.com/hiryu85"
-    },
-    {
-      "name": "Benjamin Allison",
-      "role": "Contributor",
-      "homepage": "https://github.com/benjaminallison"
-    },
-    {
-      "name": "Ariel Patschiki",
-      "role": "Contributor",
-      "homepage": "https://github.com/arielpts"
-    },
-    {
-      "name": "lucfranken",
-      "role": "Contributor",
-      "homepage": "https://github.com/lucfranken"
-    },
-    {
-      "name": "cpierce",
-      "role": "Contributor",
-      "homepage": "https://github.com/cpierce"
-    },
-    {
-      "name": "Barry Chapman",
-      "role": "Contributor",
-      "homepage": "https://github.com/barrychapman"
-    },
-    {
-      "name": "Thomas Edvalson",
-      "role": "Contributor",
-      "homepage": "https://github.com/Cruel"
-    },
-    {
-      "name": "Alejandro Ibarra",
-      "role": "Contributor",
-      "homepage": "https://github.com/ajibarra"
-    },
-    {
-      "name": "simkimsia",
-      "role": "Contributor",
-      "homepage": "https://github.com/simkimsia"
-    },
-    {
-      "name": "Callum Macdonald",
-      "role": "Contributor",
-      "homepage": "https://github.com/chmac"
-    },
-    {
-      "name": "David Kullmann",
-      "role": "Contributor",
-      "homepage": "https://github.com/dkullmann"
-    },
-    {
-      "name": "Juan Basso",
-      "role": "Contributor",
-      "homepage": "https://github.com/jrbasso"
-    },
-    {
-      "name": "Marc Würth",
-      "role": "Contributor",
-      "homepage": "https://github.com/ravage84"
-    },
-    {
-      "name": "Cauan Cabral",
-      "role": "Contributor",
-      "homepage": "https://github.com/CauanCabral"
-    },
-    {
-      "name": "Bryan Crowe",
-      "role": "Contributor",
-      "homepage": "https://github.com/bcrowe"
-    },
-    {
-      "name": "Simon Brown",
-      "role": "Contributor",
-      "homepage": "https://github.com/Simes"
-    },
-    {
-      "name": "wilsolutions",
-      "role": "Contributor",
-      "homepage": "https://github.com/wilsolutions"
-    },
-    {
-      "name": "Graham Watson",
-      "role": "Contributor",
-      "homepage": "https://github.com/PhantomWatson"
-    },
-    {
-      "name": "ceallred",
-      "role": "Contributor",
-      "homepage": "https://github.com/ceallred"
     }
   ],
   "require": {
-    "composer/installers": "*"
+    "cakephp/cakephp": "~3.0",
+    "league/flysystem": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.33",
+    "friendsofcake/cakephp-test-utilities": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Upload\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Upload\\Test\\": "tests",
+      "Cake\\Test\\Fixture\\": "./vendor/cakephp/cakephp/tests/Fixture"
+    }
   },
   "support": {
     "email": "cakephp+upload@josediazgonzalez.com",
