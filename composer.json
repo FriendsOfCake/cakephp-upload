@@ -1,39 +1,34 @@
 {
-  "name": "josegonzalez/cakephp-upload",
-  "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
-  "type": "cakephp-plugin",
-  "keywords": ["cakephp", "upload", "files", "behavior"],
-  "homepage": "http://github.com/josegonzalez/cakephp-upload",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Jose Diaz-Gonzalez",
-	  "email": "cakephp+upload@josediazgonzalez.com"
+    "name": "josegonzalez/cakephp-upload",
+    "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
+    "type": "cakephp-plugin",
+    "keywords": ["cakephp", "upload", "files", "behavior"],
+    "homepage": "http://github.com/josegonzalez/cakephp-upload",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jose Diaz-Gonzalez",
+            "email": "cakephp+upload@josediazgonzalez.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "cakephp/plugin-installer": "*",
+        "league/flysystem": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.33",
+        "friendsofcake/cakephp-test-utilities": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Josegonzalez\\Upload\\": "src",
+            "Josegonzalez\\Upload\\Test\\Fixture\\": "tests\\Fixture"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Josegonzalez\\Upload\\Test\\": "tests"
+        }
     }
-  ],
-  "require": {
-	"php": ">=5.4.0",
-	"cakephp/plugin-installer": "*",
-    "league/flysystem": "*"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "3.7.33",
-    "friendsofcake/cakephp-test-utilities": "dev-master"
-  },
-  "autoload": {
-    "psr-4": {
-      "Josegonzalez\\Upload\\": "src",
-	  "Josegonzalez\\Upload\\Test\\Fixture\\": "tests\\Fixture"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Josegonzalez\\Upload\\Test\\": "tests"
-    }
-  },
-  "support": {
-    "email": "cakephp+upload@josediazgonzalez.com",
-    "issues": "https://github.com/josegonzalez/cakephp-upload/issues",
-    "source": "https://github.com/josegonzalez/cakephp-upload"
-  }
 }
