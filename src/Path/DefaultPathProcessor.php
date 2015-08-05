@@ -5,13 +5,13 @@ use Cake\Utility\Hash;
 
 class DefaultPathProcessor
 {
-    public function __invoke($entity, $field, $settings)
+    public function __invoke($table, $entity, $field, $settings)
     {
         $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
         $path = Hash::get($settings, 'path', $defaultPath);
         $replacements = array(
-            '{primaryKey}' => $entity->get($this->_table->primaryKey()),
-            '{model}' => $this->_table->alias(),
+            '{primaryKey}' => $entity->get($table->primaryKey()),
+            '{model}' => $table->alias(),
             '{field}' => $field,
             '{time}' => time(),
             '{microtime}' => microtime(),
