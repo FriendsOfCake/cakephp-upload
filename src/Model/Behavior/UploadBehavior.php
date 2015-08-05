@@ -8,7 +8,6 @@ use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use Exception;
 use League\Flysystem\Filesystem;
@@ -137,7 +136,7 @@ class UploadBehavior extends Behavior
 
         $replacements = array(
             '{primaryKey}' => $entity->get($this->_table->primaryKey()),
-            '{model}' => Inflector::underscore($this->_table->alias()),
+            '{model}' => $this->_table->alias(),
             '{field}' => $field,
             '{time}' => time(),
             '{microtime}' => microtime(),
