@@ -50,7 +50,7 @@ class UploadBehavior extends Behavior
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         foreach ($this->config() as $field => $settings) {
-            if (!$this->entityHasFile($entity, $field)) {
+            if (!Hash::get((array)$entity->get($field), 'error') === UPLOAD_ERR_OK) {
                 continue;
             }
 
@@ -168,11 +168,5 @@ class UploadBehavior extends Behavior
             '{DS}' => DIRECTORY_SEPARATOR,
         );
         return str_replace(array_keys($replacements), array_values($replacements), $path);
-    }
-
-    public function entityHasFile(Entity $entity, $field)
-    {
-        $data = $entity->get($field);
-        return is_array($data) && $data['error'] === UPLOAD_ERR_OK;
     }
 }
