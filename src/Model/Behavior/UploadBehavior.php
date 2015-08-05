@@ -133,6 +133,6 @@ class UploadBehavior extends Behavior
         $defaultProcessor = new DefaultPathProcessor;
         $path = Hash::get($settings, 'path', $defaultPath);
         $processor = Hash::get($settings, 'processor', $defaultProcessor);
-        return $path($field, $settings);
+        return $processor($this->_table, $entity, $field, $settings);
     }
 }
