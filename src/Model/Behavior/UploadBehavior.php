@@ -35,7 +35,7 @@ class UploadBehavior extends Behavior
         $validator = $this->_table->validator();
         $collection = new Collection(array_keys($this->config()));
         $collection = $collection->filter(function ($field, $key) use ($validator, $data) {
-            return $validator->isEmptyAllowed($field, false) &&  Hash::get($data, $field . '.error') === UPLOAD_ERR_NO_FILE;
+            return $validator->isEmptyAllowed($field, false) && Hash::get($data, $field . '.error') === UPLOAD_ERR_NO_FILE;
         });
 
         foreach ($collection->toList() as $field) {
