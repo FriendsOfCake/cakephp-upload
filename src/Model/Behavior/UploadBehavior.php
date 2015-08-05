@@ -50,7 +50,7 @@ class UploadBehavior extends Behavior
 
             $data = $entity->get($field);
             $basepath = $this->getBasepath($entity, $field, $settings);
-            $writer = Hash::get($settings, 'writer', new DefaultWriter);
+            $writer = Hash::get($settings, 'handleUploadedFileCallback', new DefaultWriter);
             $files = $this->constructFiles($data, $field, $settings, $basepath);
             $success = $writer($files, $field, $settings);
 
