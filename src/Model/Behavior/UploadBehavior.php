@@ -25,7 +25,9 @@ class UploadBehavior extends Behavior
         // overwrite that pesky schema LIKE A BAWS
         \Cake\Database\Type::map('file', 'Josegonzalez\Upload\Database\Type\FileType');
         $schema = $this->_table->schema();
-        $schema->columnType('photo', 'file');
+        foreach (array_keys($this->config()) as $field) {
+            $schema->columnType($field, 'file');
+        }
         $this->_table->schema($schema);
     }
 
