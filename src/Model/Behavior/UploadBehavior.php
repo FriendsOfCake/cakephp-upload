@@ -82,7 +82,7 @@ class UploadBehavior extends Behavior
     public function getBasepath($entity, $field, $settings)
     {
         $defaultProcessor = new DefaultPathProcessor;
-        $processor = Hash::get($settings, 'processor', $defaultProcessor);
+        $processor = Hash::get($settings, 'pathProcessor', $defaultProcessor);
         return $processor($this->_table, $entity, $field, $settings);
     }
 }
