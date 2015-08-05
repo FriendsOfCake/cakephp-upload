@@ -33,8 +33,11 @@ class UploadBehavior extends Behavior
 
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
+        $validator = $this->_table->validator();
         $collection = new Collection(array_keys($this->config()));
-        $collection = $collection->filter([$this, 'isEmptyAllowed']);
+        $collection = $collection->filter(function ($field, $key) use ($validator) {
+            return $validator->isEmptyAllowed($field, false);
+        });
         $collection = $collection->filter(function ($field, $key) use ($data) {
             return Hash::get($data, $field . '.error') === UPLOAD_ERR_NO_FILE;
         });
@@ -165,12 +168,6 @@ class UploadBehavior extends Behavior
             '{DS}' => DIRECTORY_SEPARATOR,
         );
         return str_replace(array_keys($replacements), array_values($replacements), $path);
-    }
-
-    public function isEmptyAllowed($field, $key)
-    {
-        $validator = $this->_table->validator();
-        return $validator->isEmptyAllowed($field, false);
     }
 
     public function entityHasFile(Entity $entity, $field)
