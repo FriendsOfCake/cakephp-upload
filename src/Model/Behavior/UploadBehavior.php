@@ -72,7 +72,7 @@ class UploadBehavior extends Behavior
 
     public function getFilename($data, $settings)
     {
-        $processor = Hash::get($settings, 'filename', null);
+        $processor = Hash::get($settings, 'nameCallback', null);
         if (is_callable($processor)) {
             return $processor($data, $settings);
         }
