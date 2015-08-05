@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Exception;
+use Josegonzalez\Upload\Path\DefaultPathProcessor;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
@@ -129,19 +130,9 @@ class UploadBehavior extends Behavior
     public function getBasepath($entity, $field, $settings)
     {
         $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
+        $defaultProcessor = new DefaultPathProcessor;
         $path = Hash::get($settings, 'path', $defaultPath);
-        if (is_callable($path)) {
-            return $path($field, $settings);
-        }
-
-        $replacements = array(
-            '{primaryKey}' => $entity->get($this->_table->primaryKey()),
-            '{model}' => $this->_table->alias(),
-            '{field}' => $field,
-            '{time}' => time(),
-            '{microtime}' => microtime(),
-            '{DS}' => DIRECTORY_SEPARATOR,
-        );
-        return str_replace(array_keys($replacements), array_values($replacements), $path);
+        $processor = Hash::get($settings, 'processor', $defaultProcessor);
+        return $path($field, $settings);
     }
 }
