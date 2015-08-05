@@ -165,11 +165,7 @@ class UploadBehavior extends Behavior
             '{microtime}' => microtime(),
             '{DS}' => DIRECTORY_SEPARATOR,
         );
-        return str_replace(
-            array_keys($replacements),
-            array_values($replacements),
-            $path
-        );
+        return str_replace(array_keys($replacements), array_values($replacements), $path);
     }
 
     public function isEmptyAllowed($field, $key)
