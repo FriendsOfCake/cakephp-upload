@@ -16,10 +16,9 @@ class DefaultWriter
         foreach ($files as $file => $path) {
             $success[] = $this->writeFile($filesystem, $file, $path);
         }
-        
+
         return true;
     }
-
 
     public function writeFile($filesystem, $file, $path)
     {
