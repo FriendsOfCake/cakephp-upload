@@ -113,10 +113,9 @@ class UploadBehavior extends Behavior
 
     public function getFilesystem($field, array $settings = [])
     {
-        $adapter = Hash::get($settings, 'adapter');
-        if ($adapter === null) {
-            $adapter = new Local(Hash::get($settings, 'rootDir', ROOT . DS));
-        } elseif (is_callable($adapter)) {
+        $adapter = new Local(Hash::get($settings, 'rootDir', ROOT . DS));
+        $adapter = Hash::get($settings, 'adapter', $adapter);
+        if (is_callable($adapter)) {
             $adapter = $adapter();
         }
 
