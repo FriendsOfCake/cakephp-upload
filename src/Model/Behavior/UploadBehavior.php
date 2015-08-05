@@ -114,9 +114,6 @@ class UploadBehavior extends Behavior
 
     public function getFilesystem($field, array $settings = [])
     {
-        $filesystemOptions = Hash::get($settings, 'filesystemOptions', [
-            'visibility' => AdapterInterface::VISIBILITY_PRIVATE
-        ]);
         $adapter = Hash::get($settings, 'adapter');
         if ($adapter === null) {
             $adapter = new Local(Hash::get($settings, 'rootDir', ROOT . DS));
@@ -125,7 +122,9 @@ class UploadBehavior extends Behavior
         }
 
         if ($adapter instanceof AdapterInterface) {
-            return new Filesystem($adapter, $filesystemOptions);
+            return new Filesystem($adapter, Hash::get($settings, 'filesystemOptions', [
+                'visibility' => AdapterInterface::VISIBILITY_PRIVATE
+            ]));
         }
 
         throw new Exception(sprintf("Invalid Adapter for field %s", $field));
