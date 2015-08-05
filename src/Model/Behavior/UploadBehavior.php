@@ -20,7 +20,7 @@ class UploadBehavior extends Behavior
     public function initialize(array $config)
     {
         $this->_config = [];
-        $this->config($this->normalizeArray($config));
+        $this->config(Hash::normalize($config));
 
         \Cake\Database\Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
         $schema = $this->_table->schema();
@@ -95,20 +95,6 @@ class UploadBehavior extends Behavior
         } catch (FileNotFoundException $e) {
             // TODO: log this?
         }
-    }
-
-    public function normalizeArray(array $objects)
-    {
-        $normal = [];
-        foreach ($objects as $name => $config) {
-            if (is_int($name)) {
-                $name = $config;
-                $config = [];
-            }
-
-            $normal[$name] = $config;
-        }
-        return $normal;
     }
 
     public function getFilesystem($field, array $settings = [])
