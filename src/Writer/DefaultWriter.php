@@ -1,5 +1,5 @@
 <?php
-namespace Josegonzalez\Upload\Filesystem;
+namespace Josegonzalez\Upload\Writer;
 
 use Cake\Utility\Hash;
 use Exception;
@@ -7,7 +7,7 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FileNotFoundException;
 
-class DefaultFilesystem
+class DefaultWriter
 {
     public function __invoke($files, $field, $settings)
     {
