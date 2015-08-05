@@ -69,20 +69,15 @@ class UploadBehavior extends Behavior
 
     public function writeFile($filesystem, $file, $path)
     {
-        // TODO: Handle race conditions?
         $success = false;
         $stream = fopen($file, 'r+');
-        if ($filesystem->has($path)) {
-            $tempPath = $path . '.temp';
-            $this->deletePath($filesystem, $tempPath);
-            if ($filesystem->writeStream($tempPath, $stream)) {
-                $this->deletePath($filesystem, $path);
-                $success = $filesystem->rename($tempPath, $path);
-            }
-            $this->deletePath($filesystem, $tempPath);
-        } else {
-            $success = $filesystem->writeStream($path, $stream);
+        $tempPath = $path . '.temp';
+        $this->deletePath($filesystem, $tempPath);
+        if ($filesystem->writeStream($tempPath, $stream)) {
+            $this->deletePath($filesystem, $path);
+            $success = $filesystem->rename($tempPath, $path);
         }
+        $this->deletePath($filesystem, $tempPath);
         fclose($stream);
         return $success;
     }
