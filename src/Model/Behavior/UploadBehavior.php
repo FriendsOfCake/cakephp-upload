@@ -63,10 +63,7 @@ class UploadBehavior extends Behavior
             }
 
             $entity->set($field, $data['name']);
-            $dirField = Hash::get($settings, 'fields.dir', null);
-            if ($dirField) {
-                $entity->set($dirField, $basepath);
-            }
+            $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
         }
 
         return true;
