@@ -3,6 +3,7 @@ namespace Josegonzalez\Upload\Writer;
 
 use Cake\Utility\Hash;
 use Exception;
+use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\FileNotFoundException;
@@ -60,5 +61,4 @@ class DefaultWriter
 
         throw new Exception(sprintf("Invalid Adapter for field %s", $field));
     }
-
 }
