@@ -46,7 +46,7 @@ class UploadBehavior extends Behavior
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         foreach ($this->config() as $field => $settings) {
-            if (!Hash::get((array)$entity->get($field), 'error') === UPLOAD_ERR_OK) {
+            if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
                 continue;
             }
 
