@@ -3,10 +3,10 @@ namespace Josegonzalez\Upload\Writer;
 
 use Cake\Utility\Hash;
 use Exception;
-use League\Flysystem\Filesystem;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
+use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileNotFoundException;
+use League\Flysystem\Filesystem;
 
 class DefaultWriter
 {
