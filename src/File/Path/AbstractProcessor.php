@@ -1,11 +1,11 @@
 <?php
-namespace Josegonzalez\Upload\Path;
+namespace Josegonzalez\Upload\File\Path;
 
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
-abstract class AbstractPathProcessor
+abstract class AbstractProcessor
 {
     /**
      * Table instance.

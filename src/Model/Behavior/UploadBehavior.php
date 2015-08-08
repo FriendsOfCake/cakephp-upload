@@ -10,8 +10,8 @@ use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Exception;
-use Josegonzalez\Upload\Path\DefaultPathProcessor;
-use Josegonzalez\Upload\Writer\DefaultWriter;
+use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
+use Josegonzalez\Upload\File\Writer\DefaultWriter;
 
 class UploadBehavior extends Behavior
 {
@@ -74,7 +74,7 @@ class UploadBehavior extends Behavior
 
             $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
-            $files = $this->constructFiles($data, $field, $settings, $path->basepath());
+            $files = $this->constructFiles($entity, $data, $field, $settings, $path->basepath());
             $writer = Hash::get($settings, 'handleUploadedFileCallback', new DefaultWriter);
             $success = $writer($files, $field, $settings);
 
@@ -85,20 +85,51 @@ class UploadBehavior extends Behavior
         }
     }
 
-    public function constructFiles($data, $field, $settings, $basepath)
+    /**
+     * Creates a set of files from the initial data and returns them as key/value
+     * pairs, where the path on disk maps to name which each file should have.
+     * This is done through an intermediate transformer, which should return
+     * said array. Example:
+     *
+     *   [
+     *     '/tmp/path/to/file/on/disk' => 'file.pdf',
+     *     '/tmp/path/to/file/on/disk-2' => 'file-preview.png',
+     *   ]
+     *
+     * A user can specify a callable in the `transformer` setting, which can be
+     * used to construct this key/value array. This processor can be used to
+     * create the source files.
+     *
+     * @param array  $data the data being submitted for a save
+     * @param string $field the field for which data will be saved
+     * @param array  $settings the settings for the current field
+     * @return array key/value pairs of temp files mapping to their names
+     */
+    public function constructFiles($entity, $data, $field, $settings, $basepath)
     {
-        $processor = Hash::get($settings, 'processor', null);
-        if (is_callable($processor)) {
-            return $processor($data, $field, $settings, $basepath);
+        $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
+        $transformerClass = Hash::get($settings, 'transformer', $default);
+        $transformer = new $transformerClass;
+        $results = $transformer($this->_table, $entity, $data, $field, $settings);
+        foreach ($results as $key => $value) {
+            $results[$key] = $basepath . '/' . $value;
         }
-        return [$data['tmp_name'] => $basepath . '/' . $data['name']];
+        return $results;
     }
 
+    /**
+     * Retrieves an instance of a path processor which knows how to build paths
+     * for a given file upload
+     *
+     * @param array  $data the data being submitted for a save
+     * @param string $field the field for which data will be saved
+     * @param array  $settings the settings for the current field
+     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
+     */
     public function getPathProcessor($entity, $data, $field, $settings)
     {
-        $default = 'Josegonzalez\Upload\Path\DefaultPathProcessor';
-        $pathProcessor = Hash::get($settings, 'pathProcessor', $default);
-        return new $pathProcessor($this->_table, $entity, $data, $field, $settings);
-
+        $default = 'Josegonzalez\Upload\File\Path\DefaultProcessor';
+        $processor = Hash::get($settings, 'pathProcessor', $default);
+        return new $processor($this->_table, $entity, $data, $field, $settings);
     }
 }

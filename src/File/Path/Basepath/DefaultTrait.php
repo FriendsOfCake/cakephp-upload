@@ -1,5 +1,5 @@
 <?php
-namespace Josegonzalez\Upload\Path\Basepath;
+namespace Josegonzalez\Upload\File\Path\Basepath;
 
 use Cake\Utility\Hash;
 use LogicException;

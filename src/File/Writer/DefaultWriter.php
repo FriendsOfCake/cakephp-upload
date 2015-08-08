@@ -1,5 +1,5 @@
 <?php
-namespace Josegonzalez\Upload\Writer;
+namespace Josegonzalez\Upload\File\Writer;
 
 use Cake\Utility\Hash;
 use Exception;
