@@ -38,9 +38,10 @@ class UploadBehavior extends Behavior
     /**
      * Modifies the data being marshalled to ensure invalid upload data is not inserted
      *
-     * @param Event $event
-     * @param ArrayObject $data
-     * @param ArrayObject $options
+     * @param Event       $event an event instance
+     * @param ArrayObject $data data being marshalled
+     * @param ArrayObject $options options for the current event
+     * @return void
      */
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {

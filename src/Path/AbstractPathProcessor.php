@@ -45,11 +45,11 @@ abstract class AbstractPathProcessor
     /**
      * Constructor.
      *
-     * @param \Cake\ORM\Table        $table
-     * @param \Cake\ORM\Entity       $entity
-     * @param array                  $data
-     * @param string                 $field
-     * @param array                  $settings
+     * @param \Cake\ORM\Table  $table the instance managing the entity
+     * @param \Cake\ORM\Entity $entity the entity to construct a path for.
+     * @param array            $data the data being submitted for a save
+     * @param string           $field the field for which data will be saved
+     * @param array            $settings the settings for the current field
      */
     public function __construct(Table $table, Entity $entity, $data, $field, $settings)
     {
