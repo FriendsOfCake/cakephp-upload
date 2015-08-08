@@ -15,6 +15,13 @@ use Josegonzalez\Upload\Writer\DefaultWriter;
 
 class UploadBehavior extends Behavior
 {
+
+    /**
+     * Initialize hook
+     *
+     * @param array $config The config for this behavior.
+     * @return void
+     */
     public function initialize(array $config)
     {
         $this->_config = [];
@@ -41,6 +48,15 @@ class UploadBehavior extends Behavior
         }
     }
 
+    /**
+     * Modifies the entity before it is saved so that uploaded file data is persisted
+     * in the database too.
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\ORM\Entity $entity The entity that is going to be saved
+     * @param \ArrayObject $options the options passed to the save method
+     * @return void
+     */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         foreach ($this->config() as $field => $settings) {
@@ -59,8 +75,6 @@ class UploadBehavior extends Behavior
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
-
-        return true;
     }
 
     public function constructFiles($data, $field, $settings, $basepath)
