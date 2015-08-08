@@ -35,6 +35,13 @@ class UploadBehavior extends Behavior
         $this->_table->schema($schema);
     }
 
+    /**
+     * Modifies the data being marshalled to ensure invalid upload data is not inserted
+     *
+     * @param Event $event
+     * @param ArrayObject $data
+     * @param ArrayObject $options
+     */
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
         $validator = $this->_table->validator();
@@ -65,13 +72,13 @@ class UploadBehavior extends Behavior
             }
 
             $data = $entity->get($field);
-            $basepath = $this->getBasepath($entity, $field, $settings);
+            $path = $this->getPathProcessor($entity, $data, $field, $settings);
+            $files = $this->constructFiles($data, $field, $settings, $path->basepath());
             $writer = Hash::get($settings, 'handleUploadedFileCallback', new DefaultWriter);
-            $files = $this->constructFiles($data, $field, $settings, $basepath);
             $success = $writer($files, $field, $settings);
 
-            $entity->set($field, $this->getFilename($data, $settings));
-            $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
+            $entity->set($field, $path->filename());
+            $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $path->basepath());
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
@@ -86,19 +93,11 @@ class UploadBehavior extends Behavior
         return [$data['tmp_name'] => $basepath . '/' . $data['name']];
     }
 
-    public function getFilename($data, $settings)
+    public function getPathProcessor($entity, $data, $field, $settings)
     {
-        $processor = Hash::get($settings, 'nameCallback', null);
-        if (is_callable($processor)) {
-            return $processor($data, $settings);
-        }
-        return $data['name'];
-    }
+        $default = 'Josegonzalez\Upload\Path\DefaultPathProcessor';
+        $pathProcessor = Hash::get($settings, 'pathProcessor', $default);
+        return new $pathProcessor($this->_table, $entity, $data, $field, $settings);
 
-    public function getBasepath($entity, $field, $settings)
-    {
-        $defaultProcessor = new DefaultPathProcessor;
-        $processor = Hash::get($settings, 'pathProcessor', $defaultProcessor);
-        return $processor($this->_table, $entity, $field, $settings);
     }
 }
