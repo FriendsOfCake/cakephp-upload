@@ -3,9 +3,8 @@ namespace Josegonzalez\Upload\File\Transformer;
 
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
-use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
-class DefaultTransformer implements TransformerInterface
+interface TransformerInterface
 {
     /**
      * Simply returns the data array with no extra modifications
@@ -16,8 +15,5 @@ class DefaultTransformer implements TransformerInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __invoke(Table $table, Entity $entity, $data, $field, $settings)
-    {
-        return [$data['tmp_name'] => $data['name']];
-    }
+    public function __invoke(Table $table, Entity $entity, $data, $field, $settings);
 }

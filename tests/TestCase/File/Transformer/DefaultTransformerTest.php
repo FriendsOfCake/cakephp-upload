@@ -5,9 +5,16 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
+use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
 class DefaultTransformerTest extends TestCase
 {
+    public function testIsProcessorInterface()
+    {
+        $transformer = new DefaultTransformer;
+        $this->assertInstanceOf('Josegonzalez\Upload\File\Transformer\TransformerInterface', $transformer);
+    }
+
     public function testInvoke()
     {
         $entity = $this->getMock('Cake\ORM\Entity');
