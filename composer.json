@@ -14,7 +14,8 @@
     "require": {
         "php": ">=5.4.0",
         "cakephp/plugin-installer": "*",
-        "league/flysystem": "*"
+        "league/flysystem": "*",
+        "mikey179/vfsStream": "~1.0"
     },
     "require-dev": {
         "cakephp/cakephp": "3.0.*-dev",
