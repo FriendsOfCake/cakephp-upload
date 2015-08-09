@@ -75,8 +75,10 @@ class UploadBehavior extends Behavior
             $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $files = $this->constructFiles($entity, $data, $field, $settings, $path->basepath());
-            $writer = Hash::get($settings, 'handleUploadedFileCallback', new DefaultWriter);
-            $success = $writer($files, $field, $settings);
+
+            $writerClass = Hash::get($settings, 'writer', 'Josegonzalez\Upload\File\Writer\DefaultWriter');
+            $writer = new $writerClass($this->_table, $entity, $data, $field, $settings);
+            $success = $writer->write($files);
 
             $entity->set($field, $path->filename());
             $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $path->basepath());
@@ -100,17 +102,19 @@ class UploadBehavior extends Behavior
      * used to construct this key/value array. This processor can be used to
      * create the source files.
      *
+     * @param \Cake\ORM\Entity $entity an entity
      * @param array  $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array  $settings the settings for the current field
+     * @param string $basepath a basepath where the files are written to
      * @return array key/value pairs of temp files mapping to their names
      */
     public function constructFiles($entity, $data, $field, $settings, $basepath)
     {
         $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
         $transformerClass = Hash::get($settings, 'transformer', $default);
-        $transformer = new $transformerClass;
-        $results = $transformer($this->_table, $entity, $data, $field, $settings);
+        $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
+        $results = $transformer->transform();
         foreach ($results as $key => $value) {
             $results[$key] = $basepath . '/' . $value;
         }
@@ -121,6 +125,7 @@ class UploadBehavior extends Behavior
      * Retrieves an instance of a path processor which knows how to build paths
      * for a given file upload
      *
+     * @param \Cake\ORM\Entity $entity an entity
      * @param array  $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array  $settings the settings for the current field
@@ -129,7 +134,7 @@ class UploadBehavior extends Behavior
     public function getPathProcessor($entity, $data, $field, $settings)
     {
         $default = 'Josegonzalez\Upload\File\Path\DefaultProcessor';
-        $processor = Hash::get($settings, 'pathProcessor', $default);
-        return new $processor($this->_table, $entity, $data, $field, $settings);
+        $processorClass = Hash::get($settings, 'pathProcessor', $default);
+        return new $processorClass($this->_table, $entity, $data, $field, $settings);
     }
 }

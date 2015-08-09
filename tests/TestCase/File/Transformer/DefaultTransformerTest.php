@@ -9,24 +9,28 @@ use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
 class DefaultTransformerTest extends TestCase
 {
-    public function testIsProcessorInterface()
-    {
-        $transformer = new DefaultTransformer;
-        $this->assertInstanceOf('Josegonzalez\Upload\File\Transformer\TransformerInterface', $transformer);
-    }
-
-    public function testInvoke()
+    public function setup()
     {
         $entity = $this->getMock('Cake\ORM\Entity');
         $table = $this->getMock('Cake\ORM\Table');
         $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $field = 'field';
         $settings = [];
+        $this->transformer = new DefaultTransformer($table, $entity, $data, $field, $settings);
+    }
 
-        $expected = ['path/to/file' => 'foo.txt'];
+    public function teardown()
+    {
+        unset($this->transformer);
+    }
 
-        $transformer = new DefaultTransformer;
-        $this->assertEquals($expected, $transformer->__invoke($table, $entity, $data, $field, $settings));
-        $this->assertEquals($expected, $transformer($table, $entity, $data, $field, $settings));
+    public function testIsProcessorInterface()
+    {
+        $this->assertInstanceOf('Josegonzalez\Upload\File\Transformer\TransformerInterface', $this->transformer);
+    }
+
+    public function testTransform()
+    {
+        $this->assertEquals(['path/to/file' => 'foo.txt'], $this->transformer->transform());
     }
 }

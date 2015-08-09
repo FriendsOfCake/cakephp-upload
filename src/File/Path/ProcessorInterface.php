@@ -7,7 +7,7 @@ use Cake\ORM\Table;
 interface ProcessorInterface
 {
     /**
-     * Constructor.
+     * Constructor
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
      * @param \Cake\ORM\Entity $entity the entity to construct a path for.
