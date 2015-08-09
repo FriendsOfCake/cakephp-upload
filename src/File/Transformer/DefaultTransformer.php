@@ -19,5 +19,4 @@ class DefaultTransformer
     {
         return [$data['tmp_name'] => $data['name']];
     }
-
 }
