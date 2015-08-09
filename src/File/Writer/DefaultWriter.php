@@ -35,7 +35,6 @@ class DefaultWriter
      * @param League\Flysystem\FilesystemInterface $filesystem a filesystem wrapper
      * @param string $file a full path to a temp file
      * @param string $path that path to which the file should be written
-     * @param array $settings the settings for the current field
      * @return bool
      */
     public function writeFile(FilesystemInterface $filesystem, $file, $path)
@@ -58,7 +57,6 @@ class DefaultWriter
      *
      * @param League\Flysystem\FilesystemInterface $filesystem a filesystem writer
      * @param string $path the path that should be deleted
-     * @param array $settings the settings for the current field
      * @return void
      */
     public function deletePath(FilesystemInterface $filesystem, $path)
