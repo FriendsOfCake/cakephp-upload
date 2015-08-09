@@ -12,6 +12,7 @@ use Cake\Validation\Validator;
 use Exception;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
+use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
 {
@@ -76,8 +77,7 @@ class UploadBehavior extends Behavior
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $files = $this->constructFiles($entity, $data, $field, $settings, $path->basepath());
 
-            $writerClass = Hash::get($settings, 'writer', 'Josegonzalez\Upload\File\Writer\DefaultWriter');
-            $writer = new $writerClass($this->_table, $entity, $data, $field, $settings);
+            $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
 
             $entity->set($field, $path->filename());
@@ -85,6 +85,54 @@ class UploadBehavior extends Behavior
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
+    }
+
+    /**
+     * Retrieves an instance of a path processor which knows how to build paths
+     * for a given file upload
+     *
+     * @param \Cake\ORM\Entity $entity an entity
+     * @param array  $data the data being submitted for a save
+     * @param string $field the field for which data will be saved
+     * @param array  $settings the settings for the current field
+     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
+     */
+    public function getPathProcessor(Entity $entity, $data, $field, $settings)
+    {
+        $default = 'Josegonzalez\Upload\File\Path\DefaultProcessor';
+        $processorClass = Hash::get($settings, 'pathProcessor', $default);
+        if (is_subclass_of($processorClass, 'Josegonzalez\Upload\File\Path\ProcessorInterface')) {
+            return new $processorClass($this->_table, $entity, $data, $field, $settings);
+        }
+
+        throw new UnexpectedValueException(sprintf(
+            "'pathProcessor' not set to instance of ProcessorInterface: %s",
+            $processorClass
+        ));
+    }
+
+
+    /**
+     * Retrieves an instance of a file writer which knows how to write files to disk
+     *
+     * @param \Cake\ORM\Entity $entity an entity
+     * @param array  $data the data being submitted for a save
+     * @param string $field the field for which data will be saved
+     * @param array  $settings the settings for the current field
+     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
+     */
+    public function getWriter(Entity $entity, $data, $field, $settings)
+    {
+        $default = 'Josegonzalez\Upload\File\Writer\DefaultWriter';
+        $writerClass = Hash::get($settings, 'writer', $default);
+        if (is_subclass_of($writerClass, 'Josegonzalez\Upload\File\Writer\WriterInterface')) {
+            return new $writerClass($this->_table, $entity, $data, $field, $settings);
+        }
+
+        throw new UnexpectedValueException(sprintf(
+            "'writer' not set to instance of WriterInterface: %s",
+            $writerClass
+        ));
     }
 
     /**
@@ -109,32 +157,22 @@ class UploadBehavior extends Behavior
      * @param string $basepath a basepath where the files are written to
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function constructFiles($entity, $data, $field, $settings, $basepath)
+    public function constructFiles(Entity $entity, $data, $field, $settings, $basepath)
     {
         $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
         $transformerClass = Hash::get($settings, 'transformer', $default);
+        if (!is_subclass_of($transformerClass, 'Josegonzalez\Upload\File\Transformer\TransformerInterface')) {
+            throw new UnexpectedValueException(sprintf(
+                "'transformer' not set to instance of TransformerInterface: %s",
+                $transformerClass
+            ));
+        }
+
         $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
         $results = $transformer->transform();
         foreach ($results as $key => $value) {
             $results[$key] = $basepath . '/' . $value;
         }
         return $results;
-    }
-
-    /**
-     * Retrieves an instance of a path processor which knows how to build paths
-     * for a given file upload
-     *
-     * @param \Cake\ORM\Entity $entity an entity
-     * @param array  $data the data being submitted for a save
-     * @param string $field the field for which data will be saved
-     * @param array  $settings the settings for the current field
-     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
-     */
-    public function getPathProcessor($entity, $data, $field, $settings)
-    {
-        $default = 'Josegonzalez\Upload\File\Path\DefaultProcessor';
-        $processorClass = Hash::get($settings, 'pathProcessor', $default);
-        return new $processorClass($this->_table, $entity, $data, $field, $settings);
     }
 }
