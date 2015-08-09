@@ -7,7 +7,7 @@ use Josegonzalez\Upload\File\Path\ProcessorInterface;
 
 class DefaultProcessorTest extends TestCase
 {
-    public function testInvoke()
+    public function testIsProcessorInterface()
     {
         $table = $this->getMock('Cake\ORM\Table');
         $entity = $this->getMock('Cake\ORM\Entity');

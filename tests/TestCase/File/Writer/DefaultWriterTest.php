@@ -19,6 +19,12 @@ class DefaultWriterTest extends TestCase
         $this->root = vfsStream::setup('root', null, ['file.txt' => 'content']);
     }
 
+    public function testIsWriterInterface()
+    {
+        $writer = new DefaultWriter;
+        $this->assertInstanceOf('Josegonzalez\Upload\File\Writer\WriterInterface', $writer);
+    }
+
     public function testInvoke()
     {
         $writer = new DefaultWriter;
