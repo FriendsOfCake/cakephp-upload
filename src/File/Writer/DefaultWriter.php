@@ -19,7 +19,7 @@ class DefaultWriter implements WriterInterface
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      */
-    public function __invoke($files = [], $field, $settings)
+    public function __invoke(array $files, $field, $settings)
     {
         $filesystem = $this->getFilesystem($field, $settings);
         $results = [];
@@ -62,7 +62,7 @@ class DefaultWriter implements WriterInterface
      *
      * @param League\Flysystem\FilesystemInterface $filesystem a filesystem writer
      * @param string $path the path that should be deleted
-     * @return boolean
+     * @return bool
      */
     public function deletePath(FilesystemInterface $filesystem, $path)
     {

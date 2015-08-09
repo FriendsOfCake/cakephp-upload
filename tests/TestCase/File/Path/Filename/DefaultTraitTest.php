@@ -24,7 +24,7 @@ class DefaultTraitTest extends TestCase
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->settings = [
-            'nameCallback' => function($data, $settings) {
+            'nameCallback' => function ($data, $settings) {
                 return $data;
             },
         ];

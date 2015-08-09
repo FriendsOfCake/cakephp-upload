@@ -90,7 +90,7 @@ class DefaultWriterTest extends TestCase
         ]));
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $writer->getFilesystem('field', [
             'filesystem' => [
-                'adapter' => function() {
+                'adapter' => function () {
                     return new NullAdapter;
                 },
             ]
@@ -99,9 +99,7 @@ class DefaultWriterTest extends TestCase
 
     public function testGetFilesystemUnexpectedValueException()
     {
-        $this->setExpectedException(
-          'UnexpectedValueException', 'Invalid Adapter for field field'
-        );
+        $this->setExpectedException('UnexpectedValueException', 'Invalid Adapter for field field');
 
         $writer = new DefaultWriter;
         $writer->getFilesystem('field', [

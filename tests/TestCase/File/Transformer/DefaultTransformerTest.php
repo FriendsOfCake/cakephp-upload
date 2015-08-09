@@ -22,5 +22,4 @@ class DefaultTransformerTest extends TestCase
         $this->assertEquals($expected, $transformer->__invoke($table, $entity, $data, $field, $settings));
         $this->assertEquals($expected, $transformer($table, $entity, $data, $field, $settings));
     }
-
 }

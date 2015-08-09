@@ -50,11 +50,9 @@ class DefaultTraitTest extends TestCase
         $this->assertEquals('webroot/files/Table-field/1/', $mock->basepath());
     }
 
-    public function testNewEntityWithPrimaryKey()
+    public function testNewEntity()
     {
-        $this->setExpectedException(
-            'LogicException', '{primaryKey} substitution not allowed for new entities'
-        );
+        $this->setExpectedException('LogicException', '{primaryKey} substitution not allowed for new entities');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMock('Cake\ORM\Entity');
@@ -68,9 +66,7 @@ class DefaultTraitTest extends TestCase
 
     public function testExitingEntityWithCompositePrimaryKey()
     {
-        $this->setExpectedException(
-            'LogicException', '{primaryKey} substitution not valid for composite primary keys'
-        );
+        $this->setExpectedException('LogicException', '{primaryKey} substitution not valid for composite primary keys');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMock('Cake\ORM\Entity');
