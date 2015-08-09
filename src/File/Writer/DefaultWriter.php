@@ -2,6 +2,7 @@
 namespace Josegonzalez\Upload\File\Writer;
 
 use Cake\Utility\Hash;
+use Josegonzalez\Upload\File\Writer\WriterInterface;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileNotFoundException;
@@ -9,7 +10,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use UnexpectedValueException;
 
-class DefaultWriter
+class DefaultWriter implements WriterInterface
 {
     /**
      * Writes a set of files to an output
@@ -18,15 +19,15 @@ class DefaultWriter
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      */
-    public function __invoke($files, $field, $settings)
+    public function __invoke($files = [], $field, $settings)
     {
         $filesystem = $this->getFilesystem($field, $settings);
-        $success = [];
+        $results = [];
         foreach ($files as $file => $path) {
-            $success[] = $this->writeFile($filesystem, $file, $path);
+            $results[] = $this->writeFile($filesystem, $file, $path);
         }
 
-        return true;
+        return $results;
     }
 
     /**
@@ -39,8 +40,12 @@ class DefaultWriter
      */
     public function writeFile(FilesystemInterface $filesystem, $file, $path)
     {
+        $stream = @fopen($file, 'r');
+        if ($stream === false) {
+            return false;
+        }
+
         $success = false;
-        $stream = fopen($file, 'r+');
         $tempPath = $path . '.temp';
         $this->deletePath($filesystem, $tempPath);
         if ($filesystem->writeStream($tempPath, $stream)) {
@@ -57,15 +62,17 @@ class DefaultWriter
      *
      * @param League\Flysystem\FilesystemInterface $filesystem a filesystem writer
      * @param string $path the path that should be deleted
-     * @return void
+     * @return boolean
      */
     public function deletePath(FilesystemInterface $filesystem, $path)
     {
+        $success = false;
         try {
-            $filesystem->delete($path);
+            $success = $filesystem->delete($path);
         } catch (FileNotFoundException $e) {
             // TODO: log this?
         }
+        return $success;
     }
 
     /**
@@ -77,14 +84,14 @@ class DefaultWriter
      */
     public function getFilesystem($field, array $settings = [])
     {
-        $adapter = new Local(Hash::get($settings, 'rootDir', ROOT . DS));
-        $adapter = Hash::get($settings, 'adapter', $adapter);
+        $adapter = new Local(Hash::get($settings, 'filesystem.root', ROOT . DS));
+        $adapter = Hash::get($settings, 'filesystem.adapter', $adapter);
         if (is_callable($adapter)) {
             $adapter = $adapter();
         }
 
         if ($adapter instanceof AdapterInterface) {
-            return new Filesystem($adapter, Hash::get($settings, 'filesystemOptions', [
+            return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
                 'visibility' => AdapterInterface::VISIBILITY_PRIVATE
             ]));
         }
