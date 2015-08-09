@@ -30,6 +30,15 @@ class DefaultWriterTest extends TestCase
         $this->assertEquals([false], $writer->__invoke([
             vfsStream::url('root/invalid.txt') => 'file.txt'
         ], 'field', ['filesystem.adapter' => new NullAdapter]));
+
+        $this->assertEquals([], $writer([], 'field', []));
+        $this->assertEquals([true], $writer([
+            vfsStream::url('root/file.txt') => 'file.txt'
+        ], 'field', []));
+
+        $this->assertEquals([false], $writer([
+            vfsStream::url('root/invalid.txt') => 'file.txt'
+        ], 'field', ['filesystem.adapter' => new NullAdapter]));
     }
 
     public function testWriteFile()
