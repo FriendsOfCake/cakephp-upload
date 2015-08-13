@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use Exception;
+use Josegonzalez\Upload\File\Path\DefaultProcessor;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use UnexpectedValueException;
@@ -64,7 +65,7 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\ORM\Entity $entity The entity that is going to be saved
      * @param \ArrayObject $options the options passed to the save method
-     * @return void
+     * @return bool
      */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -80,11 +81,16 @@ class UploadBehavior extends Behavior
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
 
+            if (!$success) {
+                return false;
+            }
+
             $entity->set($field, $path->filename());
             $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $path->basepath());
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
+        return true;
     }
 
     /**

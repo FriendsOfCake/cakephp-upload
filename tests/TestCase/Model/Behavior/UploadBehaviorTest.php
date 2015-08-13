@@ -1,6 +1,10 @@
 <?php
 namespace Josegonzalez\Upload\Test\TestCase\Model\Behavior;
 
+use ArrayObject;
+use Cake\Event\Event;
+use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 
@@ -10,7 +14,31 @@ class UploadBehaviorTest extends TestCase
     {
         $this->entity = $this->getMock('Cake\ORM\Entity');
         $this->table = $this->getMock('Cake\ORM\Table');
+        $this->dataOk = [
+            'field' => [
+                'tmp_name' => 'path/to/file',
+                'name' => 'derp',
+                'error' => UPLOAD_ERR_OK,
+                'size' => 1,
+                'type' => 'text',
+            ]
+        ];
+        $this->dataError = [
+            'field' => [
+                'tmp_name' => 'path/to/file',
+                'name' => 'derp',
+                'error' => UPLOAD_ERR_NO_FILE,
+                'size' => 0,
+                'type' => '',
+            ]
+        ];
+        $this->field = 'field';
+        $this->settings = ['field' => []];
+
         $this->behavior = new UploadBehavior($this->table, []);
+        $this->processor = $this->getMock('Josegonzalez\Upload\File\Path\DefaultProcessor', [], [$this->table, $this->entity, $this->dataOk, $this->field, $this->settings]);
+        $this->writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', [], [$this->table, $this->entity, $this->dataOk, $this->field, $this->settings]);
+        $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
     }
 
     public function testInitialize()
@@ -21,8 +49,66 @@ class UploadBehaviorTest extends TestCase
     {
     }
 
-    public function testBeforeSave()
+    public function testBeforeSaveUploadError()
     {
+        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior->config($this->settings);
+        $this->entity->expects($this->any())
+                     ->method('get')
+                     ->with('field')
+                     ->will($this->returnValue($this->dataError['field']));
+         $this->assertTrue($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
+    public function testBeforeSaveWriteFail()
+    {
+        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior->config($this->settings);
+        $this->entity->expects($this->any())
+                     ->method('get')
+                     ->with('field')
+                     ->will($this->returnValue($this->dataOk['field']));
+        $behavior->expects($this->any())
+                 ->method('getPathProcessor')
+                 ->will($this->returnValue($this->processor));
+        $behavior->expects($this->any())
+                 ->method('getWriter')
+                 ->will($this->returnValue($this->writer));
+        $behavior->expects($this->any())
+                 ->method('constructFiles')
+                 ->will($this->returnValue([]));
+        $this->writer->expects($this->any())
+                     ->method('write')
+                     ->will($this->returnValue(false));
+
+        $this->assertFalse($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
+    public function testBeforeSaveOk()
+    {
+        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior->config($this->settings);
+        $this->entity->expects($this->any())
+                     ->method('get')
+                     ->with('field')
+                     ->will($this->returnValue($this->dataOk['field']));
+        $behavior->expects($this->any())
+                 ->method('getPathProcessor')
+                 ->will($this->returnValue($this->processor));
+        $behavior->expects($this->any())
+                 ->method('getWriter')
+                 ->will($this->returnValue($this->writer));
+        $behavior->expects($this->any())
+                 ->method('constructFiles')
+                 ->will($this->returnValue([]));
+        $this->writer->expects($this->any())
+                     ->method('write')
+                     ->will($this->returnValue(true));
+
+        $this->assertTrue($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testGetWriter()
