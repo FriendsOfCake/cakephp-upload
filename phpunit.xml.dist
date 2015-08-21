@@ -19,6 +19,8 @@
 
     <filter>
         <blacklist>
+            <directory suffix=".php">./docs</directory>
+            <directory suffix=".php">./vendor</directory>
             <file>./tests/bootstrap.php</file>
         </blacklist>
     </filter>
