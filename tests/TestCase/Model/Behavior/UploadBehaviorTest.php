@@ -7,6 +7,7 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
+use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
 {
@@ -43,6 +44,30 @@ class UploadBehaviorTest extends TestCase
 
     public function testInitialize()
     {
+        $table = $this->getMock('Cake\ORM\Table');
+        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$table, []]);
+        $schema->expects($this->once())
+                    ->method('columnType')
+                    ->with('field', 'upload.file');
+        $table->expects($this->at(0))
+                    ->method('schema')
+                    ->will($this->returnValue($schema));
+        $table->expects($this->at(1))
+                    ->method('schema')
+                    ->will($this->returnValue($schema));
+
+        $methods = array_diff($this->behaviorMethods, ['initialize']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings], '', false);
+        $reflection = new ReflectionClass($behavior);
+        $property = $reflection->getProperty('_table');
+        $property->setAccessible(true);
+        $property->setValue($behavior, $table);
+
+        $behavior->expects($this->exactly(2))
+                 ->method('config')
+                 ->will($this->returnValue($this->settings));
+
+        $behavior->initialize($this->settings);
     }
 
     public function testBeforeMarshalOk()
