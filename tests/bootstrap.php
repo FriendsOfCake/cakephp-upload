@@ -2,19 +2,12 @@
 // @codingStandardsIgnoreFile
 
 $findRoot = function () {
-    $root = dirname(__DIR__);
-    if (is_dir($root . '/vendor/cakephp/cakephp')) {
-        return $root;
-    }
-
-    $root = dirname(dirname(__DIR__));
-    if (is_dir($root . '/vendor/cakephp/cakephp')) {
-        return $root;
-    }
-
-    $root = dirname(dirname(dirname(__DIR__)));
-    if (is_dir($root . '/vendor/cakephp/cakephp')) {
-        return $root;
+    $root = __DIR__;
+    for ($i = 0; $i < 3; $i++) {
+        $root = dirname($root);
+        if (is_dir($root . '/vendor/cakephp/cakephp')) {
+            return $root;
+        }
     }
 };
 
