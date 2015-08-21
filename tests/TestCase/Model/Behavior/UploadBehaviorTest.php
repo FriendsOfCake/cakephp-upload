@@ -45,31 +45,73 @@ class UploadBehaviorTest extends TestCase
     {
     }
 
-    public function testBeforeMarshal()
+    public function testBeforeMarshalOk()
     {
-        $methods = array_diff(get_class_methods('Cake\Validation\Validator'), ['isEmptyAllowed', 'field']);
-        $validator = $this->getMock('Cake\Validation\Validator', $methods);
-        $validatorSet = $this->getMock('Cake\Validation\ValidationSet');
-        $validator->expects($this->any())
+        $validator = $this->getMock('Cake\Validation\Validator');
+        $validator->expects($this->once())
                   ->method('isEmptyAllowed')
-                  ->with('field', false)
                   ->will($this->returnValue(true));
-        $validator->expects($this->any())
-                  ->method('field')
-                  ->will($this->returnValue($validatorSet));
-        $this->table->expects($this->any())
+
+        $table = $this->getMock('Cake\ORM\Table');
+        $table->expects($this->once())
                     ->method('validator')
                     ->will($this->returnValue($validator));
-        var_dump($validator);
+
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
         $behavior->expects($this->any())
                  ->method('config')
                  ->will($this->returnValue($this->settings));
+
+        $data = new ArrayObject($this->dataOk);
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
+        $this->assertEquals(new ArrayObject($this->dataOk), $data);
+    }
+
+    public function testBeforeMarshalError()
+    {
+        $validator = $this->getMock('Cake\Validation\Validator');
+        $validator->expects($this->once())
+                  ->method('isEmptyAllowed')
+                  ->will($this->returnValue(true));
+
+        $table = $this->getMock('Cake\ORM\Table');
+        $table->expects($this->once())
+                    ->method('validator')
+                    ->will($this->returnValue($validator));
+
+        $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
+        $behavior->expects($this->any())
+                 ->method('config')
+                 ->will($this->returnValue($this->settings));
+
         $data = new ArrayObject($this->dataError);
         $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
-        var_dump($data);
-        die;
+        $this->assertEquals(new ArrayObject, $data);
+    }
+
+    public function testBeforeMarshalEmptyAllowed()
+    {
+        $validator = $this->getMock('Cake\Validation\Validator');
+        $validator->expects($this->once())
+                  ->method('isEmptyAllowed')
+                  ->will($this->returnValue(false));
+
+        $table = $this->getMock('Cake\ORM\Table');
+        $table->expects($this->once())
+                    ->method('validator')
+                    ->will($this->returnValue($validator));
+
+        $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
+        $behavior->expects($this->any())
+                 ->method('config')
+                 ->will($this->returnValue($this->settings));
+
+        $data = new ArrayObject($this->dataError);
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
+        $this->assertEquals(new ArrayObject($this->dataError), $data);
     }
 
     public function testBeforeSaveUploadError()

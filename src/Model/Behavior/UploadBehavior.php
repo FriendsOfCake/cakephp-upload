@@ -48,11 +48,12 @@ class UploadBehavior extends Behavior
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
         $validator = $this->_table->validator();
+        $dataArray = $data->getArrayCopy();
         foreach ($this->config() as $field => $settings) {
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
-            if (Hash::get($data, $field . '.error') !== UPLOAD_ERR_NO_FILE) {
+            if (Hash::get($dataArray, $field . '.error') !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
             unset($data[$field]);
