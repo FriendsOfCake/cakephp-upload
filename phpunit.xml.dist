@@ -17,6 +17,12 @@
         </testsuite>
     </testsuites>
 
+    <filter>
+        <blacklist>
+            <file>./tests/bootstrap.php</file>
+        </blacklist>
+    </filter>
+
     <!-- Setup a listener for fixtures -->
     <listeners>
         <listener
