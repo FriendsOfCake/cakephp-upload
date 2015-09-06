@@ -30,6 +30,7 @@ trait DefaultTrait
         $replacements = [
             '{primaryKey}' => $this->entity->get($this->table->primaryKey()),
             '{model}' => $this->table->alias(),
+            '{table}' => $this->table->table(),
             '{field}' => $this->field,
             '{time}' => time(),
             '{microtime}' => microtime(),
