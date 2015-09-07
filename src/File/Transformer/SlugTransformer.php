@@ -4,7 +4,7 @@ namespace Josegonzalez\Upload\File\Transformer;
 use Cake\Utility\Inflector;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 
-class DefaultTransformer extends DefaultTransformer
+class SlugTransformer extends DefaultTransformer
 {
     /**
      * Creates a set of files from the initial data and returns them as key/value
@@ -24,6 +24,14 @@ class DefaultTransformer extends DefaultTransformer
      */
     public function transform()
     {
-        return [$this->data['tmp_name'] => strtolower(Inflector::slug($this->data['name'], '-'))];
+        $filename = pathinfo($this->data['name'], PATHINFO_FILENAME);
+        $filename = Inflector::slug($filename, '-');
+
+        $ext = pathinfo($this->data['name'], PATHINFO_EXTENSION);
+        if (!empty($ext)) {
+            $filename = $filename . '.' . $ext;
+        }
+
+        return [$this->data['tmp_name'] => strtolower($filename)];
     }
 }
