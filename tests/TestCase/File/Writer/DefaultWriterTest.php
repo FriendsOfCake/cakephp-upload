@@ -7,9 +7,11 @@ use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\FilesystemInterface;
+use League\Flysystem\Vfs\VfsAdapter;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamFile;
 use org\bovigo\vfs\vfsStreamWrapper;
+use VirtualFileSystem\FileSystem as Vfs;
 
 class DefaultWriterTest extends TestCase
 {
@@ -21,7 +23,13 @@ class DefaultWriterTest extends TestCase
         $table = $this->getMock('Cake\ORM\Table');
         $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $field = 'field';
-        $settings = [];
+        $settings = [
+            'filesystem' => [
+                'adapter' => function () {
+                    return new VfsAdapter(new Vfs);
+                }
+            ]
+        ];
 
         vfsStreamWrapper::register();
         $this->root = vfsStream::setup('root', null, ['file.txt' => 'content']);
@@ -42,7 +50,7 @@ class DefaultWriterTest extends TestCase
 
         $this->assertEquals([false], $this->writer->write([
             vfsStream::url('root/invalid.txt') => 'file.txt'
-        ], 'field', ['filesystem.adapter' => new NullAdapter]));
+        ], 'field', []));
     }
 
     public function testWriteFile()
