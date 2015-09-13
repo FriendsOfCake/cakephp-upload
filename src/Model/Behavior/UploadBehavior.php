@@ -40,9 +40,9 @@ class UploadBehavior extends Behavior
     /**
      * Modifies the data being marshalled to ensure invalid upload data is not inserted
      *
-     * @param Event       $event an event instance
-     * @param ArrayObject $data data being marshalled
-     * @param ArrayObject $options options for the current event
+     * @param \Cake\Event\Event $event an event instance
+     * @param \ArrayObject $data data being marshalled
+     * @param \ArrayObject $options options for the current event
      * @return void
      */
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
@@ -67,7 +67,7 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\ORM\Entity $entity The entity that is going to be saved
      * @param \ArrayObject $options the options passed to the save method
-     * @return bool
+     * @return void|false
      */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -92,7 +92,6 @@ class UploadBehavior extends Behavior
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
-        return true;
     }
 
     /**
@@ -100,10 +99,10 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\ORM\Entity $entity an entity
-     * @param array  $data the data being submitted for a save
+     * @param array $data the data being submitted for a save
      * @param string $field the field for which data will be saved
-     * @param array  $settings the settings for the current field
-     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
+     * @param array $settings the settings for the current field
+     * @return \Josegonzalez\Upload\File\Path\AbstractProcessor
      */
     public function getPathProcessor(Entity $entity, $data, $field, $settings)
     {
@@ -119,15 +118,14 @@ class UploadBehavior extends Behavior
         ));
     }
 
-
     /**
      * Retrieves an instance of a file writer which knows how to write files to disk
      *
      * @param \Cake\ORM\Entity $entity an entity
-     * @param array  $data the data being submitted for a save
+     * @param array $data the data being submitted for a save
      * @param string $field the field for which data will be saved
-     * @param array  $settings the settings for the current field
-     * @return Josegonzalez\Upload\File\Path\AbstractProcessor
+     * @param array $settings the settings for the current field
+     * @return \Josegonzalez\Upload\File\Path\AbstractProcessor
      */
     public function getWriter(Entity $entity, $data, $field, $settings)
     {
@@ -159,9 +157,9 @@ class UploadBehavior extends Behavior
      * create the source files.
      *
      * @param \Cake\ORM\Entity $entity an entity
-     * @param array  $data the data being submitted for a save
+     * @param array $data the data being submitted for a save
      * @param string $field the field for which data will be saved
-     * @param array  $settings the settings for the current field
+     * @param array $settings the settings for the current field
      * @param string $basepath a basepath where the files are written to
      * @return array key/value pairs of temp files mapping to their names
      */

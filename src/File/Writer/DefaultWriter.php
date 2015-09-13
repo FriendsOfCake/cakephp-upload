@@ -87,7 +87,7 @@ class DefaultWriter implements WriterInterface
     /**
      * Writes a set of files to an output
      *
-     * @param League\Flysystem\FilesystemInterface $filesystem a filesystem wrapper
+     * @param \League\Flysystem\FilesystemInterface $filesystem a filesystem wrapper
      * @param string $file a full path to a temp file
      * @param string $path that path to which the file should be written
      * @return bool
@@ -114,7 +114,7 @@ class DefaultWriter implements WriterInterface
     /**
      * Deletes a path from a filesystem
      *
-     * @param League\Flysystem\FilesystemInterface $filesystem a filesystem writer
+     * @param \League\Flysystem\FilesystemInterface $filesystem a filesystem writer
      * @param string $path the path that should be deleted
      * @return bool
      */
@@ -134,7 +134,7 @@ class DefaultWriter implements WriterInterface
      *
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
-     * @return League\Flysystem\FilesystemInterface
+     * @return \League\Flysystem\FilesystemInterface
      */
     public function getFilesystem($field, array $settings = [])
     {
