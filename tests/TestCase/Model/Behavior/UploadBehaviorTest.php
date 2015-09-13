@@ -148,7 +148,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('get')
                      ->with('field')
                      ->will($this->returnValue($this->dataError['field']));
-         $this->assertTrue($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testBeforeSaveWriteFail()
@@ -198,7 +198,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('write')
                      ->will($this->returnValue(true));
 
-        $this->assertTrue($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testGetWriter()

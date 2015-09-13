@@ -67,7 +67,7 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\Event $event The beforeSave event that was fired
      * @param \Cake\ORM\Entity $entity The entity that is going to be saved
      * @param \ArrayObject $options the options passed to the save method
-     * @return bool
+     * @return void|false
      */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -92,7 +92,6 @@ class UploadBehavior extends Behavior
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
-        return true;
     }
 
     /**
