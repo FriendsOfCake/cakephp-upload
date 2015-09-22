@@ -7,15 +7,15 @@ Using `Composer <http://getcomposer.org/>`__
 `View on
 Packagist <https://packagist.org/packages/josegonzalez/cakephp-upload>`__,
 and copy the json snippet for the latest version into your project's
-``composer.json``. Eg, v. 1.1.1 would look like this:
+``composer.json``. Eg, v. 1.3.0 would look like this:
 
 .. code:: json
 
-    {
-        "require": {
-            "josegonzalez/cakephp-upload": "1.1.1"
-        }
-    }
+	{
+		"require": {
+			"josegonzalez/cakephp-upload": "1.3.0"
+		}
+	}
 
 This plugin has the type ``cakephp-plugin`` set in its own
 ``composer.json``, composer knows to install it inside your ``/Plugins``
@@ -39,9 +39,9 @@ In your *app directory* type:
 
 .. code:: bash
 
-    git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
-    git submodule init
-    git submodule update
+	git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
+	git submodule init
+	git submodule update
 
 GIT Clone
 ~~~~~~~~~
@@ -50,7 +50,7 @@ In your ``Plugin`` directory type:
 
 .. code:: bash
 
-    git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
+	git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
 
 Imagick Support
 ---------------
@@ -60,16 +60,16 @@ have Imagick installed:
 
 .. code:: bash
 
-    # Debian systems
-    sudo apt-get install php-imagick
+	# Debian systems
+	sudo apt-get install php-imagick
 
-    # OS X Homebrew
-    brew tap homebrew/dupes
-    brew tap josegonzalez/homebrew-php
-    brew install php54-imagick
+	# OS X Homebrew
+	brew tap homebrew/dupes
+	brew tap josegonzalez/homebrew-php
+	brew install php54-imagick
 
-    # From pecl
-    pecl install imagick
+	# From pecl
+	pecl install imagick
 
 If you cannot install Imagick, instead configure the plugin with
 ``'thumbnailMethod'  => 'php'`` in the files options.
@@ -81,8 +81,8 @@ You need to enable the plugin your ``app/Config/bootstrap.php`` file:
 
 .. code:: php
 
-    <?php
-    CakePlugin::load('Upload');
+	<?php
+	CakePlugin::load('Upload');
 
 If you are already using ``CakePlugin::loadAll();``, then this is not
 necessary.
