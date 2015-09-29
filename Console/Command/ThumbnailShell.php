@@ -21,7 +21,7 @@ class ThumbnailShell extends AppShell {
  */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
-		$parser->addSubcommand('generate', ['help' => 'Find models and regenerate the thumbnails.']);
+		$parser->addSubcommand('generate', array('help' => 'Find models and regenerate the thumbnails.'));
 		return $parser;
 	}
 
@@ -62,12 +62,12 @@ class ThumbnailShell extends AppShell {
 				'rootDir' => $mergedConfig['rootDir'],
 			);
 
-			$files = $this->{$modelName}->find('all', [
-				'fields' => [$this->{$modelName}->primaryKey, $field, $mergedConfig['fields']['dir']],
-				'conditions' => [
+			$files = $this->{$modelName}->find('all', array(
+				'fields' => array($this->{$modelName}->primaryKey, $field, $mergedConfig['fields']['dir']),
+				'conditions' => array(
 					$field . " IS NOT NULL"
-				]
-			]);
+                )
+            ));
 
 			foreach ($files as $file) {
 				$this->{$modelName}->Behaviors->load('ShellUpload', $behaviorConfig);
@@ -79,19 +79,19 @@ class ThumbnailShell extends AppShell {
 				}
 
 				// $field needs to be an array like uploading an image
-				$fieldData = [
+				$fieldData = array(
 					'name' => basename($sourceFilePath),
 					'type' => mime_content_type($sourceFilePath),
 					'size' => filesize($sourceFilePath),
 					'tmp_name' => $sourceFilePath,
 					'error' => UPLOAD_ERR_OK
-				];
+                );
 
-				$data = [
+				$data = array(
 					$this->{$modelName}->primaryKey => $file[$modelName][$this->{$modelName}->primaryKey],
 					$field => $fieldData,
 					$config['fields']['dir'] => $file[$modelName][$this->{$modelName}->primaryKey],
-				];
+                );
 
 				if ($this->{$modelName}->hasField('modified')) {
 					$data['modified'] = false;
