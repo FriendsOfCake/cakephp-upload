@@ -17,7 +17,6 @@
         "league/flysystem": "*"
     },
     "require-dev": {
-        "cakephp/cakephp": "3.0.*-dev",
         "phpunit/phpunit": "4.1.*",
         "league/flysystem-vfs": "*"
     },
