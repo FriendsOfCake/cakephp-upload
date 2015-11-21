@@ -26,7 +26,6 @@ class UploadBehavior extends Behavior
      */
     public function initialize(array $config)
     {
-        $this->_config = [];
         $this->config(Hash::normalize($config));
 
         Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
