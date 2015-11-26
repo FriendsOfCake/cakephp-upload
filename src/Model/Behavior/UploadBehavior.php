@@ -81,7 +81,7 @@ class UploadBehavior extends Behavior
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
 
-            if (!$success) {
+            if ((new Collection($success))->contains(false)) {
                 return false;
             }
 

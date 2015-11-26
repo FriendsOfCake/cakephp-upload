@@ -171,7 +171,7 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue([]));
         $this->writer->expects($this->any())
                      ->method('write')
-                     ->will($this->returnValue(false));
+                     ->will($this->returnValue([false]));
 
         $this->assertFalse($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
@@ -196,7 +196,7 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue([]));
         $this->writer->expects($this->any())
                      ->method('write')
-                     ->will($this->returnValue(true));
+                     ->will($this->returnValue([true]));
 
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
