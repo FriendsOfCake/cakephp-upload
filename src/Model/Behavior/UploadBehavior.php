@@ -8,7 +8,6 @@ use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
-use Cake\Validation\Validator;
 use Exception;
 use Josegonzalez\Upload\File\Path\DefaultProcessor;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
