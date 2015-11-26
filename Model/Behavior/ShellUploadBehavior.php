@@ -16,7 +16,7 @@ class ShellUploadBehavior extends UploadBehavior {
  * @param array $options The options array
  * @return string
  */
-	public function path(Model $model, $field, $options = []) {
+	public function path(Model $model, $field, $options = array()) {
 		return parent::_path($model, $field, $options);
 	}
 
