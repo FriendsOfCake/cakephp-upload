@@ -12,7 +12,7 @@ Media Plugin is too complicated, and it was a PITA to merge the latest updates i
 
 * CakePHP 2.x
 * Imagick/GD PHP Extension (for thumbnail creation)
-* PHP 5
+* PHP 5.3+
 * Patience
 
 ## Documentation
