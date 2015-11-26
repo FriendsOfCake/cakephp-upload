@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/josegonzalez/cakephp-upload.png?branch=master)](https://travis-ci.org/josegonzalez/cakephp-upload) [![Coverage Status](https://coveralls.io/repos/josegonzalez/cakephp-upload/badge.png?branch=master)](https://coveralls.io/r/josegonzalez/cakephp-upload?branch=master) [![Total Downloads](https://poser.pugx.org/josegonzalez/cakephp-upload/d/total.png)](https://packagist.org/packages/josegonzalez/cakephp-upload) [![Latest Stable Version](https://poser.pugx.org/josegonzalez/cakephp-upload/v/stable.png)](https://packagist.org/packages/josegonzalez/cakephp-upload)
 
-# Upload Plugin 2.0
+# Upload Plugin 2.0 (v.1.3)
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/cakephp-uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 
