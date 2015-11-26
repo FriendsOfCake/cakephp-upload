@@ -136,6 +136,11 @@
       "name": "ceallred",
       "role": "Contributor",
       "homepage": "https://github.com/ceallred"
+    },
+    {
+      "name": "Sergio of EOM Design Group",
+      "role": "Contributor",
+      "homepage": "https://github.com/e-om"
     }
   ],
   "require": {
