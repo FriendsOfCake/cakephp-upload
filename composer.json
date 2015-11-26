@@ -139,7 +139,9 @@
     }
   ],
   "require": {
-    "composer/installers": "*"
+    "composer/installers": "*",
+    "php": ">=5.3.0",
+		"ext-gd": "*",
   },
   "support": {
     "email": "cakephp+upload@josediazgonzalez.com",
