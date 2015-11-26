@@ -136,10 +136,17 @@
       "name": "ceallred",
       "role": "Contributor",
       "homepage": "https://github.com/ceallred"
+    },
+    {
+      "name": "Sergio of EOM Design Group",
+      "role": "Contributor",
+      "homepage": "https://github.com/e-om"
     }
   ],
   "require": {
-    "composer/installers": "*"
+    "composer/installers": "*",
+    "php": ">=5.4.0",
+    "ext-gd": "*",
   },
   "support": {
     "email": "cakephp+upload@josediazgonzalez.com",
