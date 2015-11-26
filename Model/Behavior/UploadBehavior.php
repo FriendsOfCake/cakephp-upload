@@ -1344,7 +1344,7 @@ class UploadBehavior extends ModelBehavior {
 				$outputHandler = 'imagepng';
 				$supportsQuality = true;
 				// convert 0 (lowest) - 100 (highest) thumbnailQuality, to 0 (highest) - 9 (lowest) quality (see http://php.net/manual/en/function.imagepng.php)
-				$adjustedQuality = intval((100 - $this->settings[$model->alias][$field]['thumbnailQuality']) / 100 * 9);
+				$adjustedQuality = (int)((100 - $this->settings[$model->alias][$field]['thumbnailQuality']) / 100 * 9);
 				break;
 			default:
 				return false;
@@ -1508,12 +1508,12 @@ class UploadBehavior extends ModelBehavior {
  */
 	protected function _imagecreatefromjpegexif($filename) {
 		$image = imagecreatefromjpeg($filename);
-		$exif = false;
+		$exif = array();
 		if (function_exists('exif_read_data')) {
 			$exif = exif_read_data($filename);
 		}
 
-		if ($image && $exif && isset($exif['Orientation'])) {
+		if ($image && isset($exif['Orientation']) === true) {
 			$ort = $exif['Orientation'];
 		} else {
 			return $image;
