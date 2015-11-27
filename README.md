@@ -2,6 +2,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/josegonzalez/cakephp-upload/master.svg?style=flat-square)](https://coveralls.io/r/josegonzalez/cakephp-upload?branch=master)
 [![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
 [![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
+[![Gratipay](https://img.shields.io/gratipay/josegonzalez.svg?style=flat-square)](https://gratipay.com/~josegonzalez/)
 
 # Upload Plugin 3.0
 
