@@ -109,10 +109,10 @@ This example uses the `default behaviour configuration <configuration.rst>`__ us
 .. code:: php
 
     <?php
-    $entity = [
+    $entity = new Entity([
         'photo' => 'imageFile.jpg',
         'photo_dir' => '7'
-    ];
+    ]);
 
     echo $this->Html->link('../files/example/image/' . $entity->photo_dir . '/' . $entity->photo);
     ?>
