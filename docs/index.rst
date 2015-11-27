@@ -11,6 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+    Introduction <introduction>
     Installation <installation>
     Examples <examples>
     Configuration options <configuration>
@@ -18,6 +19,7 @@ Contents:
     Generating thumbnails <thumbnails>
     Validating uploads <validation>
     File import behavior <file-import-behavior>
+    Thumbnail generation shell <thumbnail-shell>
 
 
 Indices and tables

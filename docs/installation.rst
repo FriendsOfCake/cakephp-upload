@@ -17,7 +17,7 @@ and copy the json snippet for the latest version into your project's
         }
     }
 
-This plugin has the type ``cakephp-plugin`` set in it's own
+This plugin has the type ``cakephp-plugin`` set in its own
 ``composer.json``, composer knows to install it inside your ``/Plugins``
 directory, rather than in the usual vendors file. It is recommended that
 you add ``/Plugins/Upload`` to your .gitignore file. (Why? `read
