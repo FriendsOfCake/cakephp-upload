@@ -5,8 +5,10 @@ For advanced usage of the upload plugin, you will need to implement
 one or more of the followng interfaces.
 
 
-Josegonzalez\Upload\File\Path\ProcessorInterface
+ProcessorInterface
 ~~~~~~~~~~~~~~~~~~
+
+Fully-namespaced class name: ``Josegonzalez\Upload\File\Path\ProcessorInterface``
 
 This interface is used to create a class that knows how to build paths for a given file upload. Other than the constructor, it contains two methods:
 
@@ -15,8 +17,10 @@ This interface is used to create a class that knows how to build paths for a giv
 
 Refer to ``Josegonzalez\Upload\File\Path\DefaultProcessor`` for more details.
 
-Josegonzalez\Upload\File\Transformer\TransformerInterface
+TransformerInterface
 ~~~~~~~~~~~~~~~~~~~~
+
+Fully-namespaced class name: ``Josegonzalez\Upload\File\Transformer\TransformerInterface``
 
 This interface is used to transform the uploaded file into one or more files that will be written somewhere to disk. This can be useful in cases where you may wish to use an external library to extract thumbnails or create PDF previews. The previous image manipulation functionality should be created at this layer.
 
@@ -28,6 +32,8 @@ Refer to ``Josegonzalez\Upload\File\Transformer\DefaultTransformer`` for more de
 
 WriterInterface
 ~~~~~~~~~~~~~~~
+
+Fully-namespaced class name: ``Josegonzalez\Upload\File\Writer\WriterInterface``
 
 This interface is used to actually write files to disk. It writes files to disk using the ``Flysystem`` library, and defaults to local storage by default. Implement this interface if you want to customize the file writing process.
 
