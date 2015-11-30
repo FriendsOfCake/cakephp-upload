@@ -13,7 +13,7 @@ Fully-namespaced class name: ``Josegonzalez\Upload\File\Path\ProcessorInterface`
 This interface is used to create a class that knows how to build paths for a given file upload. Other than the constructor, it contains two methods:
 
 - ``basepath``: Returns the basepath for the current field/data combination
-- ``filename`: Returns the filename for the current field/data combination
+- ``filename``: Returns the filename for the current field/data combination
 
 Refer to ``Josegonzalez\Upload\File\Path\DefaultProcessor`` for more details.
 
