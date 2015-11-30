@@ -33,7 +33,7 @@ You need to enable the plugin your ``config/bootstrap.php`` file:
 .. code:: php
 
     <?php
-    Plugin::load('Josegonzale/Upload');
+    Plugin::load('Josegonzalez/Upload');
 
 If you are already using ``Plugin::loadAll();``, then this is not
 necessary.
