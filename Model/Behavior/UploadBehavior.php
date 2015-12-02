@@ -1022,7 +1022,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if ($usePrefixStyle) {
-			return '{size}{filename}';
+			return '{size}_{filename}';
 		}
 
 		return '{filename}{size}';
