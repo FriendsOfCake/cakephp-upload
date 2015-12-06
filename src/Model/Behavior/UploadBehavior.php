@@ -47,7 +47,7 @@ class UploadBehavior extends Behavior
     {
         $validator = $this->_table->validator();
         $dataArray = $data->getArrayCopy();
-        foreach ($this->config() as $field => $settings) {
+        foreach (array_keys($this->config()) as $field) {
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
