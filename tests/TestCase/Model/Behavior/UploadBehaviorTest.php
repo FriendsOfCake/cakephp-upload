@@ -234,10 +234,25 @@ class UploadBehaviorTest extends TestCase
         $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
     }
 
+    public function testConstructFilesWithCallable()
+    {
+        $callable = function () {
+            return ['path/to/callable/file/on/disk' => 'file.text'];
+        };
+        $files = $this->behavior->constructFiles(
+            $this->entity,
+            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            'field',
+            ['transformer' => $callable],
+            'some/path'
+        );
+        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+    }
+
     public function testConstructFilesException()
     {
         $this->setExpectedException('UnexpectedValueException', "'transformer' not set to instance of TransformerInterface: UnexpectedValueException");
-        $files = $this->behavior->constructFiles(
+        $this->behavior->constructFiles(
             $this->entity,
             ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
             'field',

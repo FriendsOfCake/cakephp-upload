@@ -165,17 +165,23 @@ class UploadBehavior extends Behavior
     {
         $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
         $transformerClass = Hash::get($settings, 'transformer', $default);
-        if (!is_subclass_of($transformerClass, 'Josegonzalez\Upload\File\Transformer\TransformerInterface')) {
+        $results = [];
+        if (is_subclass_of($transformerClass, 'Josegonzalez\Upload\File\Transformer\TransformerInterface')) {
+            $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
+            $results = $transformer->transform();
+            foreach ($results as $key => $value) {
+                $results[$key] = $basepath . '/' . $value;
+            }
+        } elseif (is_callable($transformerClass)) {
+            $results = $transformerClass($this->_table, $entity, $data, $field, $settings);
+            foreach ($results as $key => $value) {
+                $results[$key] = $basepath . '/' . $value;
+            }
+        } else {
             throw new UnexpectedValueException(sprintf(
                 "'transformer' not set to instance of TransformerInterface: %s",
                 $transformerClass
             ));
-        }
-
-        $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
-        $results = $transformer->transform();
-        foreach ($results as $key => $value) {
-            $results[$key] = $basepath . '/' . $value;
         }
         return $results;
     }
