@@ -146,7 +146,7 @@ class DefaultWriter implements WriterInterface
 
         if ($adapter instanceof AdapterInterface) {
             return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
-                'visibility' => AdapterInterface::VISIBILITY_PRIVATE
+                'visibility' => AdapterInterface::VISIBILITY_PUBLIC
             ]));
         }
 
