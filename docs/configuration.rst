@@ -43,11 +43,6 @@ passed in under each field in your behavior configuration.
       - ``fields.type``: (default ``type``) Field to use for storing the filetype
       - ``fields.size``: (default ``size``) Field to use for storing the filesize
 
--  ``rootDir``: Root directory for moving images. Auto-prepended to
-   ``path`` and ``thumbnailPath`` where necessary
-
-   -  Default (string) ``ROOT . DS . APP_DIR . DS``
-
 - ``filesystem``: An array of configuration info for configuring the writer
 
     If using the DefaultWriter, the following options are available:
