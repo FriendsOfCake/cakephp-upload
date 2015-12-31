@@ -109,11 +109,16 @@ This example uses the `default behaviour configuration <configuration.rst>`__ us
 .. code:: php
 
     <?php
+    // assuming an entity that has the following 
+    // data that was set from your controller to your view
     $entity = new Entity([
         'photo' => 'imageFile.jpg',
         'photo_dir' => '7'
     ]);
+    $this->set('entity', $entity);
 
+    // You could use the following to create a link to 
+    // the image (with default settings in place of course)
     echo $this->Html->link('../files/example/image/' . $entity->photo_dir . '/' . $entity->photo);
     ?>
 
