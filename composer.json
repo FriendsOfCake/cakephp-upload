@@ -20,7 +20,7 @@
         "phpunit/phpunit": "4.1.*",
         "league/flysystem-vfs": "*",
         "cakephp/cakephp-codesniffer": "dev-master",
-        "satooshi/php-coveralls": "dev-master"
+        "satooshi/php-coveralls": "1.*"
     },
     "autoload": {
         "psr-4": {
