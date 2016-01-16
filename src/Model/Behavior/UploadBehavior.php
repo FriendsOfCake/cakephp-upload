@@ -76,7 +76,8 @@ class UploadBehavior extends Behavior
 
             $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
-            $files = $this->constructFiles($entity, $data, $field, $settings, $path->basepath());
+            $basepath = $path->basepath();
+            $files = $this->constructFiles($entity, $data, $field, $settings, $basepath);
 
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
@@ -86,7 +87,7 @@ class UploadBehavior extends Behavior
             }
 
             $entity->set($field, $path->filename());
-            $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $path->basepath());
+            $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
         }
