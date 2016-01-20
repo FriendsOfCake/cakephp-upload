@@ -2,7 +2,7 @@
     "name": "josegonzalez/cakephp-upload",
     "description": "CakePHP plugin to handle file uploading sans ridiculous automagic",
     "type": "cakephp-plugin",
-    "keywords": ["cakephp", "upload", "files", "behavior"],
+    "keywords": ["cakephp", "upload", "files", "behavior", "orm"],
     "homepage": "https://github.com/josegonzalez/cakephp-upload",
     "license": "MIT",
     "authors": [
