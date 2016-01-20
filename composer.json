@@ -12,11 +12,12 @@
         }
     ],
     "require": {
-        "cakephp/cakephp": "~3.0",
+        "cakephp/orm": "3.*",
         "php": ">=5.5",
         "league/flysystem": "*"
     },
     "require-dev": {
+        "cakephp/cakephp": "~3.0",
         "phpunit/phpunit": "4.1.*",
         "league/flysystem-vfs": "*",
         "cakephp/cakephp-codesniffer": "dev-master",
