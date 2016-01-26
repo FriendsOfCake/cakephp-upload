@@ -1842,7 +1842,6 @@ class UploadBehavior extends ModelBehavior {
 			if (substr($newPath, -1) !== '/') {
 				$newPath .= '/';
 			}
-			continue;
 		}
 
 		$replacements = array(
