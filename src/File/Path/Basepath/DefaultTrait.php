@@ -33,8 +33,7 @@ trait DefaultTrait
         		->contain([])
         		->order([$this->table->primaryKey() => 'DESC'])
         		->hydrate(false)
-        		->first()
-        		[$this->table->primaryKey()] + 1;
+        		->first()[$this->table->primaryKey()] + 1;
         } else {
             $aiPrimaryKey = null;
         }
