@@ -14,7 +14,7 @@ passed in under each field in your behavior configuration.
     - Default: (string)
       ``Josegonzalez\Upload\File\Writer\DefaultWriter``
 
--  ``transformer: Returns a TransformerInterface class name. Can also be a PHP `callable`.
+-  ``transformer``: Returns a TransformerInterface class name. Can also be a PHP `callable`.
 
     - Default: (string)
       ``Josegonzalez\Upload\File\Transformer\DefaultTransformer``
