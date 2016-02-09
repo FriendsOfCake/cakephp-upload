@@ -1443,11 +1443,7 @@ class UploadBehavior extends ModelBehavior {
 				$resizeH = $srcH * $ratio;
 			} elseif ($resizeMode == 'band') {
 				// "banding" mode
-				if ($srcW > $srcH) {
-					$ratio = $destW / $srcW;
-				} else {
-					$ratio = $destH / $srcH;
-				}
+				$ratio = min($destW / $srcW, $destH / $srcH);
 				$resizeW = $srcW * $ratio;
 				$resizeH = $srcH * $ratio;
 			} else {
