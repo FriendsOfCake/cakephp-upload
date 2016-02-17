@@ -201,6 +201,15 @@ class UploadBehaviorTest extends TestCase
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
+    public function testAfterDelete()
+    {
+        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior->config($this->settings);
+
+        $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
     public function testGetWriter()
     {
         $processor = $this->behavior->getWriter($this->entity, [], 'field', []);
