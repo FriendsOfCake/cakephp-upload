@@ -105,10 +105,8 @@ class UploadBehavior extends Behavior
      */
     public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
-        foreach ($this->config() as $field => $settings)
-        {
-            if (Hash::get($settings, 'keepFilesOnDelete', true))
-            {
+        foreach ($this->config() as $field => $settings) {
+            if (Hash::get($settings, 'keepFilesOnDelete', true)) {
                 continue;
             }
 
@@ -116,8 +114,7 @@ class UploadBehavior extends Behavior
             $writer = $this->getWriter($entity, [], $field, $settings);
             $success = $writer->delete($file);
 
-            if ((new Collection($success))->contains(false))
-            {
+            if ((new Collection($success))->contains(false)) {
                 return false;
             }
         }

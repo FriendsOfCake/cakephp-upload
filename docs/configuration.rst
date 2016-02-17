@@ -61,3 +61,7 @@ passed in under each field in your behavior configuration.
       -  ``array $settings``: UploadBehavior settings for the current field
 
    -  Return: (string) the new name for the file
+
+-  ``keepFilesOnDelete``: Keep *all* files when uploading/deleting a record.
+
+   -  Default: (boolean) ``true``
