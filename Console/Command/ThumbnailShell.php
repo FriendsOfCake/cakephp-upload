@@ -65,7 +65,7 @@ class ThumbnailShell extends AppShell {
 			$files = $this->{$modelName}->find('all', array(
 				'fields' => [$this->{$modelName}->primaryKey, $field, $mergedConfig['fields']['dir']],
 				'conditions' => array(
-					$field . " IS NOT NULL"
+					$modelName . '.' . $field . " IS NOT NULL"
 				)
 			));
 
