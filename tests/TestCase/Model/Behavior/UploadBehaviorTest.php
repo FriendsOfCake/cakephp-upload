@@ -22,6 +22,7 @@ class UploadBehaviorTest extends TestCase
                 'error' => UPLOAD_ERR_OK,
                 'size' => 1,
                 'type' => 'text',
+                'keepFilesOnDelete' => false
             ]
         ];
         $this->dataError = [
@@ -204,8 +205,8 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeleteOk()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
-        $behavior->config($this->settings);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior->config($this->dataOk);
 
         $behavior->expects($this->any())
                  ->method('getWriter')
@@ -217,11 +218,11 @@ class UploadBehaviorTest extends TestCase
         $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
-    public function testAfterDeleteDeleteFail()
+    public function testAfterDeleteFail()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
-        $behavior->config($this->settings);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior->config($this->dataOk);
 
         $behavior->expects($this->any())
                  ->method('getWriter')
@@ -231,6 +232,22 @@ class UploadBehaviorTest extends TestCase
                      ->will($this->returnValue([false]));
 
         $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
+    public function testAfterDeleteSkip()
+    {
+        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataError]);
+        $behavior->config($this->dataError);
+
+        $behavior->expects($this->any())
+            ->method('getWriter')
+            ->will($this->returnValue($this->writer));
+        $this->writer->expects($this->any())
+            ->method('delete')
+            ->will($this->returnValue([true]));
+
+        $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testGetWriter()
