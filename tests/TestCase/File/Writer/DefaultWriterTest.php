@@ -13,6 +13,8 @@ use VirtualFileSystem\FileSystem as Vfs;
 class DefaultWriterTest extends TestCase
 {
     protected $vfs;
+    protected $writer;
+    protected $writerMock;
 
     public function setup()
     {
@@ -49,6 +51,18 @@ class DefaultWriterTest extends TestCase
         $this->assertEquals([false], $this->writer->write([
             $this->vfs->path('/tmp/invalid.txt') => 'file.txt'
         ], 'field', []));
+    }
+
+    public function testDelete()
+    {
+        $this->assertEquals([], $this->writer->delete([]));
+        $this->assertEquals([true], $this->writer->delete([
+            $this->vfs->path('/tmp/tempfile')
+        ]));
+
+        $this->assertEquals([false], $this->writer->delete([
+            $this->vfs->path('/tmp/invalid.txt')
+        ]));
     }
 
     public function testWriteFile()

@@ -110,7 +110,9 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            $file = [$entity->{$settings['dir']} . $entity->{$field}];
+            $dirField = Hash::get($settings, 'fields.dir', 'dir');
+
+            $file = [$entity->{$dirField} . $entity->{$field}];
             $writer = $this->getWriter($entity, [], $field, $settings);
             $success = $writer->delete($file);
 
