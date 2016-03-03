@@ -13,21 +13,27 @@ use VirtualFileSystem\FileSystem as Vfs;
 class DefaultWriterTest extends TestCase
 {
     protected $vfs;
+    protected $writer;
+    protected $entity;
+    protected $table;
+    protected $data;
+    protected $field;
+    protected $settings;
 
     public function setup()
     {
-        $entity = $this->getMock('Cake\ORM\Entity');
-        $table = $this->getMock('Cake\ORM\Table');
-        $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
-        $field = 'field';
-        $settings = [
+        $this->entity = $this->getMock('Cake\ORM\Entity');
+        $this->table = $this->getMock('Cake\ORM\Table');
+        $this->data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
+        $this->field = 'field';
+        $this->settings = [
             'filesystem' => [
                 'adapter' => function () {
                     return new VfsAdapter(new Vfs);
                 }
             ]
         ];
-        $this->writer = new DefaultWriter($table, $entity, $data, $field, $settings);
+        $this->writer = new DefaultWriter($this->table, $this->entity, $this->data, $this->field, $this->settings);
 
         $this->vfs = new Vfs;
         mkdir($this->vfs->path('/tmp'));
@@ -53,13 +59,16 @@ class DefaultWriterTest extends TestCase
 
     public function testDelete()
     {
-        $this->assertEquals([], $this->writer->delete([]));
-        $this->assertEquals([true], $this->writer->delete([
-            $this->vfs->path('file.txt')
+        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['delete'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
+        $writer->expects($this->any())->method('delete')->will($this->returnValue([true]));
+        $this->assertEquals([true], $writer->delete([
+            $this->vfs->path('existing-file.txt')
         ]));
 
-        $this->assertEquals([false], $this->writer->delete([
-            $this->vfs->path('/tmp/invalid.txt')
+        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['delete'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
+        $writer->expects($this->any())->method('delete')->will($this->returnValue([false]));
+        $this->assertEquals([false], $writer->delete([
+            $this->vfs->path('unexisting-file.txt')
         ]));
     }
 

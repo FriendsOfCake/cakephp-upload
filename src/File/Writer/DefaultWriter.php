@@ -143,6 +143,7 @@ class DefaultWriter implements WriterInterface
         } catch (FileNotFoundException $e) {
             // TODO: log this?
         }
+
         return $success;
     }
 
