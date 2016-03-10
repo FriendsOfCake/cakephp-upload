@@ -74,6 +74,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
+            $settings = ($settings === null) ? [] : $settings;
             $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $basepath = $path->basepath();
