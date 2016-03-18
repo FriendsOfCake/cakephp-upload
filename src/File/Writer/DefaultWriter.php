@@ -85,6 +85,23 @@ class DefaultWriter implements WriterInterface
     }
 
     /**
+     * Deletes a set of files to an output
+     *
+     * @param array $files the files being written out
+     * @return array array of results
+     */
+    public function delete(array $files)
+    {
+        $filesystem = $this->getFilesystem($this->field, $this->settings);
+        $results = [];
+        foreach ($files as $path) {
+            $results[] = $this->deletePath($filesystem, $path);
+        }
+
+        return $results;
+    }
+
+    /**
      * Writes a set of files to an output
      *
      * @param \League\Flysystem\FilesystemInterface $filesystem a filesystem wrapper
@@ -126,6 +143,7 @@ class DefaultWriter implements WriterInterface
         } catch (FileNotFoundException $e) {
             // TODO: log this?
         }
+
         return $success;
     }
 

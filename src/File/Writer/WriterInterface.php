@@ -24,4 +24,12 @@ interface WriterInterface
      * @return array array of results
      */
     public function write(array $files);
+
+    /**
+     * Deletes a set of files to an output
+     *
+     * @param array $files the files being written out
+     * @return array array of results
+     */
+    public function delete(array $files);
 }

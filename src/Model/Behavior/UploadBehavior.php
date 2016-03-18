@@ -96,6 +96,33 @@ class UploadBehavior extends Behavior
     }
 
     /**
+     * Deletes the files after the entity is deleted
+     *
+     * @param \Cake\Event\Event $event The afterDelete event that was fired
+     * @param \Cake\ORM\Entity $entity The entity that was deleted
+     * @param \ArrayObject $options the options passed to the delete method
+     * @return void|false
+     */
+    public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
+    {
+        foreach ($this->config() as $field => $settings) {
+            if (Hash::get($settings, 'keepFilesOnDelete', true)) {
+                continue;
+            }
+
+            $dirField = Hash::get($settings, 'fields.dir', 'dir');
+
+            $file = [$entity->{$dirField} . $entity->{$field}];
+            $writer = $this->getWriter($entity, [], $field, $settings);
+            $success = $writer->delete($file);
+
+            if ((new Collection($success))->contains(false)) {
+                return false;
+            }
+        }
+    }
+
+    /**
      * Retrieves an instance of a path processor which knows how to build paths
      * for a given file upload
      *
