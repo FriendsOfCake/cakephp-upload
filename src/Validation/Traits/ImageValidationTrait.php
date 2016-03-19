@@ -4,8 +4,8 @@ namespace Josegonzalez\Upload\Validation\Traits;
 
 use Cake\Utility\Hash;
 
-trait ImageValidationTrait {
-
+trait ImageValidationTrait
+{
     /**
      * Check that the file is above the minimum width requirement
      *
@@ -14,7 +14,8 @@ trait ImageValidationTrait {
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isAboveMinWidth($check, $width, $requireUpload = true) {
+    public static function isAboveMinWidth($check, $width, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -39,7 +40,8 @@ trait ImageValidationTrait {
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isBelowMaxWidth($check, $width, $requireUpload = true) {
+    public static function isBelowMaxWidth($check, $width, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -64,7 +66,8 @@ trait ImageValidationTrait {
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isBelowMaxHeight($check, $height, $requireUpload = true) {
+    public static function isBelowMaxHeight($check, $height, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -89,7 +92,8 @@ trait ImageValidationTrait {
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isAboveMinHeight($check, $height, $requireUpload = true) {
+    public static function isAboveMinHeight($check, $height, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -114,7 +118,8 @@ trait ImageValidationTrait {
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isAboveMinSize($check, $size, $requireUpload = true) {
+    public static function isAboveMinSize($check, $size, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -129,4 +134,4 @@ trait ImageValidationTrait {
         }
         return $check['size'] >= $size;
     }
-} 
+}

@@ -2,9 +2,7 @@
 
 namespace Josegonzalez\Upload\Validation;
 
-
-class CommonValidation {
-
+class CommonValidation
+{
     use CommonValidationTrait;
-
-} 
+}

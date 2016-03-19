@@ -13,7 +13,8 @@ trait CommonValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderPhpSizeLimit($check) {
+    public static function isUnderPhpSizeLimit($check)
+    {
         return Hash::get($check, 'error') !== UPLOAD_ERR_INI_SIZE;
     }
 
@@ -24,7 +25,8 @@ trait CommonValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderFormSizeLimit($check) {
+    public static function isUnderFormSizeLimit($check)
+    {
         return Hash::get($check, 'error') !== UPLOAD_ERR_FORM_SIZE;
     }
 
@@ -34,7 +36,8 @@ trait CommonValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isCompletedUpload($check) {
+    public static function isCompletedUpload($check)
+    {
         return Hash::get($check, 'error') !== UPLOAD_ERR_PARTIAL;
     }
 
@@ -44,7 +47,8 @@ trait CommonValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isFileUpload($check) {
+    public static function isFileUpload($check)
+    {
         return Hash::get($check, 'error') !== UPLOAD_ERR_NO_FILE;
     }
 
@@ -55,7 +59,8 @@ trait CommonValidationTrait
      * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isSuccessfulWrite($check, $requireUpload = true) {
+    public static function isSuccessfulWrite($check, $requireUpload = true)
+    {
         // Optional parameter check if passed or is $context array
         $requireUpload = is_array($requireUpload) ? true : $requireUpload;
 
@@ -66,4 +71,4 @@ trait CommonValidationTrait
         }
         return $error !== UPLOAD_ERR_CANT_WRITE;
     }
-} 
+}

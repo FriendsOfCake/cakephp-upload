@@ -2,9 +2,7 @@
 
 namespace Josegonzalez\Upload\Validation;
 
-
-class ImageValidation {
-
+class ImageValidation
+{
     use ImageValidationTrait;
-
-} 
+}
