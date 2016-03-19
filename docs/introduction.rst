@@ -33,4 +33,3 @@ This plugin does not do
 * It will not convert files between file types. You cannot use it convert a JPG to a PNG
 * It will not add watermarks to images for you.
 * It will not validate anything about your save.
-* Delete files on entity delete. This is a future enhancement.
