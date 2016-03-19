@@ -33,7 +33,13 @@ class DefaultWriterTest extends TestCase
                 }
             ]
         ];
-        $this->writer = new DefaultWriter($this->table, $this->entity, $this->data, $this->field, $this->settings);
+        $this->writer = new DefaultWriter(
+            $this->table,
+            $this->entity,
+            $this->data,
+            $this->field,
+            $this->settings
+        );
 
         $this->vfs = new Vfs;
         mkdir($this->vfs->path('/tmp'));
@@ -59,16 +65,19 @@ class DefaultWriterTest extends TestCase
 
     public function testDelete()
     {
-        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['delete'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
-        $writer->expects($this->any())->method('delete')->will($this->returnValue([true]));
+        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem->expects($this->at(0))->method('delete')->will($this->returnValue(true));
+        $filesystem->expects($this->at(1))->method('delete')->will($this->returnValue(false));
+        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['getFilesystem'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
+        $writer->expects($this->any())->method('getFilesystem')->will($this->returnValue($filesystem));
+
+        $this->assertEquals([], $writer->delete([]));
         $this->assertEquals([true], $writer->delete([
-            $this->vfs->path('existing-file.txt')
+            $this->vfs->path('/tmp/tempfile')
         ]));
 
-        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['delete'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
-        $writer->expects($this->any())->method('delete')->will($this->returnValue([false]));
         $this->assertEquals([false], $writer->delete([
-            $this->vfs->path('unexisting-file.txt')
+            $this->vfs->path('/tmp/invalid.txt')
         ]));
     }
 
