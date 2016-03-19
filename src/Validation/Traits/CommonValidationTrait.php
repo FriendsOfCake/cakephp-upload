@@ -1,10 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: outwork
-     * Date: 3/18/16
-     * Time: 11:07 PM
-     */
 
 namespace Josegonzalez\Upload\Validation\Traits;
 
