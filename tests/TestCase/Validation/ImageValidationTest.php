@@ -57,10 +57,10 @@ class ImageValidationTest extends TestCase
 
         // Test if no tmp_name is set or specified
         $this->data['tmp_name'] = '';
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isBelowMaxWidth($this->data, 10));
 
         unset($this->data['tmp_name']);
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isBelowMaxWidth($this->data, 10));
     }
 
     public function testIsAboveMinHeight()
@@ -70,10 +70,10 @@ class ImageValidationTest extends TestCase
 
         // Test if no tmp_name is set or specified
         $this->data['tmp_name'] = '';
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isAboveMinHeight($this->data, 10));
 
         unset($this->data['tmp_name']);
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isAboveMinHeight($this->data, 10));
     }
 
     public function testIsBelowMaxHeight()
@@ -83,10 +83,10 @@ class ImageValidationTest extends TestCase
 
         // Test if no tmp_name is set or specified
         $this->data['tmp_name'] = '';
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isBelowMaxHeight($this->data, 10));
 
         unset($this->data['tmp_name']);
-        $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 10));
+        $this->assertFalse(ImageValidation::isBelowMaxHeight($this->data, 10));
     }
 
     public function testIsAboveMinSize()
