@@ -56,19 +56,10 @@ trait CommonValidationTrait
      * Check that the file was successfully written to the server
      *
      * @param mixed $check Value to check
-     * @param bool $requireUpload Whether or not to require a file upload
      * @return bool Success
      */
-    public static function isSuccessfulWrite($check, $requireUpload = true)
+    public static function isSuccessfulWrite($check)
     {
-        // Optional parameter check if passed or is $context array
-        $requireUpload = is_array($requireUpload) ? true : $requireUpload;
-
-        $error = (int)Hash::get($check, 'error');
-        // Allow circumvention of this rule if uploads is not required
-        if (!$requireUpload && $error === UPLOAD_ERR_NO_FILE) {
-            return true;
-        }
-        return $error !== UPLOAD_ERR_CANT_WRITE;
+        return Hash::get($check, 'error') !== UPLOAD_ERR_CANT_WRITE;
     }
 }
