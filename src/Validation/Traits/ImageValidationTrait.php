@@ -95,7 +95,7 @@ trait ImageValidationTrait
      * @param int $size Maximum file size
      * @return bool Success
      */
-    public function isBelowMaxSize($check, $size)
+    public static function isBelowMaxSize($check, $size)
     {
         // Non-file uploads also mean the size is too small
         if (!isset($check['size']) || !strlen($check['size'])) {
