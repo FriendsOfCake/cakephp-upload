@@ -50,22 +50,82 @@ UploadValidation
 
 Check that the file does not exceed the max file size specified by PHP
 
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'fileUnderPhpSizeLimit', [
+            'rule' => 'isUnderPhpSizeLimit', 
+            'message' => 'This file is too large', 
+            'provider' => 'upload' 
+        ]);
+        
+    ?>
+
 **isUnderFormSizeLimit**
 
 Check that the file does not exceed the max file size specified in the
 HTML Form
 
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'fileUnderFormSizeLimit', [
+            'rule' => 'isUnderFormSizeLimit', 
+            'message' => 'This file is too large', 
+            'provider' => 'upload' 
+        ]);
+        
+    ?>
+
 **isCompletedUpload**
 
 Check that the file was completely uploaded
+
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'fileCompletedUpload', [
+            'rule' => 'isCompletedUpload', 
+            'message' => 'This file could not be uploaded completely', 
+            'provider' => 'upload' 
+        ]);
+        
+    ?>
 
 **isFileUpload**
 
 Check that a file was uploaded
 
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'fileFileUpload', [
+            'rule' => 'isFileUpload', 
+            'message' => 'There was no file found to upload', 
+            'provider' => 'upload' 
+        ]);
+        
+    ?>
+
 **isSuccessfulWrite**
 
 Check that the file was successfully written to the server
+
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'fileSuccessfulWrite', [
+            'rule' => 'isSuccessfulWrite', 
+            'message' => 'This upload failed', 
+            'provider' => 'upload' 
+        ]);
+        
+    ?>
 
 **isBelowMaxSize**
 
