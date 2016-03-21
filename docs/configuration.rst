@@ -62,6 +62,6 @@ passed in under each field in your behavior configuration.
 
    -  Return: (string) the new name for the file
 
--  ``keepFilesOnDelete``: Keep *all* files when uploading/deleting a record.
+-  ``keepFilesOnDelete``: Keep *all* files when deleting a record.
 
    -  Default: (boolean) ``true``
