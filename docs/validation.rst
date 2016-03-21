@@ -34,7 +34,7 @@ Afterwards, you can use its rules like:
 
     <?php
     
-        $validator->add('file', 'filePhpUploadSize', [
+        $validator->add('file', 'customName', [
             'rule' => 'nameOfTheRule', 
             'message' => 'yourErrorMessage', 
             'provider' => 'upload' 
@@ -42,7 +42,25 @@ Afterwards, you can use its rules like:
     
     ?>
     
+It might come in handy to only use a validation rule when there actually is an uploaded file:
 
+.. code:: php
+
+    <?php
+    
+        $validator->add('file', 'customName', [
+            'rule' => 'nameOfTheRule',
+            'message' => 'yourErrorMessage',
+            'provider' => 'upload',
+            'on' => function($context) {
+                return isset($context['data']['file']) && $context['data']['file']['error'] == UPLOAD_ERR_OK;
+            }
+        ]);
+    
+    ?>
+    
+More information on conditional validation can be found `here <http://book.cakephp.org/3.0/en/core-libraries/validation.html#conditional-validation>`__.
+    
 UploadValidation
 ^^^^^^^^^^^^^^^^
 
