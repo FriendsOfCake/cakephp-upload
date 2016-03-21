@@ -88,30 +88,4 @@ class ImageValidationTest extends TestCase
         unset($this->data['tmp_name']);
         $this->assertFalse(ImageValidation::isBelowMaxHeight($this->data, 10));
     }
-
-    public function testIsAboveMinSize()
-    {
-        $this->assertTrue(ImageValidation::isAboveMinSize($this->data, 200));
-        $this->assertFalse(ImageValidation::isAboveMinSize($this->data, 250));
-
-        // Test if no size is set or specified
-        $this->data['size'] = '';
-        $this->assertFalse(ImageValidation::isAboveMinSize($this->data, 200));
-
-        unset($this->data['size']);
-        $this->assertFalse(ImageValidation::isAboveMinSize($this->data, 200));
-    }
-
-    public function testIsBelowMaxSize()
-    {
-        $this->assertTrue(ImageValidation::isBelowMaxSize($this->data, 200));
-        $this->assertFalse(ImageValidation::isBelowMaxSize($this->data, 150));
-
-        // Test if no size is set or specified
-        $this->data['size'] = '';
-        $this->assertFalse(ImageValidation::isBelowMaxSize($this->data, 200));
-
-        unset($this->data['size']);
-        $this->assertFalse(ImageValidation::isBelowMaxSize($this->data, 200));
-    }
 }

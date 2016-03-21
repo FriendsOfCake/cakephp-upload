@@ -4,7 +4,7 @@ namespace Josegonzalez\Upload\Validation\Traits;
 
 use Cake\Utility\Hash;
 
-trait CommonValidationTrait
+trait UploadValidationTrait
 {
     /**
      * Check that the file does not exceed the max
@@ -61,5 +61,37 @@ trait CommonValidationTrait
     public static function isSuccessfulWrite($check)
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_CANT_WRITE;
+    }
+
+    /**
+     * Check that the file is above the minimum file upload size
+     *
+     * @param mixed $check Value to check
+     * @param int $size Minimum file size
+     * @return bool Success
+     */
+    public static function isAboveMinSize($check, $size)
+    {
+        // Non-file uploads also mean the size is too small
+        if (!isset($check['size']) || !strlen($check['size'])) {
+            return false;
+        }
+        return $check['size'] >= $size;
+    }
+
+    /**
+     * Check that the file is below the maximum file upload size
+     *
+     * @param mixed $check Value to check
+     * @param int $size Maximum file size
+     * @return bool Success
+     */
+    public static function isBelowMaxSize($check, $size)
+    {
+        // Non-file uploads also mean the size is too small
+        if (!isset($check['size']) || !strlen($check['size'])) {
+            return false;
+        }
+        return $check['size'] <= $size;
     }
 }
