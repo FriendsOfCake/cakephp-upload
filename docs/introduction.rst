@@ -34,3 +34,4 @@ This plugin does not do
 * Create thumbnails. You can use a custom Transformer to create modified versions of file uploads.
 * It will not convert files between file types. You cannot use it convert a JPG to a PNG
 * It will not add watermarks to images for you.
+
