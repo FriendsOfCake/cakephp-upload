@@ -23,14 +23,14 @@ What does this plugin do?
 * It can also move files around programatically. Such as from the filesystem.
 * The path to which the files are saved can be customised.
 * The plugin can also upload multiple files at the same time to different fields.
-* Each upload field can be configured independantly of each other, such as changing the upload path etc.
+* Each upload field can be configured independently of each other, such as changing the upload path etc.
 * Uploaded file information can be stored in a data store, such as a MySQL database.
 * You can upload files to both disk as well as distributed datastores such as S3 or Dropbox.
+* It can optionally delete the files on record deletion
+* It offers multiple validation providers but doesn't validate automatically
 
 This plugin does not do
 ~~~~~~~~~~~~~~~~~~~~~~~
 * Create thumbnails. You can use a custom Transformer to create modified versions of file uploads.
 * It will not convert files between file types. You cannot use it convert a JPG to a PNG
 * It will not add watermarks to images for you.
-* It will not validate anything about your save.
-* Delete files on entity delete. This is a future enhancement.

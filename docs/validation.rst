@@ -7,7 +7,7 @@ explicitly load the validation provider(s) and attach each rule if needed.
 Installation
 ^^^^^^^^^^^^
 
-This plugin allows you to only load the validation rules that cover you needs.
+This plugin allows you to only load the validation rules that cover your needs.
 At this point there are 3 validation providers:
     
     - UploadValidation (validation rules useful for any upload)
@@ -53,7 +53,7 @@ It might come in handy to only use a validation rule when there actually is an u
             'message' => 'yourErrorMessage',
             'provider' => 'upload',
             'on' => function($context) {
-                return isset($context['data']['file']) && $context['data']['file']['error'] == UPLOAD_ERR_OK;
+                return !empty($context['data']['file']) && $context['data']['file']['error'] == UPLOAD_ERR_OK;
             }
         ]);
     
