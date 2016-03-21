@@ -15,6 +15,7 @@ Contents:
     Installation <installation>
     Examples <examples>
     Configuration options <configuration>
+    Validation <validation>
     Upload Behavior Interfaces <interfaces>
 
 

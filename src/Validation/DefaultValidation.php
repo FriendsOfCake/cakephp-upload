@@ -2,11 +2,11 @@
 
 namespace Josegonzalez\Upload\Validation;
 
-use Josegonzalez\Upload\Validation\Traits\UploadValidationTrait;
 use Josegonzalez\Upload\Validation\Traits\ImageValidationTrait;
+use Josegonzalez\Upload\Validation\Traits\UploadValidationTrait;
 
 class DefaultValidation
 {
-    use UploadValidationTrait;
     use ImageValidationTrait;
+    use UploadValidationTrait;
 }
