@@ -71,6 +71,32 @@ class UploadBehaviorTest extends TestCase
         $behavior->initialize($this->settings);
     }
 
+    public function testInitializeIndexedConfig()
+    {
+        $settings = ['field'];
+        $table = $this->getMock('Cake\ORM\Table');
+        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$table, []]);
+        $schema->expects($this->once())
+               ->method('columnType')
+               ->with('field', 'upload.file');
+        $table->expects($this->at(0))
+              ->method('schema')
+              ->will($this->returnValue($schema));
+        $table->expects($this->at(1))
+              ->method('schema')
+              ->will($this->returnValue($schema));
+
+        $methods = array_diff($this->behaviorMethods, ['initialize', 'config']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $settings], '', false);
+        $reflection = new ReflectionClass($behavior);
+        $property = $reflection->getProperty('_table');
+        $property->setAccessible(true);
+        $property->setValue($behavior, $table);
+        $behavior->initialize($settings);
+
+        $this->assertEquals(['field' => []], $behavior->config());
+    }
+
     public function testBeforeMarshalOk()
     {
         $validator = $this->getMock('Cake\Validation\Validator');
