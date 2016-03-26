@@ -94,7 +94,7 @@ class UploadBehaviorTest extends TestCase
         $property->setValue($behavior, $table);
         $behavior->initialize($settings);
 
-        $this->assertEquals(['field' => null], $behavior->config());
+        $this->assertEquals(['field' => []], $behavior->config());
     }
 
     public function testBeforeMarshalOk()
@@ -225,33 +225,6 @@ class UploadBehaviorTest extends TestCase
                      ->method('write')
                      ->will($this->returnValue([true]));
 
-        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
-    }
-
-    public function testBeforeSaveNormalizedConfig()
-    {
-        $settings = ['field' => null];
-        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $settings]);
-        $behavior->config($this->settings);
-        $this->entity->expects($this->any())
-                     ->method('get')
-                     ->with('field')
-                     ->will($this->returnValue($this->dataOk['field']));
-        $behavior->expects($this->any())
-                 ->method('getPathProcessor')
-                 ->will($this->returnValue($this->processor));
-        $behavior->expects($this->any())
-                 ->method('getWriter')
-                 ->will($this->returnValue($this->writer));
-        $behavior->expects($this->any())
-                 ->method('constructFiles')
-                 ->will($this->returnValue([]));
-        $this->writer->expects($this->any())
-             ->method('write')
-             ->will($this->returnValue([true]));
-
-        $this->assertEquals(['field' => []], $behavior->config());
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 

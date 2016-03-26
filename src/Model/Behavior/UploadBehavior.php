@@ -25,8 +25,17 @@ class UploadBehavior extends Behavior
      */
     public function initialize(array $config)
     {
+        $configs = [];
+        foreach ($config as $field => $settings) {
+            if (is_int($field)) {
+                $configs[$settings] = [];
+            } else {
+                $configs[$field] = $settings;
+            }
+        }
+
         $this->_config = [];
-        $this->config(Hash::normalize($config));
+        $this->config($configs);
 
         Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
         $schema = $this->_table->schema();
@@ -74,8 +83,6 @@ class UploadBehavior extends Behavior
             if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
                 continue;
             }
-
-            $settings = is_array($settings) ? $settings : [];
 
             $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
