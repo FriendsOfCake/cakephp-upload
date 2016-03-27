@@ -309,6 +309,27 @@ class UploadBehaviorTest extends TestCase
         $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
     }
 
+    public function testConstructFilesWithBasePathEndingDS()
+    {
+        $files = $this->behavior->constructFiles(
+            $this->entity,
+            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            'field',
+            [],
+            'path/'
+        );
+        $this->assertEquals(['path/to/file/on/disk' => 'path/file.txt'], $files);
+
+        $files = $this->behavior->constructFiles(
+            $this->entity,
+            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            'field',
+            [],
+            'some/path/'
+        );
+        $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
+    }
+
     public function testConstructFilesWithCallable()
     {
         $callable = function () {
@@ -320,6 +341,21 @@ class UploadBehaviorTest extends TestCase
             'field',
             ['transformer' => $callable],
             'some/path'
+        );
+        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+    }
+
+    public function testConstructFilesWithCallableAndBasePathEndingDS()
+    {
+        $callable = function () {
+            return ['path/to/callable/file/on/disk' => 'file.text'];
+        };
+        $files = $this->behavior->constructFiles(
+            $this->entity,
+            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            'field',
+            ['transformer' => $callable],
+            'some/path/'
         );
         $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
     }

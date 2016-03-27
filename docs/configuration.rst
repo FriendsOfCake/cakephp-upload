@@ -19,7 +19,7 @@ passed in under each field in your behavior configuration.
     - Default: (string)
       ``Josegonzalez\Upload\File\Transformer\DefaultTransformer``
 
--  ``path``: A path relative to the ``filesystem.root``. Should end in ``{DS}``
+-  ``path``: A path relative to the ``filesystem.root``.
 
    -  Default: (string)
       ``'webroot{DS}files{DS}{model}{DS}{field}{DS}'``
