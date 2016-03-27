@@ -203,6 +203,7 @@ class UploadBehavior extends Behavior
      */
     public function constructFiles(Entity $entity, $data, $field, $settings, $basepath)
     {
+        $basepath = (substr($basepath, -1) == DS ? $basepath : $basepath . DS);
         $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
         $transformerClass = Hash::get($settings, 'transformer', $default);
         $results = [];
@@ -210,12 +211,12 @@ class UploadBehavior extends Behavior
             $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
             $results = $transformer->transform();
             foreach ($results as $key => $value) {
-                $results[$key] = $basepath . '/' . $value;
+                $results[$key] = $basepath . $value;
             }
         } elseif (is_callable($transformerClass)) {
             $results = $transformerClass($this->_table, $entity, $data, $field, $settings);
             foreach ($results as $key => $value) {
-                $results[$key] = $basepath . '/' . $value;
+                $results[$key] = $basepath . $value;
             }
         } else {
             throw new UnexpectedValueException(sprintf(
