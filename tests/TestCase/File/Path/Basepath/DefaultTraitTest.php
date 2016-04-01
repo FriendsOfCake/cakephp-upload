@@ -18,8 +18,8 @@ class DefaultTraitTest extends TestCase
         $mock->field = 'field';
         $mock->entity->expects($this->once())->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('alias')->will($this->returnValue('Table'));
-        $mock->table->expects($this->once())->method('primaryKey')->will($this->returnValue('id'));
-        $this->assertEquals('webroot/files/Table/field/', $mock->basepath());
+        $mock->table->expects($this->exactly(2))->method('primaryKey')->will($this->returnValue('id'));
+        $this->assertEquals('webroot/files/Table/field/1', $mock->basepath());
     }
 
     public function testCustomPath()
