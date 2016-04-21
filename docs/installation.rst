@@ -7,13 +7,13 @@ Using `Composer <http://getcomposer.org/>`__
 `View on
 Packagist <https://packagist.org/packages/josegonzalez/cakephp-upload>`__,
 and copy the json snippet for the latest version into your project's
-``composer.json``. Eg, v. 1.3.0 would look like this:
+``composer.json``. Eg, v. 2.x-dev would look like this:
 
 .. code:: json
 
 	{
 		"require": {
-			"josegonzalez/cakephp-upload": "1.3.0"
+			"josegonzalez/cakephp-upload": "2.x-dev"
 		}
 	}
 
@@ -27,7 +27,7 @@ Manual
 ~~~~~~
 
 -  Download this:
-   http://github.com/josegonzalez/cakephp-upload/zipball/master
+   https://github.com/josegonzalez/cakephp-upload/archive/2.x.zip
 -  Unzip that download.
 -  Copy the resulting folder to ``app/Plugin``
 -  Rename the folder you just copied to ``Upload``
@@ -39,7 +39,7 @@ In your *app directory* type:
 
 .. code:: bash
 
-	git submodule add -b master git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
+	git submodule add -b 2.x git://github.com/josegonzalez/cakephp-upload.git Plugin/Upload
 	git submodule init
 	git submodule update
 
@@ -50,7 +50,7 @@ In your ``Plugin`` directory type:
 
 .. code:: bash
 
-	git clone -b master git://github.com/josegonzalez/cakephp-upload.git Upload
+	git clone -b 2.x git://github.com/josegonzalez/cakephp-upload.git Upload
 
 Imagick Support
 ---------------
@@ -61,7 +61,7 @@ have Imagick installed:
 .. code:: bash
 
 	# Debian systems
-	sudo apt-get install php-imagick
+	sudo apt-get install php5-imagick
 
 	# OS X Homebrew
 	brew tap homebrew/dupes
