@@ -252,7 +252,7 @@ class UploadBehavior extends ModelBehavior {
 
 			$this->runtime[$model->alias][$field]['name'] = $this->_retrieveName(
 				$model, $field, $this->runtime[$model->alias][$field]['name'], $model->data, array(
-					'saveType' => $isUpdating ? 'update' : 'create',
+				'saveType' => $isUpdating ? 'update' : 'create',
 			));
 
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
@@ -399,28 +399,22 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$folders = $this->__foldersToRemove[$model->alias];
-		foreach ($folders as $folder) {
-			if (strlen((string)$folder) === 0) {
+		$folder = $folders[0];
+		$dir = $path . $folder;
+		$it = new RecursiveDirectoryIterator($dir);
+		$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+		foreach ($files as $file) {
+			if ($file->getFilename() === '.' || $file->getFilename() === '..') {
 				continue;
 			}
 
-			$dir = $path . $folder;
-			$it = new RecursiveDirectoryIterator($dir);
-			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($files as $file) {
-				if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-					continue;
-				}
-
-				if ($file->isDir()) {
-					$this->rmdir($file->getRealPath());
-				} else {
-					$this->unlink($file->getRealPath());
-				}
+			if ($file->isDir()) {
+				$this->rmdir($file->getRealPath());
+			} else {
+				$this->unlink($file->getRealPath());
 			}
-			$this->rmdir($dir);
 		}
-
+		$this->rmdir($dir);
 		return true;
 	}
 
@@ -463,9 +457,9 @@ class UploadBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $options) {
 			if ($options['deleteFolderOnDelete'] == true) {
 				$this->deleteFolder($model, $options['path']);
-				return true;
 			}
 		}
+
 		return $result;
 	}
 
@@ -1031,7 +1025,7 @@ class UploadBehavior extends ModelBehavior {
 			return '{size}_{filename}';
 		}
 
-		return '{filename}_{size}';
+		return '{filename}{size}';
 	}
 
 /**
