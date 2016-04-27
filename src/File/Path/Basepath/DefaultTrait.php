@@ -22,20 +22,30 @@ trait DefaultTrait
             if ($this->entity->isNew()) {
                 throw new LogicException('{primaryKey} substitution not allowed for new entities');
             }
-            if (is_array($this->table->primaryKey())) {
+            if (!method_exists($this->repository, 'primaryKey')) {
+                throw new LogicException('{primaryKey} substitution not valid for non-Table classes');
+            }
+            if (is_array($this->repository->primaryKey())) {
                 throw new LogicException('{primaryKey} substitution not valid for composite primary keys');
             }
         }
 
         $replacements = [
-            '{primaryKey}' => $this->entity->get($this->table->primaryKey()),
-            '{model}' => $this->table->alias(),
-            '{table}' => $this->table->table(),
+            '{model}' => $this->repository->alias(),
             '{field}' => $this->field,
             '{time}' => time(),
             '{microtime}' => microtime(),
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
+
+        if (method_exists($this->repository, 'table')) {
+            $replacements['{table}'] = $this->repository->table();
+        }
+
+        if (method_exists($this->repository, 'primaryKey')) {
+            $replacements['{primaryKey}'] = $this->entity->get($this->repository->primaryKey());
+        }
+
         return str_replace(
             array_keys($replacements),
             array_values($replacements),

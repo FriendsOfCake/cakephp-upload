@@ -3,8 +3,6 @@ namespace Josegonzalez\Upload\Test\TestCase\Model\Behavior;
 
 use ArrayObject;
 use Cake\Event\Event;
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use ReflectionClass;
@@ -14,7 +12,7 @@ class UploadBehaviorTest extends TestCase
     public function setup()
     {
         $this->entity = $this->getMock('Cake\ORM\Entity');
-        $this->table = $this->getMock('Cake\ORM\Table');
+        $this->repository = $this->getMock('Cake\Datasource\RepositoryInterface');
         $this->dataOk = [
             'field' => [
                 'tmp_name' => 'path/to/file',
@@ -37,32 +35,32 @@ class UploadBehaviorTest extends TestCase
         $this->field = 'field';
         $this->settings = ['field' => []];
 
-        $this->behavior = new UploadBehavior($this->table, []);
-        $this->processor = $this->getMock('Josegonzalez\Upload\File\Path\DefaultProcessor', [], [$this->table, $this->entity, $this->dataOk, $this->field, $this->settings]);
-        $this->writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', [], [$this->table, $this->entity, $this->dataOk, $this->field, $this->settings]);
+        $this->behavior = new UploadBehavior($this->repository, []);
+        $this->processor = $this->getMock('Josegonzalez\Upload\File\Path\DefaultProcessor', [], [$this->repository, $this->entity, $this->dataOk, $this->field, $this->settings]);
+        $this->writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', [], [$this->repository, $this->entity, $this->dataOk, $this->field, $this->settings]);
         $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
     }
 
     public function testInitialize()
     {
-        $table = $this->getMock('Cake\ORM\Table');
-        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$table, []]);
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
+        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$repository, []]);
         $schema->expects($this->once())
                     ->method('columnType')
                     ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $repository->expects($this->at(0))
                     ->method('schema')
                     ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
+        $repository->expects($this->at(1))
                     ->method('schema')
                     ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings], '', false);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$repository, $this->settings], '', false);
         $reflection = new ReflectionClass($behavior);
         $property = $reflection->getProperty('_table');
         $property->setAccessible(true);
-        $property->setValue($behavior, $table);
+        $property->setValue($behavior, $repository);
 
         $behavior->expects($this->exactly(2))
                  ->method('config')
@@ -74,24 +72,24 @@ class UploadBehaviorTest extends TestCase
     public function testInitializeIndexedConfig()
     {
         $settings = ['field'];
-        $table = $this->getMock('Cake\ORM\Table');
-        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$table, []]);
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
+        $schema = $this->getMock('Cake\Database\Schema\Table', [], [$repository, []]);
         $schema->expects($this->once())
                ->method('columnType')
                ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $repository->expects($this->at(0))
               ->method('schema')
               ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
+        $repository->expects($this->at(1))
               ->method('schema')
               ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'config']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $settings], '', false);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$repository, $settings], '', false);
         $reflection = new ReflectionClass($behavior);
         $property = $reflection->getProperty('_table');
         $property->setAccessible(true);
-        $property->setValue($behavior, $table);
+        $property->setValue($behavior, $repository);
         $behavior->initialize($settings);
 
         $this->assertEquals(['field' => []], $behavior->config());
@@ -104,13 +102,13 @@ class UploadBehaviorTest extends TestCase
                   ->method('isEmptyAllowed')
                   ->will($this->returnValue(true));
 
-        $table = $this->getMock('Cake\ORM\Table');
-        $table->expects($this->once())
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
+        $repository->expects($this->once())
                     ->method('validator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$repository, $this->settings]);
         $behavior->expects($this->any())
                  ->method('config')
                  ->will($this->returnValue($this->settings));
@@ -127,13 +125,13 @@ class UploadBehaviorTest extends TestCase
                   ->method('isEmptyAllowed')
                   ->will($this->returnValue(true));
 
-        $table = $this->getMock('Cake\ORM\Table');
-        $table->expects($this->once())
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
+        $repository->expects($this->once())
                     ->method('validator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$repository, $this->settings]);
         $behavior->expects($this->any())
                  ->method('config')
                  ->will($this->returnValue($this->settings));
@@ -150,13 +148,13 @@ class UploadBehaviorTest extends TestCase
                   ->method('isEmptyAllowed')
                   ->will($this->returnValue(false));
 
-        $table = $this->getMock('Cake\ORM\Table');
-        $table->expects($this->once())
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
+        $repository->expects($this->once())
                     ->method('validator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$repository, $this->settings]);
         $behavior->expects($this->any())
                  ->method('config')
                  ->will($this->returnValue($this->settings));
@@ -169,7 +167,7 @@ class UploadBehaviorTest extends TestCase
     public function testBeforeSaveUploadError()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
                      ->method('get')
@@ -181,7 +179,7 @@ class UploadBehaviorTest extends TestCase
     public function testBeforeSaveWriteFail()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
                      ->method('get')
@@ -206,7 +204,7 @@ class UploadBehaviorTest extends TestCase
     public function testBeforeSaveOk()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
                      ->method('get')
@@ -231,7 +229,7 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeleteOk()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->dataOk]);
         $behavior->config($this->dataOk);
 
         $behavior->expects($this->any())
@@ -247,7 +245,7 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeleteFail()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->dataOk]);
         $behavior->config($this->dataOk);
 
         $behavior->expects($this->any())
@@ -263,7 +261,7 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeleteSkip()
     {
         $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataError]);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->repository, $this->dataError]);
         $behavior->config($this->dataError);
 
         $behavior->expects($this->any())

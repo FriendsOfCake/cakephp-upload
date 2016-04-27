@@ -1,8 +1,8 @@
 <?php
 namespace Josegonzalez\Upload\File\Path;
 
+use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Josegonzalez\Upload\File\Path\Basepath\DefaultTrait as BasepathTrait;
 use Josegonzalez\Upload\File\Path\Filename\DefaultTrait as FilenameTrait;
 use Josegonzalez\Upload\File\Path\ProcessorInterface;
@@ -10,11 +10,11 @@ use Josegonzalez\Upload\File\Path\ProcessorInterface;
 class DefaultProcessor implements ProcessorInterface
 {
     /**
-     * Table instance.
+     * RepositoryInterface instance.
      *
-     * @var \Cake\ORM\Table
+     * @var \Cake\Datasource\RepositoryInterface
      */
-    protected $table;
+    protected $repository;
 
     /**
      * Entity instance.
@@ -47,15 +47,15 @@ class DefaultProcessor implements ProcessorInterface
     /**
      * Constructor
      *
-     * @param \Cake\ORM\Table  $table the instance managing the entity
-     * @param \Cake\ORM\Entity $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
-     * @param string           $field the field for which data will be saved
-     * @param array            $settings the settings for the current field
+     * @param \Cake\Datasource\RepositoryInterface $repository the instance managing the entity
+     * @param \Cake\ORM\Entity                     $entity the entity to construct a path for.
+     * @param array                                $data the data being submitted for a save
+     * @param string                               $field the field for which data will be saved
+     * @param array                                $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings)
+    public function __construct(RepositoryInterface $repository, Entity $entity, $data, $field, $settings)
     {
-        $this->table = $table;
+        $this->repository = $repository;
         $this->entity = $entity;
         $this->data = $data;
         $this->field = $field;
