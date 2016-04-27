@@ -1,8 +1,6 @@
 <?php
 namespace Josegonzalez\Upload\Test\TestCase\File\Transformer;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Transformer\TransformerInterface;
@@ -12,11 +10,11 @@ class DefaultTransformerTest extends TestCase
     public function setup()
     {
         $entity = $this->getMock('Cake\ORM\Entity');
-        $table = $this->getMock('Cake\ORM\Table');
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
         $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $field = 'field';
         $settings = [];
-        $this->transformer = new DefaultTransformer($table, $entity, $data, $field, $settings);
+        $this->transformer = new DefaultTransformer($repository, $entity, $data, $field, $settings);
     }
 
     public function teardown()

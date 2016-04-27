@@ -9,12 +9,12 @@ class DefaultProcessorTest extends TestCase
 {
     public function testIsProcessorInterface()
     {
-        $table = $this->getMock('Cake\ORM\Table');
+        $repository = $this->getMock('Cake\Datasource\RepositoryInterface');
         $entity = $this->getMock('Cake\ORM\Entity');
         $data = ['name' => 'filename'];
         $field = 'field';
         $settings = [];
-        $processor = new DefaultProcessor($table, $entity, $data, $field, $settings);
+        $processor = new DefaultProcessor($repository, $entity, $data, $field, $settings);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
     }
 }

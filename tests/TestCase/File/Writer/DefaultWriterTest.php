@@ -1,8 +1,6 @@
 <?php
 namespace Josegonzalez\Upload\Test\TestCase\File\Writer;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use League\Flysystem\Adapter\NullAdapter;
@@ -15,7 +13,7 @@ class DefaultWriterTest extends TestCase
     protected $vfs;
     protected $writer;
     protected $entity;
-    protected $table;
+    protected $repository;
     protected $data;
     protected $field;
     protected $settings;
@@ -23,7 +21,7 @@ class DefaultWriterTest extends TestCase
     public function setup()
     {
         $this->entity = $this->getMock('Cake\ORM\Entity');
-        $this->table = $this->getMock('Cake\ORM\Table');
+        $this->repository = $this->getMock('Cake\Datasource\RepositoryInterface');
         $this->data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $this->field = 'field';
         $this->settings = [
@@ -34,7 +32,7 @@ class DefaultWriterTest extends TestCase
             ]
         ];
         $this->writer = new DefaultWriter(
-            $this->table,
+            $this->repository,
             $this->entity,
             $this->data,
             $this->field,
@@ -68,7 +66,7 @@ class DefaultWriterTest extends TestCase
         $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
         $filesystem->expects($this->at(0))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->at(1))->method('delete')->will($this->returnValue(false));
-        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['getFilesystem'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
+        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['getFilesystem'], [$this->repository, $this->entity, $this->data, $this->field, $this->settings]);
         $writer->expects($this->any())->method('getFilesystem')->will($this->returnValue($filesystem));
 
         $this->assertEquals([], $writer->delete([]));
