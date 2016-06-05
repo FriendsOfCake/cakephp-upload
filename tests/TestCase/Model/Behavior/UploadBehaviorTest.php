@@ -5,12 +5,22 @@ use ArrayObject;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use ReflectionClass;
 
+class ChildBehavior extends UploadBehavior
+{
+    protected $_defaultConfig = ['key' => 'value'];
+}
+
 class UploadBehaviorTest extends TestCase
 {
+    public $fixtures = [
+        'plugin.Josegonzalez/Upload.Files',
+    ];
+
     public function setup()
     {
         $this->entity = $this->getMock('Cake\ORM\Entity');
@@ -69,6 +79,16 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue($this->settings));
 
         $behavior->initialize($this->settings);
+    }
+
+    public function testInheritedConfig()
+    {
+        $table = TableRegistry::get('Josegonzales/Upload.Files');
+        $behavior = new ChildBehavior($table, []);
+
+        $result = $behavior->config();
+        $expected = ['key' => 'value'];
+        $this->assertEquals($expected, $result);
     }
 
     public function testInitializeIndexedConfig()
