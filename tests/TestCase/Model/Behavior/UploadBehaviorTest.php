@@ -8,12 +8,8 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
+use Josegonzalez\Upload\Test\Stub\ChildBehavior;
 use ReflectionClass;
-
-class ChildBehavior extends UploadBehavior
-{
-    protected $_defaultConfig = ['key' => 'value'];
-}
 
 class UploadBehaviorTest extends TestCase
 {
