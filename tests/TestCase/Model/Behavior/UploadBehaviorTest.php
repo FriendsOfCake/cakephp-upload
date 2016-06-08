@@ -251,6 +251,9 @@ class UploadBehaviorTest extends TestCase
         $behavior->config($this->dataOk);
 
         $behavior->expects($this->any())
+            ->method('getPathProcessor')
+            ->willReturn($this->processor);
+        $behavior->expects($this->any())
                  ->method('getWriter')
                  ->will($this->returnValue($this->writer));
         $this->writer->expects($this->any())
@@ -266,6 +269,9 @@ class UploadBehaviorTest extends TestCase
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
         $behavior->config($this->dataOk);
 
+        $behavior->expects($this->any())
+            ->method('getPathProcessor')
+            ->willReturn($this->processor);
         $behavior->expects($this->any())
                  ->method('getWriter')
                  ->will($this->returnValue($this->writer));
@@ -290,6 +296,33 @@ class UploadBehaviorTest extends TestCase
             ->will($this->returnValue([true]));
 
         $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
+    public function testAfterDeleteUsesPathProcessorToDetectPathToTheFile()
+    {
+        $this->entity->field = rand(1000, 9999);
+        $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
+        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior->config($this->dataOk);
+
+        // expecting getPathProcessor to be called with right arguments for dataOk
+        $behavior->expects($this->once())->method('getPathProcessor')
+            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->willReturn($this->processor);
+        // basepath of processor should return our fake path
+        $this->processor->expects($this->once())->method('basepath')
+            ->willReturn($path);
+        // expecting getWriter to be called with right arguments for dataOk
+        $behavior->expects($this->once())->method('getWriter')
+            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->willReturn($this->writer);
+        // and here we check that file with right path will be deleted
+        $this->writer->expects($this->once())->method('delete')
+            ->with([$path . $this->entity->field])
+            ->willReturn([true]);
+
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
     }
 
     public function testGetWriter()
