@@ -168,6 +168,8 @@ class UploadBehaviorTest extends TestCase
 
     public function testBeforeSaveUploadError()
     {
+        $originalValue = rand(1000, 9999);
+
         $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
         $behavior->config($this->settings);
@@ -175,6 +177,20 @@ class UploadBehaviorTest extends TestCase
                      ->method('get')
                      ->with('field')
                      ->will($this->returnValue($this->dataError['field']));
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($this->dataError['field']));
+        $this->entity->expects($this->any())
+            ->method('getOriginal')
+            ->with('field')
+            ->will($this->returnValue($originalValue));
+        $this->entity->expects($this->once())
+            ->method('set')
+            ->with('field', $originalValue);
+        $this->entity->expects($this->once())
+            ->method('dirty')
+            ->with('field', false);
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
@@ -226,6 +242,19 @@ class UploadBehaviorTest extends TestCase
                      ->will($this->returnValue([true]));
 
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
+    public function testBeforeSaveDoesNotRestoreOriginalValue()
+    {
+        $settings = $this->settings;
+        $settings['field']['restoreValueOnFailure'] = false;
+
+        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
+        $behavior->config($settings);
+        $this->entity->expects($this->never())->method('getOriginal');
+        $this->entity->expects($this->never())->method('set');
+        $behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject);
     }
 
     public function testAfterDeleteOk()
