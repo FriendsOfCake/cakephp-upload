@@ -13,10 +13,6 @@ See [this branch](https://github.com/josegonzalez/cakephp-upload/tree/2.x) for C
 
 See [this blog post](http://josediazgonzalez.com/2015/12/05/uploading-files-and-images/) for a tutorial on using the 3.x version.
 
-## Background
-
-Media Plugin is too complicated, and it was a PITA to merge the latest updates into MeioUpload, so here I am, building yet another upload plugin. I'll build another in a month and call it "YAUP".
-
 ## Requirements
 
 * CakePHP 3.x
