@@ -78,4 +78,16 @@ class DefaultTraitTest extends TestCase
         $mock->table->expects($this->once())->method('primaryKey')->will($this->returnValue(['id', 'other_id']));
         $this->assertEquals('webroot/files/Table-field/1/', $mock->basepath());
     }
+
+    public function testYearWithMonthPath()
+    {
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMock('Cake\ORM\Entity');
+        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{year}{DS}{month}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+
+        $this->assertEquals('webroot/files/'.date("Y")."/".date("m")."/", $mock->basepath());
+    }
 }
