@@ -88,6 +88,6 @@ class DefaultTraitTest extends TestCase
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
 
-        $this->assertEquals('webroot/files/'.date("Y")."/".date("m")."/", $mock->basepath());
+        $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/', $mock->basepath());
     }
 }
