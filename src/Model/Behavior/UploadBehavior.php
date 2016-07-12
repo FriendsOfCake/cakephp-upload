@@ -80,6 +80,10 @@ class UploadBehavior extends Behavior
     {
         foreach ($this->config() as $field => $settings) {
             if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
+                if (Hash::get($settings, 'restoreValueOnFailure', true)) {
+                    $entity->set($field, $entity->getOriginal($field));
+                    $entity->dirty($field, false);
+                }
                 continue;
             }
 

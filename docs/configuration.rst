@@ -65,3 +65,7 @@ passed in under each field in your behavior configuration.
 -  ``keepFilesOnDelete``: Keep *all* files when deleting a record.
 
    -  Default: (boolean) ``true``
+
+-  ``restoreValueOnFailure``: Restores original value of the current field when uploaded file has error
+
+   - Defaults: (boolean) ``true``
