@@ -100,7 +100,7 @@ class DefaultTraitTest extends TestCase
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
 
-        $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/'. date("d"). '/' , $mock->basepath());
+        $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/' . date("d") . '/' , $mock->basepath());
     }
 
 
@@ -116,6 +116,6 @@ class DefaultTraitTest extends TestCase
         $mock->entity->expects($this->once())->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('alias')->will($this->returnValue('Table'));
 
-        $this->assertEquals('webroot/files/Table/field/' . date("Y") . '/' . date("m") . '/'. date("d"). '/' , $mock->basepath());
+        $this->assertEquals('webroot/files/Table/field/' . date("Y") . '/' . date("m") . '/' . date("d") . '/' , $mock->basepath());
     }
 }
