@@ -227,6 +227,7 @@ class UploadBehavior extends Behavior
                 $transformerClass
             ));
         }
+
         return $results;
     }
 }
