@@ -32,6 +32,9 @@ passed in under each field in your behavior configuration.
       -  {primaryKey}: Replaced by the entity primary key, when
          available. If used on a new record being created, will have
          undefined behavior.
+      -  {year}: Replaced by ``date('Y')``
+      -  {month}: Replaced by ``date('m')``
+      -  {day}: Replaced by ``date('d')``
       -  {time}: Replaced by ``time()``
       -  {microtime}: Replaced by ``microtime()``
 
