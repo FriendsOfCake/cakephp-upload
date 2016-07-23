@@ -28,10 +28,19 @@ passed in under each field in your behavior configuration.
       -  {DS}: Replaced by a ``DIRECTORY_SEPARATOR``
       -  {model}: Replaced by the Table-alias() method.
       -  {table}: Replaced by the Table->table() method.
-      -  {field}: Replaced by the field name.
+      -  {field}: Replaced by the name of the field which will store
+         the upload filename.
+      -  {field-value:(\w+)}: Replaced by value contained in the
+         current entity in the specified field. As an example, if
+         your path has ``{field-value:unique_id}`` and the entity
+         being saved has a value of ``4b3403665fea6`` for the field
+         ``unique_id``, then ``{field-value:unique_id}`` will be
+         replaced with ``4b3403665fea6``. This replacement can be used
+         multiple times for one or more fields. If the value is not
+         a string or zero-length, a LogicException will be thrown.
       -  {primaryKey}: Replaced by the entity primary key, when
-         available. If used on a new record being created, will have
-         undefined behavior.
+         available. If used on a new record being created, a
+         LogicException will be thrown.
       -  {year}: Replaced by ``date('Y')``
       -  {month}: Replaced by ``date('m')``
       -  {day}: Replaced by ``date('d')``
