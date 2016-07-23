@@ -18,6 +18,7 @@ trait DefaultTrait
         if (is_callable($processor)) {
             return $processor($this->data, $this->settings);
         }
+
         return $this->data['name'];
     }
 }

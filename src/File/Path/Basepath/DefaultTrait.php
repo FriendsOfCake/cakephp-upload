@@ -39,6 +39,7 @@ trait DefaultTrait
             '{microtime}' => microtime(),
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
+
         return str_replace(
             array_keys($replacements),
             array_values($replacements),

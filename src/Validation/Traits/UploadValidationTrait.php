@@ -76,6 +76,7 @@ trait UploadValidationTrait
         if (!isset($check['size']) || !strlen($check['size'])) {
             return false;
         }
+
         return $check['size'] >= $size;
     }
 
@@ -92,6 +93,7 @@ trait UploadValidationTrait
         if (!isset($check['size']) || !strlen($check['size'])) {
             return false;
         }
+
         return $check['size'] <= $size;
     }
 }

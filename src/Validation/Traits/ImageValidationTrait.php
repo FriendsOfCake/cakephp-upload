@@ -18,6 +18,7 @@ trait ImageValidationTrait
             return false;
         }
         list($imgWidth) = getimagesize($check['tmp_name']);
+
         return $width > 0 && $imgWidth >= $width;
     }
 
@@ -35,6 +36,7 @@ trait ImageValidationTrait
             return false;
         }
         list($imgWidth) = getimagesize($check['tmp_name']);
+
         return $width > 0 && $imgWidth <= $width;
     }
 
@@ -52,6 +54,7 @@ trait ImageValidationTrait
             return false;
         }
         list(, $imgHeight) = getimagesize($check['tmp_name']);
+
         return $height > 0 && $imgHeight >= $height;
     }
 
@@ -69,6 +72,7 @@ trait ImageValidationTrait
             return false;
         }
         list(, $imgHeight) = getimagesize($check['tmp_name']);
+
         return $height > 0 && $imgHeight <= $height;
     }
 }
