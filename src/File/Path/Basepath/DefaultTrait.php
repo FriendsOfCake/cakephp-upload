@@ -40,6 +40,21 @@ trait DefaultTrait
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
 
+        if (preg_match_all("/{field-value:(\w+)}/", $path, $matches)) {
+            foreach ($matches[1] as $field) {
+                $value = $this->entity->get($field);
+                if ($value === null) {
+                    throw new LogicException(sprintf('Field value for substitution is missing: %s', $field));
+                }if (!is_scalar($value)) {
+                    throw new LogicException(sprintf('Field value for substitution must be a integer, float, string or boolean: %s', $field));
+                } elseif (strlen($value) < 1) {
+                    throw new LogicException(sprintf('Field value for substitution must be non-zero in length: %s', $field));
+                }
+
+                $replacements[sprintf('{field-value:%s}', $field)] = $value;
+            }
+        }
+
         return str_replace(
             array_keys($replacements),
             array_values($replacements),

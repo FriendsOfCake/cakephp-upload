@@ -61,7 +61,7 @@ class DefaultTraitTest extends TestCase
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
         $mock->entity->expects($this->once())->method('isNew')->will($this->returnValue(true));
-        $this->assertEquals('webroot/files/Table-field/1/', $mock->basepath());
+        $mock->basepath();
     }
 
     public function testExitingEntityWithCompositePrimaryKey()
@@ -76,7 +76,7 @@ class DefaultTraitTest extends TestCase
         $mock->field = 'field';
         $mock->entity->expects($this->once())->method('isNew')->will($this->returnValue(false));
         $mock->table->expects($this->once())->method('primaryKey')->will($this->returnValue(['id', 'other_id']));
-        $this->assertEquals('webroot/files/Table-field/1/', $mock->basepath());
+        $mock->basepath();
     }
 
     public function testYearWithMonthPath()
@@ -117,5 +117,60 @@ class DefaultTraitTest extends TestCase
         $mock->table->expects($this->once())->method('alias')->will($this->returnValue('Table'));
 
         $this->assertEquals('webroot/files/Table/field/' . date("Y") . '/' . date("m") . '/' . date("d") . '/', $mock->basepath());
+    }
+
+    public function testFieldValueMissing()
+    {
+        $this->setExpectedException('LogicException', 'Field value for substitution is missing: field');
+
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMock('Cake\ORM\Entity');
+        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+        $mock->entity->expects($this->any())->method('get')->will($this->returnValue(null));
+        $mock->basepath();
+    }
+
+    public function testFieldValueNonScalar()
+    {
+        $this->setExpectedException('LogicException', 'Field value for substitution must be a integer, float, string or boolean: field');
+
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMock('Cake\ORM\Entity');
+        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+        $mock->entity->expects($this->any())->method('get')->will($this->returnValue([]));
+        $mock->basepath();
+    }
+
+    public function testFieldValueZeroLength()
+    {
+        $this->setExpectedException('LogicException', 'Field value for substitution must be non-zero in length: field');
+
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMock('Cake\ORM\Entity');
+        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+        $mock->entity->expects($this->any())->method('get')->will($this->returnValue(''));
+        $mock->basepath();
+    }
+
+    public function testFieldValue()
+    {
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMock('Cake\ORM\Entity');
+        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+        $mock->entity->expects($this->any())->method('get')->will($this->returnValue('value'));
+        $mock->table->expects($this->once())->method('alias')->will($this->returnValue('Table'));
+        $this->assertEquals('webroot/files/Table/value/', $mock->basepath());
     }
 }
