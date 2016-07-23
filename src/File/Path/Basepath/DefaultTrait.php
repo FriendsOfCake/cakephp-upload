@@ -45,7 +45,7 @@ trait DefaultTrait
                 $value = $this->entity->get($field);
                 if ($value === null) {
                     throw new LogicException(sprintf('Field value for substitution is missing: %s', $field));
-                }if (!is_scalar($value)) {
+                } elseif (!is_scalar($value)) {
                     throw new LogicException(sprintf('Field value for substitution must be a integer, float, string or boolean: %s', $field));
                 } elseif (strlen($value) < 1) {
                     throw new LogicException(sprintf('Field value for substitution must be non-zero in length: %s', $field));
