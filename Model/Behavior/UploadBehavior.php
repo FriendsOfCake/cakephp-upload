@@ -421,6 +421,8 @@ class UploadBehavior extends ModelBehavior {
 			$this->rmdir($dir);
 		}
 
+		unset($this->__foldersToRemove[$model->alias]);
+
 		return true;
 	}
 
