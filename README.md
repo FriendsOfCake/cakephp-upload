@@ -17,7 +17,6 @@ See [this blog post](http://josediazgonzalez.com/2015/12/05/uploading-files-and-
 
 * CakePHP 3.x
 * PHP 5.4+
-* Patience
 
 ## Documentation
 For documentation, please see [the docs](http://cakephp-upload.readthedocs.org/en/latest/).
