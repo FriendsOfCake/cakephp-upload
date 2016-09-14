@@ -104,7 +104,7 @@ Displaying links to files in your view
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Once your files have been uploaded you can link to them using the ``HtmlHelper`` by specifying the path and using the file information from the database.
 
-This example uses the `default behaviour configuration <configuration.rst>`__ using the model ``Example``.
+This example uses the `default behaviour configuration <configuration.html>`__ using the model ``Example``.
 
 .. code:: php
 
