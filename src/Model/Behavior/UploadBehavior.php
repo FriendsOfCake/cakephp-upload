@@ -35,6 +35,7 @@ class UploadBehavior extends Behavior
         }
 
         $this->config($configs);
+        $this->config('className', null);
 
         Type::map('upload.file', 'Josegonzalez\Upload\Database\Type\FileType');
         $schema = $this->_table->schema();
