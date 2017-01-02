@@ -7,7 +7,7 @@ Contents
    :maxdepth: 3
    :caption: Preface
 
-    Introduction <introduction>
+    Introduction <index>
     Installation <installation>
 
 .. _usage-docs:
