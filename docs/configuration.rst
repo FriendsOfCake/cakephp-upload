@@ -1,5 +1,5 @@
 Behavior configuration options
-------------------------------
+==============================
 
 This is a list of all the available configuration options which can be
 passed in under each field in your behavior configuration.

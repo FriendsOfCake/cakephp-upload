@@ -2,7 +2,7 @@ Examples
 --------
 
 Basic example
-~~~~~~~~~~~~~
+-------------
 
     Note: You may want to define the Upload behavior *before* the core
     Translate Behavior as they have been known to conflict with each
@@ -101,7 +101,8 @@ field must be added to store the directory of the file as follows:
     <?php echo $this->Form->end(); ?>
 
 Displaying links to files in your view
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------
+
 Once your files have been uploaded you can link to them using the ``HtmlHelper`` by specifying the path and using the file information from the database.
 
 This example uses the `default behaviour configuration <configuration.html>`__ using the model ``Example``.
@@ -109,7 +110,7 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
 .. code:: php
 
     <?php
-    // assuming an entity that has the following 
+    // assuming an entity that has the following
     // data that was set from your controller to your view
     $entity = new Entity([
         'photo' => 'imageFile.jpg',
@@ -117,7 +118,7 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
     ]);
     $this->set('entity', $entity);
 
-    // You could use the following to create a link to 
+    // You could use the following to create a link to
     // the image (with default settings in place of course)
     echo $this->Html->link('../files/example/image/' . $entity->photo_dir . '/' . $entity->photo);
     ?>

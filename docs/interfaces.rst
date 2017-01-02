@@ -1,12 +1,12 @@
 Upload Plugin Interfaces
---------------------------
+========================
 
 For advanced usage of the upload plugin, you will need to implement
 one or more of the followng interfaces.
 
 
 ProcessorInterface
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Fully-namespaced class name: ``Josegonzalez\Upload\File\Path\ProcessorInterface``
 
@@ -18,7 +18,7 @@ This interface is used to create a class that knows how to build paths for a giv
 Refer to ``Josegonzalez\Upload\File\Path\DefaultProcessor`` for more details.
 
 TransformerInterface
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 Fully-namespaced class name: ``Josegonzalez\Upload\File\Transformer\TransformerInterface``
 
@@ -31,7 +31,7 @@ Other than the constructor, it contains one method:
 Refer to ``Josegonzalez\Upload\File\Transformer\DefaultTransformer`` for more details. You may **also** wish to look at ``Josegonzalez\Upload\File\Transformer\SlugTransformer`` as an alternative.
 
 WriterInterface
-~~~~~~~~~~~~~~~
+---------------
 
 Fully-namespaced class name: ``Josegonzalez\Upload\File\Writer\WriterInterface``
 
