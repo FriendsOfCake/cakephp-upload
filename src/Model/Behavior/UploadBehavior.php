@@ -124,7 +124,12 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            $path = $this->getPathProcessor($entity, $entity->get($field), $field, $settings)->basepath();
+            $dirField = Hash::get($settings, 'fields.dir', 'dir');
+            if ($entity->has($dirField)) {
+                $path = $entity->get($dirField);
+            } else {
+                $path = $this->getPathProcessor($entity, $entity->get($field), $field, $settings)->basepath();
+            }
 
             $callback = Hash::get($settings, 'deleteCallback', null);
             if ($callback && is_callable($callback)) {

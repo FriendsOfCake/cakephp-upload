@@ -426,10 +426,14 @@ class UploadBehaviorTest extends TestCase
         $behavior->config($this->dataOk);
 
         $this->entity->expects($this->at(0))
+            ->method('has')
+            ->with('dir')
+            ->will($this->returnValue(false));
+        $this->entity->expects($this->at(1))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
-        $this->entity->expects($this->at(1))
+        $this->entity->expects($this->at(2))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -455,6 +459,42 @@ class UploadBehaviorTest extends TestCase
             ->willReturn([true]);
 
         $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+    }
+
+    public function testAfterDeletePrefersStoredPathOverPathProcessor()
+    {
+        $dir = '/some/path/';
+        $field = 'file.txt';
+
+        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $behavior->config($this->dataOk);
+
+        $this->entity->expects($this->at(0))
+            ->method('has')
+            ->with('dir')
+            ->will($this->returnValue(true));
+        $this->entity->expects($this->at(1))
+            ->method('get')
+            ->with('dir')
+            ->will($this->returnValue($dir));
+        $this->entity->expects($this->at(2))
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($field));
+
+        $behavior->expects($this->never())
+            ->method('getPathProcessor');
+        $behavior->expects($this->any())
+            ->method('getWriter')
+            ->will($this->returnValue($this->writer));
+
+        $this->writer->expects($this->any())
+            ->method('delete')
+            ->with([$dir . $field])
+            ->will($this->returnValue([true]));
+
+        $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testAfterDeleteNoDeleteCallback()
