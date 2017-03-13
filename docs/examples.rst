@@ -67,8 +67,14 @@ Basic example
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
 
-Using the above setup, uploaded files cannot be deleted. To do so, a
-field must be added to store the directory of the file as follows:
+Deleting files
+--------------
+
+Using the setup from the previous example, uploaded files can only be deleted as long as the path is configured to use
+static tokens. As soon as dynamic tokens are incorporated, like for example ``{day}``, the generated path will change
+over time, and files cannot be deleted anymore at a later point.
+
+In order to prevent such situations, a field must be added to store the directory of the file as follows:
 
 .. code:: sql
 
@@ -119,21 +125,8 @@ field must be added to store the directory of the file as follows:
     }
     ?>
 
-.. code:: php
-
-    <?php
-    /*
-       In the present example, these changes would be made in:
-       src/Template/Users/add.ctp
-       src/Template/Users/edit.ctp
-    */
-    ?>
-
-    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->input('username'); ?>
-        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
-        <?php echo $this->Form->input('photo_dir', ['type' => 'hidden']); ?>
-    <?php echo $this->Form->end(); ?>
+Using such a setup, the behavior will use the stored path value instead of generating the path dynamically when deleting
+files.
 
 Advanced example
 ----------------
