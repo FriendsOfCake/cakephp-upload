@@ -485,11 +485,11 @@ class UploadBehaviorTest extends TestCase
 
         $behavior->expects($this->never())
             ->method('getPathProcessor');
-        $behavior->expects($this->any())
+        $behavior->expects($this->once())
             ->method('getWriter')
             ->will($this->returnValue($this->writer));
 
-        $this->writer->expects($this->any())
+        $this->writer->expects($this->once())
             ->method('delete')
             ->with([$dir . $field])
             ->will($this->returnValue([true]));
