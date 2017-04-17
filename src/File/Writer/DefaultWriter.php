@@ -157,8 +157,6 @@ class DefaultWriter implements WriterInterface
      */
     public function getFilesystem($field, array $settings = [])
     {
-        debug($settings);
-
         $adapter = new Local(Hash::get($settings, 'filesystem.root', ROOT . DS));
         $adapter = Hash::get($settings, 'filesystem.adapter', $adapter);
         if (is_callable($adapter)) {
