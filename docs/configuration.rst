@@ -63,6 +63,7 @@ passed in under each field in your behavior configuration.
 
       - ``filesystem.root``: (default ``ROOT . DS``) Directory where files should be written to by default
       - ``filesystem.adapter``: (default Local Flysystem Adapter) A Flysystem-compatible adapter. Can also be a callable that returns an adapter.
+      - ``filesystem.visibility``: (default ``'public'``) Choose if file(s) should be stored either ``'public'`` or ``'private'``
 
 -  ``nameCallback``: A callable that can be used by the default pathProcessor to rename a file. Only handles original file naming.
 

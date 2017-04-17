@@ -157,6 +157,8 @@ class DefaultWriter implements WriterInterface
      */
     public function getFilesystem($field, array $settings = [])
     {
+        debug($settings);
+
         $adapter = new Local(Hash::get($settings, 'filesystem.root', ROOT . DS));
         $adapter = Hash::get($settings, 'filesystem.adapter', $adapter);
         if (is_callable($adapter)) {
@@ -165,7 +167,7 @@ class DefaultWriter implements WriterInterface
 
         if ($adapter instanceof AdapterInterface) {
             return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
-                'visibility' => AdapterInterface::VISIBILITY_PUBLIC
+                'visibility' => Hash::get($settings, 'filesystem.visibility', AdapterInterface::VISIBILITY_PUBLIC)
             ]));
         }
 
