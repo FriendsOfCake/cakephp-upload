@@ -143,4 +143,52 @@ class DefaultWriterTest extends TestCase
             ]
         ]);
     }
+
+    public function testFilesystemVisibilityDefault()
+    {
+        $fs = $this->writer->getFilesystem('field', [
+            'filesystem' => [
+                'adapter' => function () {
+                    return new VfsAdapter(new Vfs);
+                }
+            ]
+        ]);
+
+        $this->writer->writeFile($fs, $this->vfs->path('/tmp/tempfile'), 'file.txt');
+
+        $this->assertEquals('public', $fs->getVisibility('file.txt'));
+
+    }
+
+    public function testFilesystemVisibilityPublic()
+    {
+        $fs = $this->writer->getFilesystem('field', [
+            'filesystem' => [
+                'visibility' => 'public',
+                'adapter' => function () {
+                    return new VfsAdapter(new Vfs);
+                }
+            ]
+        ]);
+
+        $this->writer->writeFile($fs, $this->vfs->path('/tmp/tempfile'), 'file.txt');
+
+        $this->assertEquals('public', $fs->getVisibility('file.txt'));
+    }
+
+    public function testFilesystemVisibilityPrivate()
+    {
+        $fs = $this->writer->getFilesystem('field', [
+            'filesystem' => [
+                'visibility' => 'private',
+                'adapter' => function () {
+                    return new VfsAdapter(new Vfs);
+                }
+            ]
+        ]);
+
+        $this->writer->writeFile($fs, $this->vfs->path('/tmp/tempfile'), 'file.txt');
+
+        $this->assertEquals('private', $fs->getVisibility('file.txt'));
+    }
 }
