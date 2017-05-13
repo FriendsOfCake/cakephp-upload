@@ -10,9 +10,9 @@ Installation
 This plugin allows you to only load the validation rules that cover your needs.
 At this point there are 3 validation providers:
 
-    - UploadValidation (validation rules useful for any upload)
-    - ImageValidation (validation rules specifically for images)
-    - DefaultValidation (loads all of the above)
+- ``UploadValidation``: validation rules useful for any upload
+- ``ImageValidation``: validation rules specifically for images
+- ``DefaultValidation``: loads all of the above
 
 Since by default, no validation rules are loaded, you should start with that:
 
