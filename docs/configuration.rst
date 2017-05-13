@@ -6,18 +6,15 @@ passed in under each field in your behavior configuration.
 
 -  ``pathProcessor``: Returns a ProcessorInterface class name.
 
-   - Default: (string)
-     ``Josegonzalez\Upload\File\Path\DefaultProcessor``
+   - Default: (string) ``Josegonzalez\Upload\File\Path\DefaultProcessor``
 
 -  ``writer``: Returns a WriterInterface class name.
 
-   - Default: (string)
-      ``Josegonzalez\Upload\File\Writer\DefaultWriter``
+   - Default: (string) ``Josegonzalez\Upload\File\Writer\DefaultWriter``
 
 -  ``transformer``: Returns a TransformerInterface class name. Can also be a PHP `callable`.
 
-   - Default: (string)
-      ``Josegonzalez\Upload\File\Transformer\DefaultTransformer``
+   - Default: (string) ``Josegonzalez\Upload\File\Transformer\DefaultTransformer``
 
 -  ``path``: A path relative to the ``filesystem.root``.
 
@@ -57,12 +54,12 @@ passed in under each field in your behavior configuration.
 
 - ``filesystem``: An array of configuration info for configuring the writer
 
-   If using the DefaultWriter, the following options are available:
+  If using the DefaultWriter, the following options are available:
 
-   - Options:
+  - Options:
 
-     - ``filesystem.root``: (default ``ROOT . DS``) Directory where files should be written to by default
-     - ``filesystem.adapter``: (default Local Flysystem Adapter) A Flysystem-compatible adapter. Can also be a callable that returns an adapter.
+    - ``filesystem.root``: (default ``ROOT . DS``) Directory where files should be written to by default
+    - ``filesystem.adapter``: (default Local Flysystem Adapter) A Flysystem-compatible adapter. Can also be a callable that returns an adapter.
 
 -  ``nameCallback``: A callable that can be used by the default pathProcessor to rename a file. Only handles original file naming.
 
