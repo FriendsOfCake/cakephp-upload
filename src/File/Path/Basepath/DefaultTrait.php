@@ -27,6 +27,17 @@ trait DefaultTrait
             }
         }
 
+        if (strpos($path, '{aiPrimaryKey}') !== false) {
+            $aiPrimaryKey = $this->table->find()
+        		->select([$this->table->primaryKey()])
+        		->contain([])
+        		->order([$this->table->primaryKey() => 'DESC'])
+        		->hydrate(false)
+        		->first()[$this->table->primaryKey()] + 1;
+        } else {
+            $aiPrimaryKey = null;
+        }
+
         $replacements = [
             '{primaryKey}' => $this->entity->get($this->table->primaryKey()),
             '{model}' => $this->table->alias(),
@@ -37,6 +48,7 @@ trait DefaultTrait
             '{day}' => date("d"),
             '{time}' => time(),
             '{microtime}' => microtime(),
+            '{aiPrimaryKey}' => $aiPrimaryKey,
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
 
