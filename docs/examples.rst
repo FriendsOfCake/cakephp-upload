@@ -54,11 +54,6 @@ Basic example
         <?php echo $this->Form->input('username'); ?>
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
-    <?php // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous ?>
-        <?php // echo $this->Form->create('User', ['type' => 'file']); ?>
-        <?php // echo $this->Form->input('User.username'); ?>
-        <?php // echo $this->Form->input('User.photo', ['type' => 'file']); ?>
-    <?php // echo $this->Form->end(); ?>
 
 Using the above setup, uploaded files cannot be deleted. To do so, a
 field must be added to store the directory of the file as follows:
@@ -116,14 +111,6 @@ field must be added to store the directory of the file as follows:
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
         <?php echo $this->Form->input('photo_dir', ['type' => 'hidden']); ?>
     <?php echo $this->Form->end(); ?>
-    <?php // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous ?>
-    <?php // echo $this->Form->create('User', ['type' => 'file']); ?>
-        <?php // echo $this->Form->input('User.username'); ?>
-        <?php // echo $this->Form->input('User.photo', ['type' => 'file']); ?>
-        <?php // echo $this->Form->input('User.photo_dir', ['type' => 'hidden']); ?>
-    <?php // echo $this->Form->end(); ?>
-
-
 
 Displaying links to files in your view
 --------------------------------------
