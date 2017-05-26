@@ -29,6 +29,12 @@ Basic example
             $this->setTable('users');
             $this->setDisplayField('name');
             $this->setPrimaryKey('id');
+
+            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
+            // $this->table('users');
+            // $this->displayField('name');
+            // $this->primaryKey('id');
+
             $this->addBehavior('Josegonzalez/Upload.Upload', [
                 // You can configure as many upload fields as possible,
                 // where the pattern is `field` => `config`
@@ -45,9 +51,14 @@ Basic example
 .. code:: php
 
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-    <?php echo $this->Form->input('username'); ?>
-    <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+        <?php echo $this->Form->input('username'); ?>
+        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
+    <?php // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous ?>
+        <?php // echo $this->Form->create('User', ['type' => 'file']); ?>
+        <?php // echo $this->Form->input('User.username'); ?>
+        <?php // echo $this->Form->input('User.photo', ['type' => 'file']); ?>
+    <?php // echo $this->Form->end(); ?>
 
 Using the above setup, uploaded files cannot be deleted. To do so, a
 field must be added to store the directory of the file as follows:
@@ -74,9 +85,15 @@ field must be added to store the directory of the file as follows:
     {
         public function initialize(array $config)
         {
-            $this->table('users');
-            $this->displayField('name');
-            $this->primaryKey('id');
+            $this->setTable('users');
+            $this->setDisplayField('name');
+            $this->setPrimaryKey('id');
+
+            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
+            // $this->table('users');
+            // $this->displayField('name');
+            // $this->primaryKey('id');
+
             $this->addBehavior('Josegonzalez/Upload.Upload', [
                 'photo' => [
                     'fields' => [
@@ -99,6 +116,14 @@ field must be added to store the directory of the file as follows:
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
         <?php echo $this->Form->input('photo_dir', ['type' => 'hidden']); ?>
     <?php echo $this->Form->end(); ?>
+    <?php // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous ?>
+    <?php // echo $this->Form->create('User', ['type' => 'file']); ?>
+        <?php // echo $this->Form->input('User.username'); ?>
+        <?php // echo $this->Form->input('User.photo', ['type' => 'file']); ?>
+        <?php // echo $this->Form->input('User.photo_dir', ['type' => 'hidden']); ?>
+    <?php // echo $this->Form->end(); ?>
+
+
 
 Displaying links to files in your view
 --------------------------------------
