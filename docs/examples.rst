@@ -27,12 +27,12 @@ Basic example
         public function initialize(array $config)
         {
             $this->setTable('users');
-            $this->setDisplayField('name');
+            $this->setDisplayField('username');
             $this->setPrimaryKey('id');
 
             // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
             // $this->table('users');
-            // $this->displayField('name');
+            // $this->displayField('username');
             // $this->primaryKey('id');
 
             $this->addBehavior('Josegonzalez/Upload.Upload', [
@@ -81,12 +81,12 @@ field must be added to store the directory of the file as follows:
         public function initialize(array $config)
         {
             $this->setTable('users');
-            $this->setDisplayField('name');
+            $this->setDisplayField('username');
             $this->setPrimaryKey('id');
 
             // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
             // $this->table('users');
-            // $this->displayField('name');
+            // $this->displayField('username');
             // $this->primaryKey('id');
 
             $this->addBehavior('Josegonzalez/Upload.Upload', [
