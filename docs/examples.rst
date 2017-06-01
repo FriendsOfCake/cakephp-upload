@@ -71,8 +71,6 @@ field must be added to store the directory of the file as follows:
 .. code:: php
 
     <?php
-
-    <?php
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
