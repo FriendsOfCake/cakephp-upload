@@ -145,6 +145,12 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
 .. code:: php
 
     <?php
+    /*
+       In the present example, variations on these changes would be made in:
+       src/Template/Users/view.ctp
+       src/Template/Users/index.ctp
+    */
+
     // assuming an entity that has the following
     // data that was set from your controller to your view
     $entity = new Entity([
