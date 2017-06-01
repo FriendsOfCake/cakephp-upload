@@ -19,6 +19,11 @@ Basic example
 .. code:: php
 
     <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Model/Table/UsersTable.php
+    */
+
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
@@ -50,6 +55,13 @@ Basic example
 
 .. code:: php
 
+    <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Template/Users/add.ctp
+       src/Template/Users/edit.ctp
+    */
+    ?>
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
         <?php echo $this->Form->input('username'); ?>
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
@@ -71,6 +83,11 @@ field must be added to store the directory of the file as follows:
 .. code:: php
 
     <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Model/Table/UsersTable.php
+    */
+
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
@@ -103,6 +120,14 @@ field must be added to store the directory of the file as follows:
     ?>
 
 .. code:: php
+
+    <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Template/Users/add.ctp
+       src/Template/Users/edit.ctp
+    */
+    ?>
 
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
         <?php echo $this->Form->input('username'); ?>
