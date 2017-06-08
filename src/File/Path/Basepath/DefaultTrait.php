@@ -16,7 +16,7 @@ trait DefaultTrait
      */
     public function basepath()
     {
-        $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
+        $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}{primaryKey}';
         $path = Hash::get($this->settings, 'path', $defaultPath);
         if (strpos($path, '{primaryKey}') !== false) {
             if ($this->entity->isNew()) {
