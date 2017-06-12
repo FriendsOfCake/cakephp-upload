@@ -11,8 +11,8 @@ class DefaultTransformerTest extends TestCase
 {
     public function setup()
     {
-        $entity = $this->getMock('Cake\ORM\Entity');
-        $table = $this->getMock('Cake\ORM\Table');
+        $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $field = 'field';
         $settings = [];

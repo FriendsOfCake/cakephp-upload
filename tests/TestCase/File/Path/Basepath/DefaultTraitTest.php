@@ -11,8 +11,8 @@ class DefaultTraitTest extends TestCase
     public function testNoSpecialConfiguration()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = [];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -25,8 +25,8 @@ class DefaultTraitTest extends TestCase
     public function testCustomPath()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -39,8 +39,8 @@ class DefaultTraitTest extends TestCase
     public function testExistingEntityWithPrimaryKey()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}{primaryKey}/'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -55,8 +55,8 @@ class DefaultTraitTest extends TestCase
         $this->setExpectedException('LogicException', '{primaryKey} substitution not allowed for new entities');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}{primaryKey}/'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -69,8 +69,8 @@ class DefaultTraitTest extends TestCase
         $this->setExpectedException('LogicException', '{primaryKey} substitution not valid for composite primary keys');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}{primaryKey}/'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -82,8 +82,8 @@ class DefaultTraitTest extends TestCase
     public function testYearWithMonthPath()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{year}{DS}{month}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -94,8 +94,8 @@ class DefaultTraitTest extends TestCase
     public function testYearWithMonthAndDayPath()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{year}{DS}{month}{DS}{day}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -103,12 +103,11 @@ class DefaultTraitTest extends TestCase
         $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/' . date("d") . '/', $mock->basepath());
     }
 
-
     public function testModelFieldYearWithMonthAndDayPath()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field}{DS}{year}{DS}{month}{DS}{day}{DS}'];
 
         $mock->data = ['name' => 'filename'];
@@ -124,8 +123,8 @@ class DefaultTraitTest extends TestCase
         $this->setExpectedException('LogicException', 'Field value for substitution is missing: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -138,8 +137,8 @@ class DefaultTraitTest extends TestCase
         $this->setExpectedException('LogicException', 'Field value for substitution must be a integer, float, string or boolean: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -152,8 +151,8 @@ class DefaultTraitTest extends TestCase
         $this->setExpectedException('LogicException', 'Field value for substitution must be non-zero in length: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
@@ -164,8 +163,8 @@ class DefaultTraitTest extends TestCase
     public function testFieldValue()
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
-        $mock->entity = $this->getMock('Cake\ORM\Entity');
-        $mock->table = $this->getMock('Cake\ORM\Table');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}{DS}{field-value:field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';

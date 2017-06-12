@@ -22,8 +22,8 @@ class DefaultWriterTest extends TestCase
 
     public function setup()
     {
-        $this->entity = $this->getMock('Cake\ORM\Entity');
-        $this->table = $this->getMock('Cake\ORM\Table');
+        $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $this->data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
         $this->field = 'field';
         $this->settings = [
@@ -65,10 +65,13 @@ class DefaultWriterTest extends TestCase
 
     public function testDelete()
     {
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->at(0))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->at(1))->method('delete')->will($this->returnValue(false));
-        $writer = $this->getMock('Josegonzalez\Upload\File\Writer\DefaultWriter', ['getFilesystem'], [$this->table, $this->entity, $this->data, $this->field, $this->settings]);
+        $writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
+            ->setMethods(['getFilesystem'])
+            ->setConstructorArgs([$this->table, $this->entity, $this->data, $this->field, $this->settings])
+            ->getMock();
         $writer->expects($this->any())->method('getFilesystem')->will($this->returnValue($filesystem));
 
         $this->assertEquals([], $writer->delete([]));
@@ -83,19 +86,19 @@ class DefaultWriterTest extends TestCase
 
     public function testWriteFile()
     {
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->once())->method('rename')->will($this->returnValue(true));
         $this->assertTrue($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(false));
         $filesystem->expects($this->exactly(2))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->never())->method('rename');
         $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->once())->method('rename')->will($this->returnValue(false));
@@ -104,11 +107,11 @@ class DefaultWriterTest extends TestCase
 
     public function testDeletePath()
     {
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->any())->method('delete')->will($this->returnValue(true));
         $this->assertTrue($this->writer->deletePath($filesystem, 'path'));
 
-        $filesystem = $this->getMock('League\Flysystem\FilesystemInterface');
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
         $filesystem->expects($this->any())->method('delete')->will($this->returnValue(false));
         $this->assertFalse($this->writer->deletePath($filesystem, 'path'));
     }

@@ -9,8 +9,8 @@ class DefaultProcessorTest extends TestCase
 {
     public function testIsProcessorInterface()
     {
-        $table = $this->getMock('Cake\ORM\Table');
-        $entity = $this->getMock('Cake\ORM\Entity');
+        $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $data = ['name' => 'filename'];
         $field = 'field';
         $settings = [];
