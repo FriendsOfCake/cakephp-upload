@@ -466,8 +466,11 @@ class UploadBehaviorTest extends TestCase
         $dir = '/some/path/';
         $field = 'file.txt';
 
-        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
-        $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->setMethods($methods)
+            ->setConstructorArgs([$this->table, $this->dataOk])
+            ->getMock();
         $behavior->config($this->dataOk);
 
         $this->entity->expects($this->at(0))
