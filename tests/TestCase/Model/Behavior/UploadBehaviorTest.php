@@ -102,7 +102,7 @@ class UploadBehaviorTest extends TestCase
               ->method('schema')
               ->will($this->returnValue($schema));
 
-        $methods = array_diff($this->behaviorMethods, ['initialize', 'config']);
+        $methods = array_diff($this->behaviorMethods, ['initialize', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $settings], '', false);
         $reflection = new ReflectionClass($behavior);
         $property = $reflection->getProperty('_table');
@@ -131,7 +131,7 @@ class UploadBehaviorTest extends TestCase
             ->method('schema')
             ->will($this->returnValue($schema));
 
-        $methods = array_diff($this->behaviorMethods, ['initialize', 'config']);
+        $methods = array_diff($this->behaviorMethods, ['initialize', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $settings], '', false);
         $reflection = new ReflectionClass($behavior);
         $property = $reflection->getProperty('_table');
@@ -215,7 +215,7 @@ class UploadBehaviorTest extends TestCase
     {
         $originalValue = rand(1000, 9999);
 
-        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
@@ -241,7 +241,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testBeforeSaveWriteFail()
     {
-        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
@@ -266,7 +266,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testBeforeSaveOk()
     {
-        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
         $behavior->config($this->settings);
         $this->entity->expects($this->any())
@@ -294,7 +294,7 @@ class UploadBehaviorTest extends TestCase
         $settings = $this->settings;
         $settings['field']['restoreValueOnFailure'] = false;
 
-        $methods = array_diff($this->behaviorMethods, ['config', 'beforeSave']);
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->settings]);
         $behavior->config($settings);
         $this->entity->expects($this->never())->method('getOriginal');
@@ -304,7 +304,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testAfterDeleteOk()
     {
-        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
         $behavior->config($this->dataOk);
 
@@ -323,7 +323,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testAfterDeleteFail()
     {
-        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
         $behavior->config($this->dataOk);
 
@@ -342,7 +342,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testAfterDeleteSkip()
     {
-        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataError]);
         $behavior->config($this->dataError);
 
@@ -360,7 +360,7 @@ class UploadBehaviorTest extends TestCase
     {
         $this->entity->field = rand(1000, 9999);
         $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
-        $methods = array_diff($this->behaviorMethods, ['config', 'afterDelete']);
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$this->table, $this->dataOk]);
         $behavior->config($this->dataOk);
 
