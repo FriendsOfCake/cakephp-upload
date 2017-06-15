@@ -125,6 +125,21 @@ In order to prevent such situations, a field must be added to store the director
     }
     ?>
 
+.. code:: php
+
+    <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Template/Users/add.ctp
+       src/Template/Users/edit.ctp
+    */
+    ?>
+
+    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
+        <?php echo $this->Form->input('username'); ?>
+        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+    <?php echo $this->Form->end(); ?>
+
 Using such a setup, the behavior will use the stored path value instead of generating the path dynamically when deleting
 files.
 
