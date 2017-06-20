@@ -126,9 +126,15 @@ class UploadBehavior extends Behavior
 
             $path = $this->getPathProcessor($entity, $entity->{$field}, $field, $settings)->basepath();
 
-            $file = [$path . $entity->{$field}];
+            $callback = Hash::get($settings, 'deleteCallback', false);
+            if ($callback && is_callable($callback)) {
+                $files = $callback($path, $entity, $field, $settings);
+            } else {
+                $files = [$path . $entity->{$field}];
+            }
+
             $writer = $this->getWriter($entity, [], $field, $settings);
-            $success = $writer->delete($file);
+            $success = $writer->delete($files);
 
             if ((new Collection($success))->contains(false)) {
                 return false;

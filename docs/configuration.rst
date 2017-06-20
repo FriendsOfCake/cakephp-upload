@@ -76,6 +76,18 @@ passed in under each field in your behavior configuration.
 
    -  Default: (boolean) ``true``
 
+-  ``deleteCallback``: A callable that can be used to delete different versions of the file.
+
+   -  Default: (boolean) ``false``
+   -  Available arguments:
+
+      -  ``string $path``: Basepath of the file you want to delete
+      -  ``object $entity``: The entity you want to delete
+      -  ``string $field``: The field for which data will be removed
+      -  ``array $settings``: UploadBehavior settings for the current field
+
+   -  Return: (array) the new name for the file
+
 -  ``restoreValueOnFailure``: Restores original value of the current field when uploaded file has error
 
    - Defaults: (boolean) ``true``
