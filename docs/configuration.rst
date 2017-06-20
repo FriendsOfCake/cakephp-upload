@@ -86,7 +86,7 @@ passed in under each field in your behavior configuration.
       -  ``string $field``: The field for which data will be removed
       -  ``array $settings``: UploadBehavior settings for the current field
 
-   -  Return: (array) the new name for the file
+   -  Return: (array) the files you want to be deleted
 
 -  ``restoreValueOnFailure``: Restores original value of the current field when uploaded file has error
 
