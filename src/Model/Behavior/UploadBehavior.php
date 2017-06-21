@@ -126,7 +126,7 @@ class UploadBehavior extends Behavior
 
             $path = $this->getPathProcessor($entity, $entity->{$field}, $field, $settings)->basepath();
 
-            $callback = Hash::get($settings, 'deleteCallback', false);
+            $callback = Hash::get($settings, 'deleteCallback', null);
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {
