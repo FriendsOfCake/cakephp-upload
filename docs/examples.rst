@@ -135,6 +135,118 @@ field must be added to store the directory of the file as follows:
         <?php echo $this->Form->input('photo_dir', ['type' => 'hidden']); ?>
     <?php echo $this->Form->end(); ?>
 
+Advanced example
+----------------
+
+In this example we'll cover:
+- custom database fields
+- a nameCallback which makes the filename lowercase only
+- a custom transformer where we generate a thumbnail of the uploaded image
+- delete the related files when the database record gets deleted
+- a deleteCallback to ensure the generated thumbnail gets removed together with the original
+
+This example uses the Imagine library. It can be installed through composer:
+
+.. code::
+
+    composer require imagine/imagine
+
+.. code:: sql
+
+    CREATE table users (
+        id int(10) unsigned NOT NULL auto_increment,
+        username varchar(20) NOT NULL,
+        photo varchar(255),
+        photo_dir varchar(255),
+        photo_size int(11),
+        photo_type varchar(255)
+    );
+
+.. code:: php
+
+    <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Model/Table/UsersTable.php
+    */
+
+    namespace App\Model\Table;
+    use Cake\ORM\Table;
+
+    class UsersTable extends Table
+    {
+        public function initialize(array $config)
+        {
+            $this->setTable('users');
+            $this->setDisplayField('username');
+            $this->setPrimaryKey('id');
+
+            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
+            // $this->table('users');
+            // $this->displayField('username');
+            // $this->primaryKey('id');
+
+            $this->addBehavior('Josegonzalez/Upload.Upload', [
+                'photo' => [
+                    'fields' => [
+                        'dir' => 'photo_dir',
+                        'size' => 'photo_size',
+                        'type' => 'photo_type'
+                    ],
+                    'nameCallback' => function ($data, $settings) {
+                        return strtolower($data['name']);
+                    },
+                    'transformer' =>  function ($table, $entity, $data, $field, $settings) {
+                        $extension = pathinfo($data['name'], PATHINFO_EXTENSION);
+
+                        // Store the thumbnail in a temporary file
+                        $tmp = tempnam(sys_get_temp_dir(), 'upload') . '.' . $extension;
+
+                        // Use the Imagine library to DO THE THING
+                        $size = new \Imagine\Image\Box(40, 40);
+                        $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
+                        $imagine = new \Imagine\Gd\Imagine();
+
+                        // Save that modified file to our temp file
+                        $imagine->open($data['tmp_name'])
+                            ->thumbnail($size, $mode)
+                            ->save($tmp);
+
+                        // Now return the original *and* the thumbnail
+                        return [
+                            $data['tmp_name'] => $data['name'],
+                            $tmp => 'thumbnail-' . $data['name'],
+                        ];
+                    },
+                    'deleteCallback' => function ($path, $entity, $field, $settings) {
+                        // When deleting the entity, both the original and the thumbnail will be removed
+                        // when keepFilesOnDelete is set to false
+                        return [
+                            $path . $entity->{$field},
+                            $path . 'thumbnail-' . $entity->{$field}
+                        ];
+                    },
+                    'keepFilesOnDelete' => false
+                ]
+            ]);
+        }
+    }
+    ?>
+
+.. code:: php
+
+    <?php
+    /*
+       In the present example, these changes would be made in:
+       src/Template/Users/add.ctp
+       src/Template/Users/edit.ctp
+    */
+    ?>
+    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
+        <?php echo $this->Form->input('username'); ?>
+        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+    <?php echo $this->Form->end(); ?>
+
 Displaying links to files in your view
 --------------------------------------
 

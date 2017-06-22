@@ -28,7 +28,8 @@ class UploadBehaviorTest extends TestCase
                 'error' => UPLOAD_ERR_OK,
                 'size' => 1,
                 'type' => 'text',
-                'keepFilesOnDelete' => false
+                'keepFilesOnDelete' => false,
+                'deleteCallback' => null
             ]
         ];
         $this->dataError = [
@@ -438,6 +439,76 @@ class UploadBehaviorTest extends TestCase
         $this->writer->expects($this->once())->method('delete')
             ->with([$path . $this->entity->field])
             ->willReturn([true]);
+
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+    }
+
+    public function testAfterDeleteNoDeleteCallback()
+    {
+        $this->entity->field = rand(1000, 9999);
+        $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->setMethods($methods)
+            ->setConstructorArgs([$this->table, $this->dataOk])
+            ->getMock();
+
+        $this->dataOk['field']['deleteCallback'] = null;
+
+        $behavior->config($this->dataOk);
+        $behavior->expects($this->once())->method('getPathProcessor')
+            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->willReturn($this->processor);
+        $this->processor->expects($this->once())->method('basepath')
+            ->willReturn($path);
+        $behavior->expects($this->once())->method('getWriter')
+            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->willReturn($this->writer);
+        $this->writer->expects($this->once())
+            ->method('delete')
+            ->with([
+                $path . $this->entity->field
+            ])
+            ->willReturn([true, true, true]);
+
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+    }
+
+    public function testAfterDeleteUsesDeleteCallback()
+    {
+        $this->entity->field = rand(1000, 9999);
+        $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->setMethods($methods)
+            ->setConstructorArgs([$this->table, $this->dataOk])
+            ->getMock();
+
+        $this->dataOk['field']['deleteCallback'] = function ($path, $entity, $field, $settings) {
+            return [
+                $path . $entity->{$field},
+                $path . 'sm-' . $entity->{$field},
+                $path . 'lg-' . $entity->{$field}
+            ];
+        };
+
+        $behavior->config($this->dataOk);
+        $behavior->expects($this->once())->method('getPathProcessor')
+            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->willReturn($this->processor);
+        $this->processor->expects($this->once())->method('basepath')
+            ->willReturn($path);
+        $behavior->expects($this->once())->method('getWriter')
+            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->willReturn($this->writer);
+        $this->writer->expects($this->once())
+            ->method('delete')
+            ->with([
+                $path . $this->entity->field,
+                $path . 'sm-' . $this->entity->field,
+                $path . 'lg-' . $this->entity->field
+            ])
+            ->willReturn([true, true, true]);
 
         $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
     }
