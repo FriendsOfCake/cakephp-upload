@@ -1,5 +1,5 @@
 Examples
---------
+========
 
 Basic example
 -------------
@@ -162,6 +162,30 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
     // You could use the following to create a link to
     // the image (with default settings in place of course)
     echo $this->Html->link('../files/example/image/' . $entity->photo_dir . '/' . $entity->photo);
+    ?>
+
+For Windows systems you'll have to build a workaround as Windows systems use backslashes as directory separator which isn't useable in URLs.
+
+.. code:: php
+
+    <?php
+    /*
+       In the present example, variations on these changes would be made in:
+       src/Template/Users/view.ctp
+       src/Template/Users/index.ctp
+    */
+
+    // assuming an entity that has the following
+    // data that was set from your controller to your view
+    $entity = new Entity([
+        'photo' => 'imageFile.jpg',
+        'photo_dir' => '7'
+    ]);
+    $this->set('entity', $entity);
+
+    // You could use the following to create a link to
+    // the image (with default settings in place of course)
+    echo $this->Html->link('../files/example/image/' . str_replace('\', '/', $entity->photo_dir) . '/' . $entity->photo);
     ?>
 
 You can optionally create a custom helper to handle url generation, or contain that within your entity. As it is impossible to detect what the actual url for a file should be, such functionality will *never* be made available via this plugin.
