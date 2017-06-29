@@ -124,7 +124,7 @@ class DefaultWriter implements WriterInterface
             $success = $filesystem->rename($tempPath, $path);
         }
         $this->deletePath($filesystem, $tempPath);
-        fclose($stream);
+        is_resource($stream) && fclose($stream);
 
         return $success;
     }
