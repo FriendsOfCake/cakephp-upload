@@ -36,7 +36,7 @@ trait DefaultTrait
             '{month}' => date("m"),
             '{day}' => date("d"),
             '{time}' => time(),
-            '{microtime}' => microtime(),
+            '{microtime}' => microtime(true),
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
 
