@@ -142,7 +142,7 @@ class UploadBehavior extends Behavior
             $success = $writer->delete($files);
 
             if ((new Collection($success))->contains(false)) {
-                return false;
+                continue;
             }
         }
     }
