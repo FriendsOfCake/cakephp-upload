@@ -139,11 +139,7 @@ class UploadBehavior extends Behavior
             }
 
             $writer = $this->getWriter($entity, [], $field, $settings);
-            $success = $writer->delete($files);
-
-            if ((new Collection($success))->contains(false)) {
-                continue;
-            }
+            $writer->delete($files);
         }
     }
 
