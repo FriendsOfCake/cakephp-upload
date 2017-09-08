@@ -369,7 +369,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('delete')
                      ->will($this->returnValue([true]));
 
-        $this->assertNull($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testAfterDeleteFail()
