@@ -119,6 +119,8 @@ class UploadBehavior extends Behavior
      */
     public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
+        $result = true;
+
         foreach ($this->config() as $field => $settings) {
             if (Hash::get($settings, 'keepFilesOnDelete', true)) {
                 continue;
@@ -139,8 +141,14 @@ class UploadBehavior extends Behavior
             }
 
             $writer = $this->getWriter($entity, [], $field, $settings);
-            $writer->delete($files);
+            $success = $writer->delete($files);
+
+            if ($result && (new Collection($success))->contains(false)) {
+                $result = false;
+            }
         }
+
+        return $result;
     }
 
     /**
