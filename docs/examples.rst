@@ -66,6 +66,29 @@ Basic example
         <?php echo $this->Form->input('username'); ?>
         <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
+    
+    Note: If you used *bake* to generate MVC structure after creating 
+    the users table, you will need to remove the default scalar validation
+    for the photos field. 
+    
+.. code:: php
+    public function validationDefault(Validator $validator)
+    {
+        $validator
+            ->integer('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
+            ->scalar('username')
+            ->allowEmpty('username');
+
+        $validator
+            // remove ->scalar('photo')
+            ->allowEmpty('photo');
+
+        return $validator;
+    }
+    ?>
 
 Deleting files
 --------------
