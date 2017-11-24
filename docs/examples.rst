@@ -224,7 +224,7 @@ This example uses the Imagine library. It can be installed through composer:
                         'size' => 'photo_size',
                         'type' => 'photo_type'
                     ],
-                    'nameCallback' => function ($data, $settings) {
+                    'nameCallback' => function ($table, $entity, $data, $field, $settings) {
                         return strtolower($data['name']);
                     },
                     'transformer' =>  function ($table, $entity, $data, $field, $settings) {
