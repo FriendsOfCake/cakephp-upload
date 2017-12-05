@@ -67,7 +67,10 @@ passed in under each field in your behavior configuration.
    -  Default: ``NULL``
    -  Available arguments:
 
+      -  ``Table $table``: The table of the current entity
+      -  ``Entity $entity``: The entity you want to add/edit
       -  ``array $data``: The upload data
+      -  ``string $field``: The field for which data will be added/edited
       -  ``array $settings``: UploadBehavior settings for the current field
 
    -  Return: (string) the new name for the file
