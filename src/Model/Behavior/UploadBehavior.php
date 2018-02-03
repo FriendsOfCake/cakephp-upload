@@ -16,6 +16,9 @@ use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
 {
+    private $protectedFieldNames = [
+        'priority',
+    ];
 
     /**
      * Initialize hook
@@ -80,6 +83,10 @@ class UploadBehavior extends Behavior
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         foreach ($this->config() as $field => $settings) {
+            if (in_array($field, $this->protectedFieldNames)) {
+                continue;
+            }
+
             if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
                 if (Hash::get($settings, 'restoreValueOnFailure', true)) {
                     $entity->set($field, $entity->getOriginal($field));

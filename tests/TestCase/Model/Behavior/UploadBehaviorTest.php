@@ -347,7 +347,23 @@ class UploadBehaviorTest extends TestCase
         $behavior->config($settings);
         $this->entity->expects($this->never())->method('getOriginal');
         $this->entity->expects($this->never())->method('set');
+
         $behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject);
+    }
+
+    public function testBeforeSaveWithProtectedFieldName()
+    {
+        $settings = $this->settings;
+        $settings['priority'] = 11;
+
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->setMethods($methods)
+            ->setConstructorArgs([$this->table, $this->settings])
+            ->getMock();
+        $behavior->config($settings);
+
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
 
     public function testAfterDeleteOk()
