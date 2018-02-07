@@ -1,5 +1,17 @@
+Configuration
+=============
+
+Protected field names
+---------------------
+
+As this plugin is a Behavior, there are some field names you can not use
+because they are used by the internal CakePHP system. Please do not these
+field names:
+
+- priority
+
 Behavior configuration options
-==============================
+------------------------------
 
 This is a list of all the available configuration options which can be
 passed in under each field in your behavior configuration.
