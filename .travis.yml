@@ -4,6 +4,8 @@ php:
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
+  - 7.2
 
 sudo: false
 
@@ -28,6 +30,9 @@ matrix:
     - php: 5.5
       env: COVERALLS=1 DEFAULT=0
 
+    - php: 5.5
+      env: PREFER_LOWEST=1
+
     - php: hhvm
       env: HHVM=1 DB=sqlite db_dsn='sqlite:///:memory:'
 
@@ -36,7 +41,8 @@ matrix:
 
 before_script:
   - composer self-update
-  - composer install --prefer-source --no-interaction --dev
+  - sh -c "if [ '$PREFER_LOWEST' != '1' ]; then composer install --prefer-source --no-interaction --dev; fi"
+  - sh -c "if [ '$PREFER_LOWEST' = '1' ]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi"  
 
   - sh -c "if [ '$DB' = 'mysql' ]; then if [ '$DOCKER' = '1' ]; then apt-get -qq install -qq -y mysql-server && service mysql start; fi; mysql -e 'CREATE DATABASE cakephp_test;'; fi"
 
