@@ -129,7 +129,7 @@ class UploadBehavior extends Behavior
         $result = true;
 
         foreach ($this->config() as $field => $settings) {
-            if (Hash::get($settings, 'keepFilesOnDelete', true)) {
+            if (in_array($field, $this->protectedFieldNames) || Hash::get($settings, 'keepFilesOnDelete', true)) {
                 continue;
             }
 

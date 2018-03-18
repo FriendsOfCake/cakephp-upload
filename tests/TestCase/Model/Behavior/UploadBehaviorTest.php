@@ -586,6 +586,27 @@ class UploadBehaviorTest extends TestCase
         $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
     }
 
+    public function testAfterDeleteWithProtectedFieldName()
+    {
+        $settings = $this->settings;
+        $settings['priority'] = 11;
+
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->setMethods($methods)
+            ->setConstructorArgs([$this->table, $settings])
+            ->getMock();
+
+        $behavior->expects($this->any())
+            ->method('getWriter')
+            ->will($this->returnValue($this->writer));
+        $this->writer->expects($this->any())
+            ->method('delete')
+            ->will($this->returnValue([true]));
+
+        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+    }
+
     public function testGetWriter()
     {
         $processor = $this->behavior->getWriter($this->entity, [], 'field', []);
