@@ -5,7 +5,7 @@ Protected field names
 ---------------------
 
 As this plugin is a Behavior, there are some field names you can not use
-because they are used by the internal CakePHP system. Please do not these
+because they are used by the internal CakePHP system. Please do not use these
 field names:
 
 - priority
