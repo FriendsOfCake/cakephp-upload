@@ -1,8 +1,7 @@
 <?php
 namespace Josegonzalez\Upload\File\Transformer;
 
-use Cake\Utility\Inflector;
-use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
+use Cake\Utility\Text;
 
 class SlugTransformer extends DefaultTransformer
 {
@@ -25,7 +24,7 @@ class SlugTransformer extends DefaultTransformer
     public function transform()
     {
         $filename = pathinfo($this->data['name'], PATHINFO_FILENAME);
-        $filename = Inflector::slug($filename, '-');
+        $filename = Text::slug($filename, '-');
 
         $ext = pathinfo($this->data['name'], PATHINFO_EXTENSION);
         if (!empty($ext)) {

@@ -22,15 +22,15 @@ trait DefaultTrait
             if ($this->entity->isNew()) {
                 throw new LogicException('{primaryKey} substitution not allowed for new entities');
             }
-            if (is_array($this->table->primaryKey())) {
+            if (is_array($this->table->getPrimaryKey())) {
                 throw new LogicException('{primaryKey} substitution not valid for composite primary keys');
             }
         }
 
         $replacements = [
-            '{primaryKey}' => $this->entity->get($this->table->primaryKey()),
-            '{model}' => $this->table->alias(),
-            '{table}' => $this->table->table(),
+            '{primaryKey}' => $this->entity->get($this->table->getPrimaryKey()),
+            '{model}' => $this->table->getAlias(),
+            '{table}' => $this->table->getTable(),
             '{field}' => $this->field,
             '{year}' => date("Y"),
             '{month}' => date("m"),
