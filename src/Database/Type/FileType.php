@@ -1,6 +1,7 @@
 <?php
 namespace Josegonzalez\Upload\Database\Type;
 
+use Cake\Database\Driver;
 use Cake\Database\Type;
 
 class FileType extends Type
@@ -15,6 +16,22 @@ class FileType extends Type
      * @return mixed Converted value.
      */
     public function marshal($value)
+    {
+        return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toDatabase($value, Driver $driver)
+    {
+        return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toPHP($value, Driver $driver)
     {
         return $value;
     }
