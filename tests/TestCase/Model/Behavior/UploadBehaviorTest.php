@@ -178,7 +178,7 @@ class UploadBehaviorTest extends TestCase
 
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $table->expects($this->once())
-                    ->method('validator')
+                    ->method('getValidator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
@@ -204,7 +204,7 @@ class UploadBehaviorTest extends TestCase
 
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $table->expects($this->once())
-                    ->method('validator')
+                    ->method('getValidator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
@@ -230,7 +230,7 @@ class UploadBehaviorTest extends TestCase
 
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $table->expects($this->once())
-                    ->method('validator')
+                    ->method('getValidator')
                     ->will($this->returnValue($validator));
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);

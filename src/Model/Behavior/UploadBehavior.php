@@ -58,7 +58,7 @@ class UploadBehavior extends Behavior
      */
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        $validator = $this->_table->validator();
+        $validator = $this->_table->getValidator();
         $dataArray = $data->getArrayCopy();
         foreach (array_keys($this->getConfig(null, [])) as $field) {
             if (!$validator->isEmptyAllowed($field, false)) {
