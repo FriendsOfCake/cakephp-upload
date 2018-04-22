@@ -29,8 +29,8 @@ trait DefaultTrait
 
         $replacements = [
             '{primaryKey}' => $this->entity->get($this->table->getPrimaryKey()),
-            '{model}' => $this->table->alias(),
-            '{table}' => $this->table->table(),
+            '{model}' => $this->table->getAlias(),
+            '{table}' => $this->table->getTable(),
             '{field}' => $this->field,
             '{year}' => date("Y"),
             '{month}' => date("m"),
