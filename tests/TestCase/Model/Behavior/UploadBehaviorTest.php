@@ -273,7 +273,7 @@ class UploadBehaviorTest extends TestCase
             ->method('set')
             ->with('field', $originalValue);
         $this->entity->expects($this->once())
-            ->method('dirty')
+            ->method('setDirty')
             ->with('field', false);
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }
