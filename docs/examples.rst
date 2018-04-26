@@ -63,14 +63,17 @@ Basic example
     */
     ?>
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->input('username'); ?>
-        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+        <?php echo $this->Form->control('username'); ?>
+        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
+        // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
+        // <?php echo $this->Form->input('username'); ?>
+        // <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
-    
-    Note: If you used *bake* to generate MVC structure after creating 
+
+    Note: If you used *bake* to generate MVC structure after creating
     the users table, you will need to remove the default scalar validation
-    for the photos field. 
-    
+    for the photos field.
+
 .. code:: php
     public function validationDefault(Validator $validator)
     {
