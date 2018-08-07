@@ -53,6 +53,10 @@ class UploadBehaviorTest extends TestCase
             ->setMethods([])
             ->setConstructorArgs([$this->table, $this->entity, $this->dataOk, $this->field, $this->settings])
             ->getMock();
+        $this->uploadValidator = $this->getMockBuilder('Josegonzalez\Upload\UploadValidator\DefaultUploadValidator')
+            ->setMethods([])
+            ->setConstructorArgs([$this->entity, $this->field])
+            ->getMock();
         $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
     }
 
@@ -265,6 +269,12 @@ class UploadBehaviorTest extends TestCase
             ->method('get')
             ->with('field')
             ->will($this->returnValue($this->dataError['field']));
+        $behavior->expects($this->any())
+            ->method('getUploadValidator')
+            ->will($this->returnValue($this->uploadValidator));
+        $this->uploadValidator->expects($this->any())
+            ->method('hasUploadFailed')
+            ->will($this->returnValue(true));
         $this->entity->expects($this->any())
             ->method('getOriginal')
             ->with('field')
@@ -294,6 +304,12 @@ class UploadBehaviorTest extends TestCase
                  ->method('getPathProcessor')
                  ->will($this->returnValue($this->processor));
         $behavior->expects($this->any())
+                ->method('getUploadValidator')
+                ->will($this->returnValue($this->uploadValidator));
+        $this->uploadValidator->expects($this->any())
+                            ->method('hasUploadFailed')
+                            ->will($this->returnValue(false));
+        $behavior->expects($this->any())
                  ->method('getWriter')
                  ->will($this->returnValue($this->writer));
         $behavior->expects($this->any())
@@ -318,6 +334,12 @@ class UploadBehaviorTest extends TestCase
                      ->method('get')
                      ->with('field')
                      ->will($this->returnValue($this->dataOk['field']));
+        $behavior->expects($this->any())
+            ->method('getUploadValidator')
+            ->will($this->returnValue($this->uploadValidator));
+        $this->uploadValidator->expects($this->any())
+            ->method('hasUploadFailed')
+            ->will($this->returnValue(false));
         $behavior->expects($this->any())
                  ->method('getPathProcessor')
                  ->will($this->returnValue($this->processor));
@@ -345,6 +367,12 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($settings);
+        $behavior->expects($this->any())
+            ->method('getUploadValidator')
+            ->will($this->returnValue($this->uploadValidator));
+        $this->uploadValidator->expects($this->any())
+            ->method('hasUploadFailed')
+            ->will($this->returnValue(true));
         $this->entity->expects($this->never())->method('getOriginal');
         $this->entity->expects($this->never())->method('set');
 
@@ -362,6 +390,12 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($settings);
+        $behavior->expects($this->any())
+            ->method('getUploadValidator')
+            ->will($this->returnValue($this->uploadValidator));
+        $this->uploadValidator->expects($this->any())
+            ->method('hasUploadFailed')
+            ->will($this->returnValue(true));
 
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
     }

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 8/5/2018
- * Time: 10:19 PM
- */
-
 namespace Josegonzalez\Upload\File\Path;
 
 

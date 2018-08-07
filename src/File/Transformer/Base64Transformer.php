@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 8/6/2018
- * Time: 7:30 PM
- */
-
 namespace Josegonzalez\Upload\File\Transformer;
 
 
 class Base64Transformer extends DefaultTransformer
 {
+
+    private $path;
 
     /**
      * Creates a set of files from the initial data and returns them as key/value
@@ -27,10 +22,20 @@ class Base64Transformer extends DefaultTransformer
     public function transform()
     {
         $decoded = base64_decode($this->data['data']);
-        $tmp = tempnam(sys_get_temp_dir(), 'upload');
-        file_put_contents($tmp,$decoded);
+        file_put_contents($this->getPath(),$decoded);
         return [
-            $tmp => $this->data['name'],
+            $this->getPath() => $this->data['name'],
         ];
+    }
+
+    public function setPath($path = '') {
+        if (empty($path)) {
+            $this->path = tempnam(sys_get_temp_dir(), 'upload');
+        }
+        $this->path = $path;
+    }
+
+    public function getPath() {
+        return $this->path;
     }
 }

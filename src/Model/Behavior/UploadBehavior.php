@@ -220,7 +220,7 @@ class UploadBehavior extends Behavior
      *
      * @param \Cake\ORM\Entity $entity an entity
      * @param array $data the data being submitted for a save
-     * @return \Josegonzalez\Upload\File\Path\AbstractProcessor
+     * @return \Josegonzalez\Upload\UploadValidator\UploadValidatorInterface
      */
     public function getUploadValidator(Entity $entity, $settings , $field)
     {
