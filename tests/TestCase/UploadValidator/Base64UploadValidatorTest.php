@@ -20,7 +20,7 @@ class Base64UploadValidatorTest extends TestCase
             ->method('get')
             ->with('field')
             ->will($this->returnValue($this->dataOk));
-        $this->assertFalse($this->$this->base64UploadValidator->hasUploadFailed());
+        $this->assertFalse($this->base64UploadValidator->hasUploadFailed());
     }
 
     public function testFail() {
@@ -28,7 +28,7 @@ class Base64UploadValidatorTest extends TestCase
             ->method('get')
             ->with('field')
             ->will($this->returnValue($this->dataError));
-        $this->assertTrue($this->$this->base64UploadValidator->hasUploadFailed());
+        $this->assertTrue($this->base64UploadValidator->hasUploadFailed());
     }
 
     public function testIsUploadValidatorInterface()
