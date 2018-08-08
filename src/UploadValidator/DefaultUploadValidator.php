@@ -37,7 +37,7 @@ class DefaultUploadValidator implements UploadValidatorInterface
      * Check's data for any upload errors.
      * pairs, where the path on disk maps to name which each file should have.
      *
-     * @return boolean `true` if upload failed
+     * @return bool `true` if upload failed
      */
     public function hasUploadFailed()
     {

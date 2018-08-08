@@ -1,10 +1,13 @@
 <?php
 namespace Josegonzalez\Upload\File\Transformer;
 
-
 class Base64Transformer extends DefaultTransformer
 {
-
+    /**
+     * Path where the file will be writen
+     *
+     * @var string
+     */
     private $path;
 
     /**
@@ -22,20 +25,34 @@ class Base64Transformer extends DefaultTransformer
     public function transform()
     {
         $decoded = base64_decode($this->data['data']);
-        file_put_contents($this->getPath(),$decoded);
+        file_put_contents($this->getPath(), $decoded);
+
         return [
             $this->getPath() => $this->data['name'],
         ];
     }
 
-    public function setPath($path = '') {
+    /**
+     * Sets the path for the file to be written
+     *
+     * @param string $path Path to write the file
+     * @return void
+     */
+    public function setPath($path = '')
+    {
         if (empty($path)) {
             $this->path = tempnam(sys_get_temp_dir(), 'upload');
         }
         $this->path = $path;
     }
 
-    public function getPath() {
+    /**
+     * Returns the path where the file will be written
+     *
+     * @return string|empty
+     */
+    public function getPath()
+    {
         return $this->path;
     }
 }

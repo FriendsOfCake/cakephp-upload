@@ -1,7 +1,6 @@
 <?php
 namespace Josegonzalez\Upload\File\Path;
 
-
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 

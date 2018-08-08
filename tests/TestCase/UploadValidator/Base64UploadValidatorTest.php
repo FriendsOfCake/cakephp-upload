@@ -15,7 +15,8 @@ class Base64UploadValidatorTest extends TestCase
         $this->base64UploadValidator = new Base64UploadValidator($this->entity, $this->field);
     }
 
-    public function testOK() {
+    public function testOK()
+    {
         $this->entity->expects($this->any())
             ->method('get')
             ->with('field')
@@ -23,7 +24,8 @@ class Base64UploadValidatorTest extends TestCase
         $this->assertFalse($this->base64UploadValidator->hasUploadFailed());
     }
 
-    public function testFail() {
+    public function testFail()
+    {
         $this->entity->expects($this->any())
             ->method('get')
             ->with('field')

@@ -222,7 +222,7 @@ class UploadBehavior extends Behavior
      * @param array $data the data being submitted for a save
      * @return \Josegonzalez\Upload\UploadValidator\UploadValidatorInterface
      */
-    public function getUploadValidator(Entity $entity, $settings , $field)
+    public function getUploadValidator(Entity $entity, $settings, $field)
     {
         $default = 'Josegonzalez\Upload\UploadValidator\DefaultUploadValidator';
         $uploadValidatorClass = Hash::get($settings, 'uploadValidator', $default);

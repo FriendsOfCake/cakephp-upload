@@ -34,7 +34,8 @@ class DefaultUploadValidatorTest extends TestCase
         $this->defaultUploadValidator = new DefaultUploadValidator($this->entity, $this->field);
     }
 
-    public function testOK() {
+    public function testOK()
+    {
         $this->entity->expects($this->any())
             ->method('get')
             ->with('field')
@@ -42,7 +43,8 @@ class DefaultUploadValidatorTest extends TestCase
         $this->assertFalse($this->defaultUploadValidator->hasUploadFailed());
     }
 
-    public function testFail() {
+    public function testFail()
+    {
         $this->entity->expects($this->any())
             ->method('get')
             ->with('field')
