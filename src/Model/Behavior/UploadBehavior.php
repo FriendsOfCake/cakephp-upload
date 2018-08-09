@@ -226,7 +226,7 @@ class UploadBehavior extends Behavior
     {
         $default = 'Josegonzalez\Upload\UploadValidator\DefaultUploadValidator';
         $uploadValidatorClass = Hash::get($settings, 'uploadValidator', $default);
-        if (is_a($uploadValidatorClass, 'Josegonzalez\Upload\UploadValidator\UploadValidatorInterface', true)) {
+        if (is_subclass_of($uploadValidatorClass, 'Josegonzalez\Upload\UploadValidator\UploadValidatorInterface')) {
             return new $uploadValidatorClass($entity, $field);
         }
 

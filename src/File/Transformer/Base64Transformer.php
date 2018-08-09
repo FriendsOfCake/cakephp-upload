@@ -38,11 +38,8 @@ class Base64Transformer extends DefaultTransformer
      * @param string $path Path to write the file
      * @return void
      */
-    public function setPath($path = '')
+    public function setPath($path)
     {
-        if (empty($path)) {
-            $this->path = tempnam(sys_get_temp_dir(), 'upload');
-        }
         $this->path = $path;
     }
 
@@ -53,6 +50,9 @@ class Base64Transformer extends DefaultTransformer
      */
     public function getPath()
     {
+        if (empty($this->path)) {
+           return $this->path = tempnam(sys_get_temp_dir(), 'upload');
+        }
         return $this->path;
     }
 }
