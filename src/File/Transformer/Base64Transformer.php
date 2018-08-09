@@ -53,7 +53,7 @@ class Base64Transformer extends DefaultTransformer
         if (empty($this->path)) {
             return $this->path = tempnam(sys_get_temp_dir(), 'upload');
         }
-        
+
         return $this->path;
     }
 }
