@@ -51,8 +51,9 @@ class Base64Transformer extends DefaultTransformer
     public function getPath()
     {
         if (empty($this->path)) {
-           return $this->path = tempnam(sys_get_temp_dir(), 'upload');
+            return $this->path = tempnam(sys_get_temp_dir(), 'upload');
         }
+        
         return $this->path;
     }
 }
