@@ -8,7 +8,7 @@ use Josegonzalez\Upload\Validation\Traits\UploadValidationTrait;
 
 class DefaultValidation
 {
+    use Base64ValidationTrait;
     use ImageValidationTrait;
     use UploadValidationTrait;
-    use Base64ValidationTrait;
 }
