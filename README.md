@@ -5,7 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/cakephp-upload/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/cakephp-upload/?badge=latest)
 [![Gratipay](https://img.shields.io/gratipay/josegonzalez.svg?style=flat-square)](https://gratipay.com/~josegonzalez/)
 
-# Upload Plugin 3.0
+# Upload Plugin 4.0
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/cakephp-uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 
@@ -15,7 +15,7 @@ See [this blog post](http://josediazgonzalez.com/2015/12/05/uploading-files-and-
 
 ## Requirements
 
-* CakePHP 3.4+
+* CakePHP 3.6+
 * PHP 5.6+
 
 ## Documentation
