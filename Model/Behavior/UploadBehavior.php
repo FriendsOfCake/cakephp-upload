@@ -52,6 +52,7 @@ class UploadBehavior extends ModelBehavior {
 		'mode' => 0777,
 		'handleUploadedFileCallback' => null,
 		'nameCallback' => null,
+		'flattenImages' => false,
 	);
 
 	protected $_imageMimetypes = array(
@@ -1186,6 +1187,10 @@ class UploadBehavior extends ModelBehavior {
 		$this->_exifRotateImagick($image);
 		$height = $image->getImageHeight();
 		$width = $image->getImageWidth();
+
+		if ($this->settings[$model->alias][$field]['flattenImages']) {
+			$image = $image->flattenImages();
+		}
 
 		if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
 			// resize with banding

@@ -242,3 +242,8 @@ passed in under each field in your behavior configuration.
    -  Return: String - returns the new name for the file
 
 
+-  ``flattenImages``: Call the Imagick ``flattenImages()`` method on
+   resize. Setting this to ``true`` when converting pdf files to jpg
+   thumbnails can help with black background issues.
+
+   -  Default: (boolean) ``false``
