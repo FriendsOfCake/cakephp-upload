@@ -87,7 +87,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
+            if ((int)Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
                 if (Hash::get($settings, 'restoreValueOnFailure', true)) {
                     $entity->set($field, $entity->getOriginal($field));
                     $entity->setDirty($field, false);
