@@ -18,6 +18,10 @@ and copy the json snippet for the latest version into your project's
 Enable plugin
 -------------
 
+If you install your plugins via composer or bake you shouldn’t need to configure class autoloading for your plugins.
+
+Prior to 3.6.0, you should use ``Plugin::load()``:
+
 You need to enable the plugin your ``config/bootstrap.php`` file:
 
 .. code:: php
