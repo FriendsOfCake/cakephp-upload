@@ -18,12 +18,15 @@ and copy the json snippet for the latest version into your project's
 Enable plugin
 -------------
 
-You need to enable the plugin your ``config/bootstrap.php`` file:
+You need to enable the plugin by adding the below code at ``src/Application.php`` file:
 
 .. code:: php
 
     <?php
-    Plugin::load('Josegonzalez/Upload');
+    $this->addPlugin('Josegonzalez/Upload');
+    
+There is also a handy shell command to enable the plugin. Execute the following line:
 
-If you are already using ``Plugin::loadAll();``, then this is not
-necessary.
+.. code:: shell
+    
+   bin/cake plugin load Josegonzalez/Upload
