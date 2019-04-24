@@ -113,6 +113,7 @@ class UploadBehavior extends Behavior
             $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
             $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
             $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
+            $entity->set(Hash::get($settings, 'fields.ext', 'ext'), pathinfo($data['name'], PATHINFO_EXTENSION));
         }
     }
 
