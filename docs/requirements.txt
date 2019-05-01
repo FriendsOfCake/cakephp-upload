@@ -5,7 +5,7 @@ chardet==3.0.4
 docutils==0.14
 idna==2.7
 imagesize==0.7.1
-Jinja2==2.10
+Jinja2==2.10.1
 MarkupSafe==0.23
 Pygments==2.3.0
 pytz==2018.7
@@ -15,5 +15,5 @@ snowballstemmer==1.2.1
 Sphinx==1.5.1
 sphinx-rtd-theme==0.1.9
 sphinxcontrib-phpdomain==0.2.1
-urllib3==1.24.1
+urllib3==1.25.2
 cakephp-theme
