@@ -16,9 +16,9 @@ class DefaultTraitTest extends TestCase
         $mock->settings = [];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
-        $mock->entity->expects($this->once())->method('get')->will($this->returnValue(1));
+        $mock->entity->expects($this->exactly(0))->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('getAlias')->will($this->returnValue('Table'));
-        $mock->table->expects($this->once())->method('getPrimaryKey')->will($this->returnValue('id'));
+        $mock->table->expects($this->exactly(0))->method('getPrimaryKey')->will($this->returnValue('id'));
         $this->assertEquals('webroot/files/Table/field/', $mock->basepath());
     }
 
@@ -30,9 +30,9 @@ class DefaultTraitTest extends TestCase
         $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}'];
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
-        $mock->entity->expects($this->once())->method('get')->will($this->returnValue(1));
+        $mock->entity->expects($this->exactly(0))->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('getAlias')->will($this->returnValue('Table'));
-        $mock->table->expects($this->once())->method('getPrimaryKey')->will($this->returnValue('id'));
+        $mock->table->expects($this->exactly(0))->method('getPrimaryKey')->will($this->returnValue('id'));
         $this->assertEquals('webroot/files/Table-field/', $mock->basepath());
     }
 
@@ -78,6 +78,21 @@ class DefaultTraitTest extends TestCase
         $mock->table->expects($this->once())->method('getPrimaryKey')->will($this->returnValue(['id', 'other_id']));
         $mock->basepath();
     }
+    /**
+     * test Path Without PrimaryKey when Entity has Composite PrimaryKey
+     */
+    public function testPathWithoutPrimaryKey()
+    {
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
+        $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
+        $mock->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
+        $mock->settings = ['path' => 'webroot{DS}files{DS}{model}-{field}{DS}'];
+        $mock->data = ['name' => 'filename'];
+        $mock->field = 'field';
+        $mock->table->expects($this->exactly(0))->method('getPrimaryKey')->will($this->returnValue(['id', 'other_id']));
+        $mock->table->expects($this->once())->method('getAlias')->will($this->returnValue('Table'));
+        $this->assertEquals('webroot/files/Table-field/', $mock->basepath());
+    }
 
     public function testYearWithMonthPath()
     {
@@ -112,7 +127,7 @@ class DefaultTraitTest extends TestCase
 
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
-        $mock->entity->expects($this->once())->method('get')->will($this->returnValue(1));
+        $mock->entity->expects($this->exactly(0))->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('getAlias')->will($this->returnValue('Table'));
 
         $this->assertEquals('webroot/files/Table/field/' . date("Y") . '/' . date("m") . '/' . date("d") . '/', $mock->basepath());
