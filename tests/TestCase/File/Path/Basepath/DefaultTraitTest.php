@@ -78,6 +78,7 @@ class DefaultTraitTest extends TestCase
         $mock->table->expects($this->once())->method('getPrimaryKey')->will($this->returnValue(['id', 'other_id']));
         $mock->basepath();
     }
+
     /**
      * test Path Without PrimaryKey when Entity has Composite PrimaryKey
      */
