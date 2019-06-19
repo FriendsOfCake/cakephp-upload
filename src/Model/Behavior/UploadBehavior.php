@@ -87,7 +87,8 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
+            $uploadValidator = $this->getUploadValidator($entity, $settings, $field);
+            if ($uploadValidator->hasUploadFailed()) {
                 if (Hash::get($settings, 'restoreValueOnFailure', true)) {
                     $entity->set($field, $entity->getOriginal($field));
                     $entity->setDirty($field, false);
@@ -99,7 +100,14 @@ class UploadBehavior extends Behavior
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $basepath = $path->basepath();
             $filename = $path->filename();
-            $data['name'] = $filename;
+            if (is_string($data)) {
+                $temp = [];
+                $temp['name'] = $filename;
+                $temp['data'] = $data;
+                $data = $temp;
+            } else {
+                $data['name'] = $filename;
+            }
             $files = $this->constructFiles($entity, $data, $field, $settings, $basepath);
 
             $writer = $this->getWriter($entity, $data, $field, $settings);
@@ -111,8 +119,10 @@ class UploadBehavior extends Behavior
 
             $entity->set($field, $filename);
             $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
-            $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
-            $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
+            if (!isset($temp)) {
+                $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
+                $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
+            }
         }
     }
 
@@ -202,6 +212,27 @@ class UploadBehavior extends Behavior
         throw new UnexpectedValueException(sprintf(
             "'writer' not set to instance of WriterInterface: %s",
             $writerClass
+        ));
+    }
+
+    /**
+     * Retrieves an instance of a validator that validates that the current upload has succeded
+     *
+     * @param \Cake\ORM\Entity $entity an entity
+     * @param array $data the data being submitted for a save
+     * @return \Josegonzalez\Upload\UploadValidator\UploadValidatorInterface
+     */
+    public function getUploadValidator(Entity $entity, $settings, $field)
+    {
+        $default = 'Josegonzalez\Upload\UploadValidator\DefaultUploadValidator';
+        $uploadValidatorClass = Hash::get($settings, 'uploadValidator', $default);
+        if (is_subclass_of($uploadValidatorClass, 'Josegonzalez\Upload\UploadValidator\UploadValidatorInterface')) {
+            return new $uploadValidatorClass($entity, $field);
+        }
+
+        throw new UnexpectedValueException(sprintf(
+            "'uploadValidator' not set to instance of UploadValidatorInterface: %s",
+            $uploadValidatorClass
         ));
     }
 
