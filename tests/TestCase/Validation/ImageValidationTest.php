@@ -88,4 +88,17 @@ class ImageValidationTest extends TestCase
         unset($this->data['tmp_name']);
         $this->assertFalse(ImageValidation::isBelowMaxHeight($this->data, 10));
     }
+
+    public function testIsExactDimensions()
+    {
+        $this->assertTrue(ImageValidation::isExactDimensions($this->data, 20, 20));
+        $this->assertFalse(ImageValidation::isExactDimensions($this->data, 30, 30));
+
+        // Test if no tmp_name is set or specified
+        $this->data['tmp_name'] = '';
+        $this->assertFalse(ImageValidation::isExactDimensions($this->data, 20, 20));
+
+        unset($this->data['tmp_name']);
+        $this->assertFalse(ImageValidation::isExactDimensions($this->data, 20, 20));
+    }
 }

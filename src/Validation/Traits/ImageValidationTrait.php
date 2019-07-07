@@ -75,4 +75,23 @@ trait ImageValidationTrait
 
         return $height > 0 && $imgHeight <= $height;
     }
+
+    /**
+     * Check that the file is the exact width and height requirement
+     *
+     * @param mixed $check Value to check
+     * @param int $width Width of Image
+     * @param int $height Height of Image
+     * @return bool Success
+     */
+    public static function isExactDimensions($check, $width, $height)
+    {
+        // Non-file uploads also mean the height is too big
+        if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
+            return false;
+        }
+        list($imgWidth, $imgHeight) = getimagesize($check['tmp_name']);
+
+        return $width > 0 && $imgWidth === $width && $height > 0 && $imgHeight === $height;
+    }
 }
