@@ -249,3 +249,21 @@ pixels)
         ]);
 
     ?>
+
+
+**isExactDimensions**
+
+Check that the file is exactly the width and height requirement (checked in
+pixels)
+
+.. code:: php
+
+    <?php
+
+        $validator->add('file', 'fileExactDimensions', [
+            'rule' => ['isExactDimensions', 200, 150],
+            'message' => 'This image should not be exactly 200px wide and 150px high',
+            'provider' => 'upload'
+        ]);
+
+    ?>
