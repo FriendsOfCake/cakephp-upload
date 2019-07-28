@@ -26,7 +26,7 @@ class UploadBehavior extends Behavior
      * @param array $config The config for this behavior.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $configs = [];
         foreach ($config as $field => $settings) {

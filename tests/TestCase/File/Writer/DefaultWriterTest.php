@@ -20,7 +20,7 @@ class DefaultWriterTest extends TestCase
     protected $field;
     protected $settings;
 
-    public function setup()
+    public function setUp(): void
     {
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();

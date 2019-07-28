@@ -12,15 +12,13 @@
         }
     ],
     "require": {
-        "cakephp/orm": "^3.5",
+        "cakephp/cakephp": "4.x-dev",
         "league/flysystem": "*"
     },
     "require-dev": {
-        "cakephp/cakephp": "^3.5",
-        "cakephp/chronos": "^1.1",
-        "phpunit/phpunit": "^5.7.14|^6.0",
+        "phpunit/phpunit": "^8.0",
         "league/flysystem-vfs": "*",
-        "cakephp/cakephp-codesniffer": "dev-master"
+        "cakephp/cakephp-codesniffer": "dev-next"
     },
     "autoload": {
         "psr-4": {
@@ -32,5 +30,7 @@
         "psr-4": {
             "Josegonzalez\\Upload\\Test\\": "tests"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

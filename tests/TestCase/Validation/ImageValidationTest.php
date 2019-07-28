@@ -11,7 +11,7 @@ class ImageValidationTest extends TestCase
     private $data;
     private $vfs;
 
-    public function setup()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -30,11 +30,6 @@ class ImageValidationTest extends TestCase
             'size' => 200,
             'error' => UPLOAD_ERR_OK
         ];
-    }
-
-    public function teardown()
-    {
-        parent::tearDown();
     }
 
     public function testIsAboveMinWidth()

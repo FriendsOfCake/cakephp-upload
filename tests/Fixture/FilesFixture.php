@@ -30,7 +30,7 @@ class FilesFixture extends TestFixture
         ['filename' => 'FileThree'],
     ];
 
-    public function init()
+    public function init(): void
     {
         $created = $modified = date('Y-m-d H:i:s');
         array_walk($this->records, function (&$record) use ($created, $modified) {

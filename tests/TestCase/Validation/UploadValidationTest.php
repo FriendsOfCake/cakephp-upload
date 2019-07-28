@@ -9,7 +9,7 @@ class UploadValidationTest extends TestCase
 {
     private $data;
 
-    public function setup()
+    public function setUp(): void
     {
         parent::setUp();
         $this->data = [
@@ -18,11 +18,6 @@ class UploadValidationTest extends TestCase
             'tmp_name' => '/tmp/tmpfile',
             'size' => 200
         ];
-    }
-
-    public function teardown()
-    {
-        parent::tearDown();
     }
 
     public function testIsUnderPhpSizeLimit()

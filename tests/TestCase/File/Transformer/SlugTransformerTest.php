@@ -9,7 +9,7 @@ use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
 class SlugTransformerTest extends TestCase
 {
-    public function setup()
+    public function setUp(): void
     {
         $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
@@ -17,11 +17,6 @@ class SlugTransformerTest extends TestCase
         $field = 'field';
         $settings = [];
         $this->transformer = new SlugTransformer($table, $entity, $data, $field, $settings);
-    }
-
-    public function teardown()
-    {
-        unset($this->transformer);
     }
 
     public function testTransform()

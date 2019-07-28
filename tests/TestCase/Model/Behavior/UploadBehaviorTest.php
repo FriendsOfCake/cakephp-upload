@@ -17,7 +17,7 @@ class UploadBehaviorTest extends TestCase
         'plugin.Josegonzalez/Upload.Files',
     ];
 
-    public function setup()
+    public function setUp(): void
     {
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
@@ -59,9 +59,9 @@ class UploadBehaviorTest extends TestCase
     public function testInitialize()
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
                     ->method('setColumnType')
@@ -104,9 +104,9 @@ class UploadBehaviorTest extends TestCase
     {
         $settings = ['field'];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
                ->method('setColumnType')
@@ -139,9 +139,9 @@ class UploadBehaviorTest extends TestCase
             'field' => []
         ];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
             ->method('setColumnType')
