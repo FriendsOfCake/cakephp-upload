@@ -138,7 +138,7 @@ class DefaultWriterTest extends TestCase
 
     public function testGetFilesystemUnexpectedValueException()
     {
-        $this->setExpectedException('UnexpectedValueException', 'Invalid Adapter for field field');
+        $this->expectException('UnexpectedValueException', 'Invalid Adapter for field field');
 
         $this->writer->getFilesystem('field', [
             'filesystem' => [

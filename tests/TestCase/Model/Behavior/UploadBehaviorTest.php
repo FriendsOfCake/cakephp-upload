@@ -615,7 +615,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testGetWriterException()
     {
-        $this->setExpectedException('UnexpectedValueException', "'writer' not set to instance of WriterInterface: UnexpectedValueException");
+        $this->expectException('UnexpectedValueException', "'writer' not set to instance of WriterInterface: UnexpectedValueException");
         $this->behavior->getWriter($this->entity, [], 'field', ['writer' => 'UnexpectedValueException']);
     }
 
@@ -693,7 +693,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testConstructFilesException()
     {
-        $this->setExpectedException('UnexpectedValueException', "'transformer' not set to instance of TransformerInterface: UnexpectedValueException");
+        $this->expectException('UnexpectedValueException', "'transformer' not set to instance of TransformerInterface: UnexpectedValueException");
         $this->behavior->constructFiles(
             $this->entity,
             ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
@@ -711,7 +711,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testGetPathProcessorException()
     {
-        $this->setExpectedException('UnexpectedValueException', "'pathProcessor' not set to instance of ProcessorInterface: UnexpectedValueException");
+        $this->expectException('UnexpectedValueException', "'pathProcessor' not set to instance of ProcessorInterface: UnexpectedValueException");
         $this->behavior->getPathProcessor($this->entity, [], 'field', ['pathProcessor' => 'UnexpectedValueException']);
     }
 }
