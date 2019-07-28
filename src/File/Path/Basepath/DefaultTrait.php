@@ -28,7 +28,6 @@ trait DefaultTrait
         }
 
         $replacements = [
-            '{primaryKey}' => $this->entity->get($this->table->getPrimaryKey()),
             '{model}' => $this->table->getAlias(),
             '{table}' => $this->table->getTable(),
             '{field}' => $this->field,
@@ -39,6 +38,9 @@ trait DefaultTrait
             '{microtime}' => microtime(true),
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
+        if (strpos($path, '{primaryKey}') !== false) {
+            $replacements['{primaryKey}'] = $this->entity->get($this->table->getPrimaryKey());
+        }
 
         if (preg_match_all("/{field-value:(\w+)}/", $path, $matches)) {
             foreach ($matches[1] as $field) {
