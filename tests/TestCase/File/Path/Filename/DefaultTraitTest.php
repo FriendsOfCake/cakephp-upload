@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Path\Filename;
 
 use Cake\TestSuite\TestCase;
-use Josegonzalez\Upload\File\Path\Filename\DefaultTrait;
 
 class DefaultTraitTest extends TestCase
 {

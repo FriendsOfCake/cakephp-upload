@@ -16,7 +16,7 @@ class FilesFixture extends TestFixture
         'id' => ['type' => 'integer'],
         'filename' => ['type' => 'string'],
         'created' => ['type' => 'datetime', 'null' => true],
-        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
+        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
 
     /**

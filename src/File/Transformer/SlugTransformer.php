@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Transformer;
 
 use Cake\Utility\Text;
-use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 
 class SlugTransformer extends DefaultTransformer
 {

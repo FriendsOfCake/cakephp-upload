@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Validation\Traits;
 
@@ -17,7 +18,7 @@ trait ImageValidationTrait
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
             return false;
         }
-        list($imgWidth) = getimagesize($check['tmp_name']);
+        [$imgWidth] = getimagesize($check['tmp_name']);
 
         return $width > 0 && $imgWidth >= $width;
     }
@@ -35,7 +36,7 @@ trait ImageValidationTrait
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
             return false;
         }
-        list($imgWidth) = getimagesize($check['tmp_name']);
+        [$imgWidth] = getimagesize($check['tmp_name']);
 
         return $width > 0 && $imgWidth <= $width;
     }
@@ -53,7 +54,7 @@ trait ImageValidationTrait
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
             return false;
         }
-        list(, $imgHeight) = getimagesize($check['tmp_name']);
+        [, $imgHeight] = getimagesize($check['tmp_name']);
 
         return $height > 0 && $imgHeight >= $height;
     }
@@ -71,7 +72,7 @@ trait ImageValidationTrait
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
             return false;
         }
-        list(, $imgHeight) = getimagesize($check['tmp_name']);
+        [, $imgHeight] = getimagesize($check['tmp_name']);
 
         return $height > 0 && $imgHeight <= $height;
     }

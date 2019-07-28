@@ -1,11 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Transformer;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
-use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
 class DefaultTransformerTest extends TestCase
 {

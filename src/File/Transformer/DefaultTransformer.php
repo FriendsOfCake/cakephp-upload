@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Transformer;
 
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
-use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 
 class DefaultTransformer implements TransformerInterface
 {

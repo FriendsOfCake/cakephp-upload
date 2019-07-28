@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Validation\Traits;
 
@@ -72,12 +73,7 @@ trait UploadValidationTrait
      */
     public static function isAboveMinSize($check, $size)
     {
-        // Non-file uploads also mean the size is too small
-        if (!isset($check['size']) || !strlen($check['size'])) {
-            return false;
-        }
-
-        return $check['size'] >= $size;
+        return !empty($check['size']) && $check['size'] >= $size;
     }
 
     /**
@@ -89,11 +85,6 @@ trait UploadValidationTrait
      */
     public static function isBelowMaxSize($check, $size)
     {
-        // Non-file uploads also mean the size is too small
-        if (!isset($check['size']) || !strlen($check['size'])) {
-            return false;
-        }
-
-        return $check['size'] <= $size;
+        return !empty($check['size']) && $check['size'] <= $size;
     }
 }

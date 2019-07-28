@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Path\Basepath;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
-use Josegonzalez\Upload\File\Path\Basepath\DefaultTrait;
 
 class DefaultTraitTest extends TestCase
 {

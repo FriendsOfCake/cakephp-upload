@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Writer;
 
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
-use Josegonzalez\Upload\File\Writer\WriterInterface;
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
@@ -111,6 +112,7 @@ class DefaultWriter implements WriterInterface
      */
     public function writeFile(FilesystemInterface $filesystem, $file, $path)
     {
+        // phpcs:ignore
         $stream = @fopen($file, 'r');
         if ($stream === false) {
             return false;
@@ -165,7 +167,7 @@ class DefaultWriter implements WriterInterface
 
         if ($adapter instanceof AdapterInterface) {
             return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
-                'visibility' => AdapterInterface::VISIBILITY_PUBLIC
+                'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]));
         }
 

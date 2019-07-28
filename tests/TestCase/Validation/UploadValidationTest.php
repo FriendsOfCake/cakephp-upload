@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Test\TestCase\Validation;
 
@@ -16,7 +17,7 @@ class UploadValidationTest extends TestCase
             'name' => 'sample.txt',
             'type' => 'text/plain',
             'tmp_name' => '/tmp/tmpfile',
-            'size' => 200
+            'size' => 200,
         ];
     }
 

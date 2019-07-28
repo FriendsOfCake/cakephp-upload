@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Path;
 
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Josegonzalez\Upload\File\Path\Basepath\DefaultTrait as BasepathTrait;
 use Josegonzalez\Upload\File\Path\Filename\DefaultTrait as FilenameTrait;
-use Josegonzalez\Upload\File\Path\ProcessorInterface;
 
 class DefaultProcessor implements ProcessorInterface
 {

@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Path;
 
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Path\DefaultProcessor;
-use Josegonzalez\Upload\File\Path\ProcessorInterface;
 
 class DefaultProcessorTest extends TestCase
 {

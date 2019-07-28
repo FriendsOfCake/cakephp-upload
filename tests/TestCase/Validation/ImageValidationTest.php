@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Test\TestCase\Validation;
 
@@ -15,7 +16,7 @@ class ImageValidationTest extends TestCase
     {
         parent::setUp();
 
-        $this->vfs = new Vfs;
+        $this->vfs = new Vfs();
         mkdir($this->vfs->path('/tmp'));
 
         // Write sample image with dimensions: 20x20
@@ -28,7 +29,7 @@ class ImageValidationTest extends TestCase
             'type' => 'text/plain',
             'tmp_name' => $this->vfs->path('/tmp/tmpimage'),
             'size' => 200,
-            'error' => UPLOAD_ERR_OK
+            'error' => UPLOAD_ERR_OK,
         ];
     }
 

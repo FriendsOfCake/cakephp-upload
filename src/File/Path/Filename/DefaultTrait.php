@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Path\Filename;
 
 use Cake\Utility\Hash;

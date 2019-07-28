@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Model\Behavior;
 
 use ArrayObject;
@@ -8,10 +10,6 @@ use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
-use Exception;
-use Josegonzalez\Upload\File\Path\DefaultProcessor;
-use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
-use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
@@ -230,7 +228,7 @@ class UploadBehavior extends Behavior
      */
     public function constructFiles(Entity $entity, $data, $field, $settings, $basepath)
     {
-        $basepath = (substr($basepath, -1) == DS ? $basepath : $basepath . DS);
+        $basepath = substr($basepath, -1) == DS ? $basepath : $basepath . DS;
         $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
         $transformerClass = Hash::get($settings, 'transformer', $default);
         $results = [];
