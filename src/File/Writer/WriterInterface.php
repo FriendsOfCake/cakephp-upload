@@ -17,7 +17,7 @@ interface WriterInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings);
+    public function __construct(Table $table, Entity $entity, array $data, string $field, array $settings);
 
     /**
      * Writes a set of files to an output
@@ -25,7 +25,7 @@ interface WriterInterface
      * @param array $files the files being written out
      * @return array array of results
      */
-    public function write(array $files);
+    public function write(array $files): array;
 
     /**
      * Deletes a set of files to an output
@@ -33,5 +33,5 @@ interface WriterInterface
      * @param array $files the files being written out
      * @return array array of results
      */
-    public function delete(array $files);
+    public function delete(array $files): array;
 }

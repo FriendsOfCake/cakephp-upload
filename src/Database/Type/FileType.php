@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Database\Type;
 
-use Cake\Database\Driver;
-use Cake\Database\Type;
+use Cake\Database\DriverInterface;
+use Cake\Database\Type\BaseType;
 
-class FileType extends Type
+class FileType extends BaseType
 {
     /**
      * Marshalls flat data into PHP objects.
@@ -25,7 +25,7 @@ class FileType extends Type
     /**
      * {@inheritDoc}
      */
-    public function toDatabase($value, Driver $driver)
+    public function toDatabase($value, DriverInterface $driver)
     {
         return $value;
     }
@@ -33,7 +33,7 @@ class FileType extends Type
     /**
      * {@inheritDoc}
      */
-    public function toPHP($value, Driver $driver)
+    public function toPHP($value, DriverInterface $driver)
     {
         return $value;
     }

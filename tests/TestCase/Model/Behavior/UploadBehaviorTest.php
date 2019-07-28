@@ -616,12 +616,6 @@ class UploadBehaviorTest extends TestCase
         $this->assertInstanceOf('Josegonzalez\Upload\File\Writer\WriterInterface', $processor);
     }
 
-    public function testGetWriterException()
-    {
-        $this->expectException('UnexpectedValueException', "'writer' not set to instance of WriterInterface: UnexpectedValueException");
-        $this->behavior->getWriter($this->entity, [], 'field', ['writer' => 'UnexpectedValueException']);
-    }
-
     public function testConstructFiles()
     {
         $files = $this->behavior->constructFiles(
@@ -710,11 +704,5 @@ class UploadBehaviorTest extends TestCase
     {
         $processor = $this->behavior->getPathProcessor($this->entity, [], 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
-    }
-
-    public function testGetPathProcessorException()
-    {
-        $this->expectException('UnexpectedValueException', "'pathProcessor' not set to instance of ProcessorInterface: UnexpectedValueException");
-        $this->behavior->getPathProcessor($this->entity, [], 'field', ['pathProcessor' => 'UnexpectedValueException']);
     }
 }

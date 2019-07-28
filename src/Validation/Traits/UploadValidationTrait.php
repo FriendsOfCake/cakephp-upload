@@ -14,7 +14,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderPhpSizeLimit($check)
+    public static function isUnderPhpSizeLimit($check): bool
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_INI_SIZE;
     }
@@ -26,7 +26,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderFormSizeLimit($check)
+    public static function isUnderFormSizeLimit($check): bool
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_FORM_SIZE;
     }
@@ -37,7 +37,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isCompletedUpload($check)
+    public static function isCompletedUpload($check): bool
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_PARTIAL;
     }
@@ -48,7 +48,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isFileUpload($check)
+    public static function isFileUpload($check): bool
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_NO_FILE;
     }
@@ -59,7 +59,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isSuccessfulWrite($check)
+    public static function isSuccessfulWrite($check): bool
     {
         return Hash::get($check, 'error') !== UPLOAD_ERR_CANT_WRITE;
     }
@@ -71,7 +71,7 @@ trait UploadValidationTrait
      * @param int $size Minimum file size
      * @return bool Success
      */
-    public static function isAboveMinSize($check, $size)
+    public static function isAboveMinSize($check, $size): bool
     {
         return !empty($check['size']) && $check['size'] >= $size;
     }
@@ -83,7 +83,7 @@ trait UploadValidationTrait
      * @param int $size Maximum file size
      * @return bool Success
      */
-    public static function isBelowMaxSize($check, $size)
+    public static function isBelowMaxSize($check, $size): bool
     {
         return !empty($check['size']) && $check['size'] <= $size;
     }

@@ -12,7 +12,7 @@ trait ImageValidationTrait
      * @param int $width Width of Image
      * @return bool Success
      */
-    public static function isAboveMinWidth($check, $width)
+    public static function isAboveMinWidth($check, int $width): bool
     {
         // Non-file uploads also mean the height is too big
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
@@ -30,7 +30,7 @@ trait ImageValidationTrait
      * @param int $width Width of Image
      * @return bool Success
      */
-    public static function isBelowMaxWidth($check, $width)
+    public static function isBelowMaxWidth($check, int $width): bool
     {
         // Non-file uploads also mean the height is too big
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
@@ -48,7 +48,7 @@ trait ImageValidationTrait
      * @param int $height Height of Image
      * @return bool Success
      */
-    public static function isAboveMinHeight($check, $height)
+    public static function isAboveMinHeight($check, int $height): bool
     {
         // Non-file uploads also mean the height is too big
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
@@ -66,7 +66,7 @@ trait ImageValidationTrait
      * @param int $height Height of Image
      * @return bool Success
      */
-    public static function isBelowMaxHeight($check, $height)
+    public static function isBelowMaxHeight($check, int $height): bool
     {
         // Non-file uploads also mean the height is too big
         if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {

@@ -14,7 +14,7 @@ trait DefaultTrait
      *
      * @return string
      */
-    public function filename()
+    public function filename(): string
     {
         $processor = Hash::get($this->settings, 'nameCallback', null);
         if (is_callable($processor)) {

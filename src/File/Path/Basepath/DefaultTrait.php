@@ -16,7 +16,7 @@ trait DefaultTrait
      * @return string
      * @throws \LogicException if a replacement is not valid for the current dataset
      */
-    public function basepath()
+    public function basepath(): string
     {
         $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
         $path = Hash::get($this->settings, 'path', $defaultPath);

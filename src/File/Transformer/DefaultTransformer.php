@@ -52,7 +52,7 @@ class DefaultTransformer implements TransformerInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings)
+    public function __construct(Table $table, Entity $entity, array $data, string $field, array $settings)
     {
         $this->table = $table;
         $this->entity = $entity;
@@ -73,7 +73,7 @@ class DefaultTransformer implements TransformerInterface
      *
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function transform()
+    public function transform(): array
     {
         return [$this->data['tmp_name'] => $this->data['name']];
     }

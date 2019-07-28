@@ -10,6 +10,12 @@ use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
+use Josegonzalez\Upload\File\Path\DefaultProcessor;
+use Josegonzalez\Upload\File\Path\ProcessorInterface;
+use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
+use Josegonzalez\Upload\File\Transformer\TransformerInterface;
+use Josegonzalez\Upload\File\Writer\DefaultWriter;
+use Josegonzalez\Upload\File\Writer\WriterInterface;
 use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
@@ -162,23 +168,16 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\ORM\Entity $entity an entity
-     * @param array $data the data being submitted for a save
+     * @param array|string $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
-    public function getPathProcessor(Entity $entity, $data, $field, $settings)
+    public function getPathProcessor(Entity $entity, $data, string $field, array $settings): ProcessorInterface
     {
-        $default = 'Josegonzalez\Upload\File\Path\DefaultProcessor';
-        $processorClass = Hash::get($settings, 'pathProcessor', $default);
-        if (is_subclass_of($processorClass, 'Josegonzalez\Upload\File\Path\ProcessorInterface')) {
-            return new $processorClass($this->_table, $entity, $data, $field, $settings);
-        }
+        $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
 
-        throw new UnexpectedValueException(sprintf(
-            "'pathProcessor' not set to instance of ProcessorInterface: %s",
-            $processorClass
-        ));
+        return new $processorClass($this->_table, $entity, $data, $field, $settings);
     }
 
     /**
@@ -190,18 +189,11 @@ class UploadBehavior extends Behavior
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
-    public function getWriter(Entity $entity, $data, $field, $settings)
+    public function getWriter(Entity $entity, array $data, string $field, array $settings): WriterInterface
     {
-        $default = 'Josegonzalez\Upload\File\Writer\DefaultWriter';
-        $writerClass = Hash::get($settings, 'writer', $default);
-        if (is_subclass_of($writerClass, 'Josegonzalez\Upload\File\Writer\WriterInterface')) {
-            return new $writerClass($this->_table, $entity, $data, $field, $settings);
-        }
+        $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
-        throw new UnexpectedValueException(sprintf(
-            "'writer' not set to instance of WriterInterface: %s",
-            $writerClass
-        ));
+        return new $writerClass($this->_table, $entity, $data, $field, $settings);
     }
 
     /**
@@ -226,13 +218,12 @@ class UploadBehavior extends Behavior
      * @param string $basepath a basepath where the files are written to
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function constructFiles(Entity $entity, $data, $field, $settings, $basepath)
+    public function constructFiles(Entity $entity, array $data, string $field, array $settings, string $basepath): array
     {
         $basepath = substr($basepath, -1) == DS ? $basepath : $basepath . DS;
-        $default = 'Josegonzalez\Upload\File\Transformer\DefaultTransformer';
-        $transformerClass = Hash::get($settings, 'transformer', $default);
+        $transformerClass = Hash::get($settings, 'transformer', DefaultTransformer::class);
         $results = [];
-        if (is_subclass_of($transformerClass, 'Josegonzalez\Upload\File\Transformer\TransformerInterface')) {
+        if (is_subclass_of($transformerClass, TransformerInterface::class)) {
             $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
             $results = $transformer->transform();
             foreach ($results as $key => $value) {

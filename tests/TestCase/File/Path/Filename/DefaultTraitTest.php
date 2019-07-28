@@ -26,11 +26,11 @@ class DefaultTraitTest extends TestCase
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->settings = [
             'nameCallback' => function ($data, $settings) {
-                return $data;
+                return $data['name'];
             },
         ];
         $mock->data = ['name' => 'filename'];
-        $this->assertEquals(['name' => 'filename'], $mock->filename());
+        $this->assertEquals('filename', $mock->filename());
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -38,10 +38,10 @@ class DefaultTraitTest extends TestCase
         $mock->field = 'field';
         $mock->settings = [
             'nameCallback' => function ($table, $entity, $data, $field, $settings) {
-                return $data;
+                return $data['name'];
             },
         ];
         $mock->data = ['name' => 'filename'];
-        $this->assertEquals(['name' => 'filename'], $mock->filename());
+        $this->assertEquals('filename', $mock->filename());
     }
 }
