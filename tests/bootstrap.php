@@ -64,8 +64,6 @@ Cake\Core\Configure::write('Session', [
     'defaults' => 'php'
 ]);
 
-\Cake\Core\Plugin::getCollection()->add(new \Josegonzalez\Upload\Plugin);
-
 // Ensure default test connection is defined
 if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
