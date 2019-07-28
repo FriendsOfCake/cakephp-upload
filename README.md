@@ -3,7 +3,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/FriendsOfCake/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/cakephp-upload)
 [![Latest Stable Version](https://img.shields.io/packagist/v/FriendsOfCake/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/cakephp-upload)
 [![Documentation Status](https://readthedocs.org/projects/cakephp-upload/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/cakephp-upload/?badge=latest)
-[![Gratipay](https://img.shields.io/gratipay/josegonzalez.svg?style=flat-square)](https://gratipay.com/~josegonzalez/)
 
 # Upload Plugin 4.0
 
