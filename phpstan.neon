@@ -1,0 +1,5 @@
+parameters:
+    level: 5
+    ignoreErrors:
+        - '#Constant ROOT not found#'
+        - '#Parameter \#2 \$options of static method Cake\\Utility\\Text::slug\(\) expects array, string given#'

@@ -123,7 +123,7 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\Event $event The afterDelete event that was fired
      * @param \Cake\ORM\Entity $entity The entity that was deleted
      * @param \ArrayObject $options the options passed to the delete method
-     * @return void|false
+     * @return bool
      */
     public function afterDelete(Event $event, Entity $entity, ArrayObject $options)
     {
@@ -167,7 +167,7 @@ class UploadBehavior extends Behavior
      * @param array $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
-     * @return \Josegonzalez\Upload\File\Path\AbstractProcessor
+     * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
     public function getPathProcessor(Entity $entity, $data, $field, $settings)
     {
@@ -190,7 +190,7 @@ class UploadBehavior extends Behavior
      * @param array $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
-     * @return \Josegonzalez\Upload\File\Path\AbstractProcessor
+     * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
     public function getWriter(Entity $entity, $data, $field, $settings)
     {

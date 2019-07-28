@@ -22,6 +22,9 @@ matrix:
     - php: 7.3
       env: PHPCS=1 DEFAULT=0
 
+    - php: 7.3
+      env: STATIC_ANALYSIS=1 DEFAULT=0
+
     - php: 5.6
       env: PREFER_LOWEST=1
 
@@ -34,6 +37,8 @@ before_script:
   - if [[ $DB = 'mysql' ]]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi
   - if [[ $DB = 'pgsql' ]]; then psql -c 'CREATE DATABASE cakephp_test;' -U postgres; fi
 
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan-shim:^0.11; fi
+
 script:
   - |
       if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.3 ]]; then
@@ -44,6 +49,8 @@ script:
   - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.3 ]]; then vendor/bin/phpunit; fi
 
   - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
+
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then vendor/bin/phpstan.phar analyse src/; fi
 
 after_success:
   - |
