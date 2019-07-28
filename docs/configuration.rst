@@ -63,6 +63,7 @@ passed in under each field in your behavior configuration.
       - ``fields.dir``: (default ``dir``) Field to use for storing the directory
       - ``fields.type``: (default ``type``) Field to use for storing the filetype
       - ``fields.size``: (default ``size``) Field to use for storing the filesize
+      - ``fields.ext``: (default ``ext``) Field to use for storing the file extension
 
 - ``filesystem``: An array of configuration info for configuring the writer
 
