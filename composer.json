@@ -17,6 +17,7 @@
     },
     "require-dev": {
         "cakephp/cakephp": "^3.5",
+        "cakephp/chronos": "^1.1",
         "phpunit/phpunit": "^5.7.14|^6.0",
         "league/flysystem-vfs": "*",
         "cakephp/cakephp-codesniffer": "dev-master"
