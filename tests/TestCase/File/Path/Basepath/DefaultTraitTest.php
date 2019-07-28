@@ -52,7 +52,7 @@ class DefaultTraitTest extends TestCase
 
     public function testNewEntity()
     {
-        $this->setExpectedException('LogicException', '{primaryKey} substitution not allowed for new entities');
+        $this->expectException('LogicException', '{primaryKey} substitution not allowed for new entities');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -66,7 +66,7 @@ class DefaultTraitTest extends TestCase
 
     public function testExitingEntityWithCompositePrimaryKey()
     {
-        $this->setExpectedException('LogicException', '{primaryKey} substitution not valid for composite primary keys');
+        $this->expectException('LogicException', '{primaryKey} substitution not valid for composite primary keys');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -136,7 +136,7 @@ class DefaultTraitTest extends TestCase
 
     public function testFieldValueMissing()
     {
-        $this->setExpectedException('LogicException', 'Field value for substitution is missing: field');
+        $this->expectException('LogicException', 'Field value for substitution is missing: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -150,7 +150,7 @@ class DefaultTraitTest extends TestCase
 
     public function testFieldValueNonScalar()
     {
-        $this->setExpectedException('LogicException', 'Field value for substitution must be a integer, float, string or boolean: field');
+        $this->expectException('LogicException', 'Field value for substitution must be a integer, float, string or boolean: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -164,7 +164,7 @@ class DefaultTraitTest extends TestCase
 
     public function testFieldValueZeroLength()
     {
-        $this->setExpectedException('LogicException', 'Field value for substitution must be non-zero in length: field');
+        $this->expectException('LogicException', 'Field value for substitution must be non-zero in length: field');
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Basepath\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();

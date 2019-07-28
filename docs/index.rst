@@ -2,15 +2,10 @@
 Introduction
 ************
 
-Upload Plugin 3.0
-=================
+Upload Plugin
+=============
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as MeioUpload , UploadPack and PHP documentation. It uses the excellent `Flysystem <http://flysystem.thephpleague.com/>` library to handle file uploads, and can be easily integrated with any image library to handle thumbnail extraction to your exact specifications.
-
-Background
-----------
-
-Media Plugin is too complicated, and it was a PITA to merge the latest updates into MeioUpload, so here I am, building yet another upload plugin. I'll build another in a month and call it "YAUP".
 
 Requirements
 ------------
