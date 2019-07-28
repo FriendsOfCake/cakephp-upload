@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/travis/FriendsOfCake/cakephp-upload/master.svg?style=flat-square)](https://travis-ci.org/FriendsOfCake/cakephp-upload)
 [![Coverage Status](https://img.shields.io/coveralls/FriendsOfCake/cakephp-upload.svg?style=flat-square)](https://coveralls.io/r/FriendsOfCake/cakephp-upload?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/FriendsOfCake/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/cakephp-upload)
-[![Latest Stable Version](https://img.shields.io/packagist/v/FriendsOfCake/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/cakephp-upload)
+[![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
+[![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
 [![Documentation Status](https://readthedocs.org/projects/cakephp-upload/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/cakephp-upload/?badge=latest)
 
 # Upload Plugin 4.0
