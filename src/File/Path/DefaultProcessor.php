@@ -7,6 +7,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 use Josegonzalez\Upload\File\Path\Basepath\DefaultTrait as BasepathTrait;
 use Josegonzalez\Upload\File\Path\Filename\DefaultTrait as FilenameTrait;
+use Zend\Diactoros\UploadedFile;
 
 class DefaultProcessor implements ProcessorInterface
 {
@@ -28,9 +29,9 @@ class DefaultProcessor implements ProcessorInterface
     protected $entity;
 
     /**
-     * Array of uploaded data for this field or filename stored in db
+     * Instance of \Zend\Diactoros\UploadedFile conaining the meta info from the file.
      *
-     * @var array|string
+     * @var \Zend\Diactoros\UploadedFile
      */
     protected $data;
 
@@ -57,7 +58,7 @@ class DefaultProcessor implements ProcessorInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, $data, string $field, array $settings)
+    public function __construct(Table $table, EntityInterface $entity, UploadedFile $data, string $field, array $settings)
     {
         $this->table = $table;
         $this->entity = $entity;

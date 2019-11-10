@@ -26,6 +26,6 @@ trait DefaultTrait
             return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
         }
 
-        return $this->data['name'];
+        return $this->data->getClientFilename();
     }
 }

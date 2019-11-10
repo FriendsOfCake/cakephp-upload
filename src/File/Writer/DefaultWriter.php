@@ -12,6 +12,7 @@ use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use UnexpectedValueException;
+use Zend\Diactoros\UploadedFile;
 
 class DefaultWriter implements WriterInterface
 {
@@ -55,11 +56,11 @@ class DefaultWriter implements WriterInterface
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
      * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
+     * @param \Zend\Diactoros\UploadedFile $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, array $data, string $field, array $settings)
+    public function __construct(Table $table, EntityInterface $entity, UploadedFile $data, string $field, array $settings)
     {
         $this->table = $table;
         $this->entity = $entity;
