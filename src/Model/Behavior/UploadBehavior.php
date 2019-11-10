@@ -16,7 +16,7 @@ use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Josegonzalez\Upload\File\Writer\WriterInterface;
 use UnexpectedValueException;
-use Zend\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 
 class UploadBehavior extends Behavior
 {
@@ -171,12 +171,12 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Zend\Diactoros\UploadedFile $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
-    public function getPathProcessor(EntityInterface $entity, UploadedFile $data, string $field, array $settings): ProcessorInterface
+    public function getPathProcessor(EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings): ProcessorInterface
     {
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
 
@@ -187,12 +187,12 @@ class UploadBehavior extends Behavior
      * Retrieves an instance of a file writer which knows how to write files to disk
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Zend\Diactoros\UploadedFile $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
-    public function getWriter(EntityInterface $entity, UploadedFile $data, string $field, array $settings): WriterInterface
+    public function getWriter(EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings): WriterInterface
     {
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
@@ -215,7 +215,7 @@ class UploadBehavior extends Behavior
      * create the source files.
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Zend\Diactoros\UploadedFile $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @param string $basepath a basepath where the files are written to
@@ -223,7 +223,7 @@ class UploadBehavior extends Behavior
      */
     public function constructFiles(
         EntityInterface $entity,
-        UploadedFile $data,
+        UploadedFileInterface $data,
         string $field,
         array $settings,
         string $basepath
