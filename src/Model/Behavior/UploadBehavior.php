@@ -19,6 +19,11 @@ use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
 {
+    /**
+     * Protected file names
+     *
+     * @var array
+     */
     private $protectedFieldNames = [
         'priority',
     ];
