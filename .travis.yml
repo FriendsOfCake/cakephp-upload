@@ -1,10 +1,13 @@
 language: php
 
 php:
-  - 5.6
-  - 7.1
   - 7.2
   - 7.3
+  - 7.4
+
+services:
+  - mysql
+  - postgresql
 
 env:
   matrix:
@@ -19,13 +22,13 @@ matrix:
   fast_finish: true
 
   include:
-    - php: 7.3
+    - php: 7.2
       env: PHPCS=1 DEFAULT=0
 
-    - php: 7.3
+    - php: 7.2
       env: STATIC_ANALYSIS=1 DEFAULT=0
 
-    - php: 5.6
+    - php: 7.2
       env: PREFER_LOWEST=1
 
 before_script:
@@ -37,7 +40,7 @@ before_script:
   - if [[ $DB = 'mysql' ]]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi
   - if [[ $DB = 'pgsql' ]]; then psql -c 'CREATE DATABASE cakephp_test;' -U postgres; fi
 
-  - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan-shim:^0.11; fi
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan:^0.12; fi
 
 script:
   - |
@@ -54,7 +57,7 @@ script:
 
 after_success:
   - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.3 ]]; then
+      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.2 ]]; then
         wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
         chmod +x php-coveralls.phar
         ./php-coveralls.phar
