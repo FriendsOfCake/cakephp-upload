@@ -221,8 +221,13 @@ class UploadBehavior extends Behavior
      * @param string $basepath a basepath where the files are written to
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function constructFiles(EntityInterface $entity, array $data, string $field, array $settings, string $basepath): array
-    {
+    public function constructFiles(
+        EntityInterface $entity,
+        array $data,
+        string $field,
+        array $settings,
+        string $basepath
+    ): array {
         $basepath = substr($basepath, -1) == DS ? $basepath : $basepath . DS;
         $transformerClass = Hash::get($settings, 'transformer', DefaultTransformer::class);
         $results = [];
