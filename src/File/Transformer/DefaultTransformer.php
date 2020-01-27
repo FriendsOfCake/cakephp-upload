@@ -26,7 +26,7 @@ class DefaultTransformer implements TransformerInterface
     /**
      * Array of uploaded data for this field
      *
-     * @var array
+     * @var \Psr\Http\Message\UploadedFileInterface
      */
     protected $data;
 
