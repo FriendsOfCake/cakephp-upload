@@ -468,7 +468,7 @@ class UploadBehaviorTest extends TestCase
         // expecting getPathProcessor to be called with right arguments for dataOk
         $behavior->expects($this->once())
             ->method('getPathProcessor')
-            ->with($this->entity, $field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         // basepath of processor should return our fake path
         $this->processor->expects($this->once())
@@ -477,7 +477,7 @@ class UploadBehaviorTest extends TestCase
         // expecting getWriter to be called with right arguments for dataOk
         $behavior->expects($this->once())
             ->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, [], 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         // and here we check that file with right path will be deleted
         $this->writer->expects($this->once())
