@@ -5,6 +5,7 @@ namespace Josegonzalez\Upload\Test\TestCase\File\Transformer;
 
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
+use Laminas\Diactoros\UploadedFile;
 
 class DefaultTransformerTest extends TestCase
 {
@@ -12,10 +13,11 @@ class DefaultTransformerTest extends TestCase
     {
         $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
+        $this->uploadedFile = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo.txt');
+
         $field = 'field';
         $settings = [];
-        $this->transformer = new DefaultTransformer($table, $entity, $data, $field, $settings);
+        $this->transformer = new DefaultTransformer($table, $entity, $this->uploadedFile, $field, $settings);
     }
 
     public function testIsProcessorInterface()
@@ -25,6 +27,6 @@ class DefaultTransformerTest extends TestCase
 
     public function testTransform()
     {
-        $this->assertEquals(['path/to/file' => 'foo.txt'], $this->transformer->transform());
+        $this->assertEquals([$this->uploadedFile->getStream()->getMetadata('uri') => 'foo.txt'], $this->transformer->transform());
     }
 }

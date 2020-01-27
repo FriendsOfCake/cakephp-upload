@@ -15,6 +15,7 @@ use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Josegonzalez\Upload\File\Writer\WriterInterface;
+use Laminas\Diactoros\UploadedFile;
 use UnexpectedValueException;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -72,7 +73,8 @@ class UploadBehavior extends Behavior
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
-            if (Hash::get($dataArray, $field . '.error') !== UPLOAD_ERR_NO_FILE) {
+
+            if ($dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
             unset($data[$field]);
@@ -92,6 +94,10 @@ class UploadBehavior extends Behavior
     {
         foreach ($this->getConfig(null, []) as $field => $settings) {
             if (in_array($field, $this->protectedFieldNames)) {
+                continue;
+            }
+
+            if(empty($entity->get($field))) {
                 continue;
             }
 
@@ -155,7 +161,7 @@ class UploadBehavior extends Behavior
                 $files = [$path . $entity->get($field)];
             }
 
-            $writer = $this->getWriter($entity, [], $field, $settings);
+            $writer = $this->getWriter($entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), $field, $settings);
             $success = $writer->delete($files);
 
             if ($result && (new Collection($success))->contains(false)) {

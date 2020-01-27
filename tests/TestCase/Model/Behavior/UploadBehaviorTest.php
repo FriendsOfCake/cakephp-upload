@@ -9,6 +9,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use Josegonzalez\Upload\Test\Stub\ChildBehavior;
+use Laminas\Diactoros\UploadedFile;
 use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
@@ -22,24 +23,31 @@ class UploadBehaviorTest extends TestCase
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $this->dataOk = [
+            'field' => new UploadedFile(
+                fopen('php://temp', 'wb+'),
+                1,
+                UPLOAD_ERR_OK,
+                'derp',
+                'text/plain'
+            )
+        ];
+
+        $this->configOk = [
             'field' => [
-                'tmp_name' => 'path/to/file',
-                'name' => 'derp',
-                'error' => UPLOAD_ERR_OK,
-                'size' => 1,
-                'type' => 'text',
                 'keepFilesOnDelete' => false,
-                'deleteCallback' => null,
-            ],
+                'deleteCallback' => null
+            ]
         ];
         $this->dataError = [
-            'field' => [
-                'tmp_name' => 'path/to/file',
-                'name' => 'derp',
-                'error' => UPLOAD_ERR_NO_FILE,
-                'size' => 0,
-                'type' => '',
-            ],
+            'field' => new UploadedFile(
+                fopen('php://temp', 'wb+'),
+                0,
+                UPLOAD_ERR_NO_FILE,
+                'derp'
+            )
+        ];
+        $this->configError = [
+            'field' => []
         ];
         $this->field = 'field';
         $this->settings = ['field' => []];
@@ -47,11 +55,11 @@ class UploadBehaviorTest extends TestCase
         $this->behavior = new UploadBehavior($this->table, []);
         $this->processor = $this->getMockBuilder('Josegonzalez\Upload\File\Path\DefaultProcessor')
             ->setMethods([])
-            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk, $this->field, $this->settings])
+            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
             ->setMethods([])
-            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk, $this->field, $this->settings])
+            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
     }
@@ -376,7 +384,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $behavior->expects($this->any())
             ->method('getPathProcessor')
@@ -398,7 +406,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $behavior->expects($this->any())
             ->method('getPathProcessor')
@@ -420,7 +428,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataError])
             ->getMock();
-        $behavior->setConfig($this->dataError);
+        $behavior->setConfig($this->configError);
 
         $behavior->expects($this->any())
             ->method('getWriter')
@@ -442,7 +450,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $this->entity->expects($this->at(0))
             ->method('has')
@@ -490,7 +498,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $this->entity->expects($this->at(0))
             ->method('has')
@@ -529,16 +537,16 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
-        $this->dataOk['field']['deleteCallback'] = null;
+        $this->configOk['field']['deleteCallback'] = null;
 
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, [], 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')
@@ -560,7 +568,7 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
-        $this->dataOk['field']['deleteCallback'] = function ($path, $entity, $field, $settings) {
+        $this->configOk['field']['deleteCallback'] = function ($path, $entity, $field, $settings) {
             return [
                 $path . $entity->{$field},
                 $path . 'sm-' . $entity->{$field},
@@ -568,14 +576,14 @@ class UploadBehaviorTest extends TestCase
             ];
         };
 
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, [], 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')
@@ -612,7 +620,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testGetWriter()
     {
-        $processor = $this->behavior->getWriter($this->entity, [], 'field', []);
+        $processor = $this->behavior->getWriter($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'), 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Writer\WriterInterface', $processor);
     }
 
@@ -620,72 +628,72 @@ class UploadBehaviorTest extends TestCase
     {
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
             'path'
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
             'some/path'
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
 
     public function testConstructFilesWithBasePathEndingDS()
     {
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
             'path/'
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
             'some/path/'
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
 
     public function testConstructFilesWithCallable()
     {
         $callable = function () {
-            return ['path/to/callable/file/on/disk' => 'file.text'];
+            return ['php://temp' => 'file.text'];
         };
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => $callable],
             'some/path'
         );
-        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
 
     public function testConstructFilesWithCallableAndBasePathEndingDS()
     {
         $callable = function () {
-            return ['path/to/callable/file/on/disk' => 'file.text'];
+            return ['php://temp' => 'file.text'];
         };
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK),
             'field',
             ['transformer' => $callable],
             'some/path/'
         );
-        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
 
     public function testConstructFilesException()
@@ -693,7 +701,7 @@ class UploadBehaviorTest extends TestCase
         $this->expectException('UnexpectedValueException', "'transformer' not set to instance of TransformerInterface: UnexpectedValueException");
         $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => 'UnexpectedValueException'],
             'path'
@@ -702,7 +710,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testGetPathProcessor()
     {
-        $processor = $this->behavior->getPathProcessor($this->entity, [], 'field', []);
+        $processor = $this->behavior->getPathProcessor($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
     }
 }
