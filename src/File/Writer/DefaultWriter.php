@@ -12,7 +12,6 @@ use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use UnexpectedValueException;
-use Psr\Http\Message\UploadedFileInterface;
 
 class DefaultWriter implements WriterInterface
 {

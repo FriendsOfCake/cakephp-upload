@@ -26,10 +26,10 @@ trait DefaultTrait
             return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
         }
 
-        if(is_string($this->data)) {
+        if (is_string($this->data)) {
             return $this->data;
         }
-        
+
         return $this->data->getClientFilename();
     }
 }

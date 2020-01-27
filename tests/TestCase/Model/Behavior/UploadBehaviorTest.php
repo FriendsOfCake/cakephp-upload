@@ -28,26 +28,26 @@ class UploadBehaviorTest extends TestCase
                 1,
                 UPLOAD_ERR_OK,
                 'derp',
-                'text/plain'
-            )
+                'text/plain',
+            ),
         ];
 
         $this->configOk = [
             'field' => [
                 'keepFilesOnDelete' => false,
-                'deleteCallback' => null
-            ]
+                'deleteCallback' => null,
+            ],
         ];
         $this->dataError = [
             'field' => new UploadedFile(
                 fopen('php://temp', 'wb+'),
                 0,
                 UPLOAD_ERR_NO_FILE,
-                'derp'
-            )
+                'derp',
+            ),
         ];
         $this->configError = [
-            'field' => []
+            'field' => [],
         ];
         $this->field = 'field';
         $this->settings = ['field' => []];

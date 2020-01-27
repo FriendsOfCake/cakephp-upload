@@ -15,9 +15,8 @@ use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Josegonzalez\Upload\File\Writer\WriterInterface;
-use Laminas\Diactoros\UploadedFile;
-use UnexpectedValueException;
 use Psr\Http\Message\UploadedFileInterface;
+use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
 {
@@ -97,7 +96,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if(empty($entity->get($field))) {
+            if (empty($entity->get($field))) {
                 continue;
             }
 
