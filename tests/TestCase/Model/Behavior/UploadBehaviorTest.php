@@ -477,7 +477,7 @@ class UploadBehaviorTest extends TestCase
         // expecting getWriter to be called with right arguments for dataOk
         $behavior->expects($this->once())
             ->method('getWriter')
-            ->with($this->entity, [], 'field', $this->configOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         // and here we check that file with right path will be deleted
         $this->writer->expects($this->once())
@@ -546,7 +546,7 @@ class UploadBehaviorTest extends TestCase
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->configOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')
@@ -583,7 +583,7 @@ class UploadBehaviorTest extends TestCase
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->configOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')

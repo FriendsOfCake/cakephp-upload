@@ -160,7 +160,7 @@ class UploadBehavior extends Behavior
                 $files = [$path . $entity->get($field)];
             }
 
-            $writer = $this->getWriter($entity, [], $field, $settings);
+            $writer = $this->getWriter($entity, null, $field, $settings);
             $success = $writer->delete($files);
 
             if ($result && (new Collection($success))->contains(false)) {
@@ -192,12 +192,12 @@ class UploadBehavior extends Behavior
      * Retrieves an instance of a file writer which knows how to write files to disk
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Psr\Http\Message\UploadedFileInterface|array $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface|null $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
-    public function getWriter(EntityInterface $entity, $data, string $field, array $settings): WriterInterface
+    public function getWriter(EntityInterface $entity, ?UploadedFileInterface $data = null, string $field, array $settings): WriterInterface
     {
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
