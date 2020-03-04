@@ -25,14 +25,14 @@ class SlugTransformer extends DefaultTransformer
      */
     public function transform(): array
     {
-        $filename = pathinfo($this->data['name'], PATHINFO_FILENAME);
+        $filename = pathinfo($this->data->getClientFilename(), PATHINFO_FILENAME);
         $filename = Text::slug($filename, '-');
 
-        $ext = pathinfo($this->data['name'], PATHINFO_EXTENSION);
+        $ext = pathinfo($this->data->getClientFilename(), PATHINFO_EXTENSION);
         if (!empty($ext)) {
             $filename = $filename . '.' . $ext;
         }
 
-        return [$this->data['tmp_name'] => strtolower($filename)];
+        return [$this->data->getStream()->getMetadata('uri') => strtolower($filename)];
     }
 }

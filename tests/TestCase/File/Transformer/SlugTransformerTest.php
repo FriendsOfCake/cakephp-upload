@@ -5,6 +5,7 @@ namespace Josegonzalez\Upload\Test\TestCase\File\Transformer;
 
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\SlugTransformer;
+use Laminas\Diactoros\UploadedFile;
 
 class SlugTransformerTest extends TestCase
 {
@@ -12,7 +13,7 @@ class SlugTransformerTest extends TestCase
     {
         $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $data = ['tmp_name' => 'path/to/file', 'name' => 'foo é À.TXT'];
+        $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo é À.TXT');
         $field = 'field';
         $settings = [];
         $this->transformer = new SlugTransformer($table, $entity, $data, $field, $settings);
@@ -20,15 +21,15 @@ class SlugTransformerTest extends TestCase
 
     public function testTransform()
     {
-        $this->assertEquals(['path/to/file' => 'foo-e-a.txt'], $this->transformer->transform());
+        $this->assertEquals(['php://temp' => 'foo-e-a.txt'], $this->transformer->transform());
     }
 
     public function testTransformWithNoFileExt()
     {
         $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $data = ['tmp_name' => 'path/to/file', 'name' => 'foo é À'];
+        $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo é À');
         $transformer = new SlugTransformer($table, $entity, $data, 'field', []);
-        $this->assertEquals(['path/to/file' => 'foo-e-a'], $transformer->transform());
+        $this->assertEquals(['php://temp' => 'foo-e-a'], $transformer->transform());
     }
 }

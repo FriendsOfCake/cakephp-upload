@@ -11,6 +11,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
 class DefaultWriter implements WriterInterface
@@ -32,7 +33,7 @@ class DefaultWriter implements WriterInterface
     /**
      * Array of uploaded data for this field
      *
-     * @var array
+     * @var \Psr\Http\Message\UploadedFileInterface|null
      */
     protected $data;
 
@@ -55,11 +56,11 @@ class DefaultWriter implements WriterInterface
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
      * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface|null $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, array $data, string $field, array $settings)
+    public function __construct(Table $table, EntityInterface $entity, ?UploadedFileInterface $data = null, string $field, array $settings)
     {
         $this->table = $table;
         $this->entity = $entity;

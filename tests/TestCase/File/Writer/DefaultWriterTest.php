@@ -5,6 +5,7 @@ namespace Josegonzalez\Upload\Test\TestCase\File\Writer;
 
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
+use Laminas\Diactoros\UploadedFile;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Vfs\VfsAdapter;
 use VirtualFileSystem\FileSystem as Vfs;
@@ -23,7 +24,7 @@ class DefaultWriterTest extends TestCase
     {
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $this->data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
+        $this->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo.txt');
         $this->field = 'field';
         $this->settings = [
             'filesystem' => [

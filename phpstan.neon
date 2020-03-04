@@ -9,11 +9,6 @@ parameters:
             path: src/File/Writer/DefaultWriter.php
 
         -
-            message: "#^Method Josegonzalez\\\\Upload\\\\Model\\\\Behavior\\\\UploadBehavior\\:\\:beforeSave\\(\\) should return void\\|false but return statement is missing\\.$#"
-            count: 1
-            path: src/Model/Behavior/UploadBehavior.php
-
-        -
             message: "#^Cannot instantiate interface Josegonzalez\\\\Upload\\\\File\\\\Transformer\\\\TransformerInterface\\.$#"
             count: 1
             path: src/Model/Behavior/UploadBehavior.php

@@ -28,9 +28,9 @@ class DefaultProcessor implements ProcessorInterface
     protected $entity;
 
     /**
-     * Array of uploaded data for this field or filename stored in db
+     * Instance of \Psr\Http\Message\UploadedFileInterface conaining the meta info from the file.
      *
-     * @var array|string
+     * @var \Psr\Http\Message\UploadedFileInterface|string
      */
     protected $data;
 
@@ -53,7 +53,7 @@ class DefaultProcessor implements ProcessorInterface
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
      * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
-     * @param array|string     $data the data being submitted for a save or filename stored in db
+     * @param \Psr\Http\Message\UploadedFileInterface|string     $data the data being submitted for a save or filename stored in db
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */

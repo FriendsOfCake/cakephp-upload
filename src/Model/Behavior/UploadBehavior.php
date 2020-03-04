@@ -15,6 +15,7 @@ use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 use Josegonzalez\Upload\File\Transformer\TransformerInterface;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Josegonzalez\Upload\File\Writer\WriterInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
 class UploadBehavior extends Behavior
@@ -71,7 +72,8 @@ class UploadBehavior extends Behavior
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
-            if (Hash::get($dataArray, $field . '.error') !== UPLOAD_ERR_NO_FILE) {
+
+            if ($dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
             unset($data[$field]);
@@ -94,7 +96,11 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (Hash::get((array)$entity->get($field), 'error') !== UPLOAD_ERR_OK) {
+            if (empty($entity->get($field))) {
+                continue;
+            }
+
+            if ($entity->get($field)->getError() !== UPLOAD_ERR_OK) {
                 if (Hash::get($settings, 'restoreValueOnFailure', true)) {
                     $entity->set($field, $entity->getOriginal($field));
                     $entity->setDirty($field, false);
@@ -106,21 +112,20 @@ class UploadBehavior extends Behavior
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $basepath = $path->basepath();
             $filename = $path->filename();
-            $data['name'] = $filename;
+
             $files = $this->constructFiles($entity, $data, $field, $settings, $basepath);
 
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
-
             if ((new Collection($success))->contains(false)) {
                 return false;
             }
 
             $entity->set($field, $filename);
             $entity->set(Hash::get($settings, 'fields.dir', 'dir'), $basepath);
-            $entity->set(Hash::get($settings, 'fields.size', 'size'), $data['size']);
-            $entity->set(Hash::get($settings, 'fields.type', 'type'), $data['type']);
-            $entity->set(Hash::get($settings, 'fields.ext', 'ext'), pathinfo($data['name'], PATHINFO_EXTENSION));
+            $entity->set(Hash::get($settings, 'fields.size', 'size'), $data->getSize());
+            $entity->set(Hash::get($settings, 'fields.type', 'type'), $data->getClientMediaType());
+            $entity->set(Hash::get($settings, 'fields.ext', 'ext'), pathinfo($filename, PATHINFO_EXTENSION));
         }
     }
 
@@ -155,7 +160,7 @@ class UploadBehavior extends Behavior
                 $files = [$path . $entity->get($field)];
             }
 
-            $writer = $this->getWriter($entity, [], $field, $settings);
+            $writer = $this->getWriter($entity, null, $field, $settings);
             $success = $writer->delete($files);
 
             if ($result && (new Collection($success))->contains(false)) {
@@ -171,7 +176,7 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param array|string $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface|string $data the data being submitted for a save or the filename
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
@@ -187,12 +192,12 @@ class UploadBehavior extends Behavior
      * Retrieves an instance of a file writer which knows how to write files to disk
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param array $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface|null $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
-    public function getWriter(EntityInterface $entity, array $data, string $field, array $settings): WriterInterface
+    public function getWriter(EntityInterface $entity, ?UploadedFileInterface $data = null, string $field, array $settings): WriterInterface
     {
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
@@ -215,7 +220,7 @@ class UploadBehavior extends Behavior
      * create the source files.
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param array $data the data being submitted for a save
+     * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @param string $basepath a basepath where the files are written to
@@ -223,7 +228,7 @@ class UploadBehavior extends Behavior
      */
     public function constructFiles(
         EntityInterface $entity,
-        array $data,
+        UploadedFileInterface $data,
         string $field,
         array $settings,
         string $basepath
