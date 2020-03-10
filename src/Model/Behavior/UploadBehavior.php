@@ -96,7 +96,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (empty($entity->get($field))) {
+            if (empty($entity->get($field)) || !$entity->isDirty($field)) {
                 continue;
             }
 
