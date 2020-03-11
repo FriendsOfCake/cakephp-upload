@@ -72,7 +72,6 @@ class UploadBehavior extends Behavior
             if (!$validator->isEmptyAllowed($field, false) || $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
-            
             unset($data[$field]);
         }
     }
