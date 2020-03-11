@@ -69,7 +69,7 @@ class UploadBehavior extends Behavior
         $validator = $this->_table->getValidator();
         $dataArray = $data->getArrayCopy();
         foreach (array_keys($this->getConfig(null, [])) as $field) {
-            if (!$validator->isEmptyAllowed($field, false) || $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
+            if (!$validator->isEmptyAllowed($field, false) || (!empty($dataArray[$field]) && $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE)) {
                 continue;
             }
             unset($data[$field]);
@@ -92,7 +92,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (empty($entity->get($field))) {
+            if (empty($entity->get($field)) || !$entity->isDirty($field)) {
                 continue;
             }
 
