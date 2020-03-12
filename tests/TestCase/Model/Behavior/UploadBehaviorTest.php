@@ -255,7 +255,7 @@ class UploadBehaviorTest extends TestCase
         $this->assertEquals(new ArrayObject($this->dataError), $data);
     }
 
-    public function testBeforeSaveUploadError()
+    public function testBeforeSaveNoUpload()
     {
         $originalValue = rand(1000, 9999);
 
@@ -277,16 +277,16 @@ class UploadBehaviorTest extends TestCase
             ->method('getOriginal')
             ->with('field')
             ->will($this->returnValue($originalValue));
-        $this->entity->expects($this->once())
+        $this->entity->expects($this->never())
             ->method('set')
             ->with('field', $originalValue);
-        $this->entity->expects($this->once())
+        $this->entity->expects($this->never())
             ->method('setDirty')
             ->with('field', false);
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
-    public function testBeforeSaveWriteFail()
+    public function testBeforeSaveNoWrite()
     {
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
@@ -311,7 +311,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('write')
                      ->will($this->returnValue([false]));
 
-        $this->assertFalse($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testBeforeSaveOk()
