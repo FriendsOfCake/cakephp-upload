@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Validation\Traits;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 trait ImageValidationTrait
 {
     /**
@@ -14,11 +16,16 @@ trait ImageValidationTrait
      */
     public static function isAboveMinWidth($check, int $width): bool
     {
-        // Non-file uploads also mean the height is too big
-        if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            $file = $check->getStream()->getMetadata('uri');
+        } else {
+            // Non-file uploads also mean the height is too big
+            if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
+                return false;
+            }
+            $file = $check['tmp_name'];
         }
-        [$imgWidth] = getimagesize($check['tmp_name']);
+        [$imgWidth] = getimagesize($file);
 
         return $width > 0 && $imgWidth >= $width;
     }
@@ -32,11 +39,17 @@ trait ImageValidationTrait
      */
     public static function isBelowMaxWidth($check, int $width): bool
     {
-        // Non-file uploads also mean the height is too big
-        if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            $file = $check->getStream()->getMetadata('uri');
+        } else {
+            // Non-file uploads also mean the height is too big
+            if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
+                return false;
+            }
+
+            $file = $check['tmp_name'];
         }
-        [$imgWidth] = getimagesize($check['tmp_name']);
+        [$imgWidth] = getimagesize($file);
 
         return $width > 0 && $imgWidth <= $width;
     }
@@ -50,11 +63,16 @@ trait ImageValidationTrait
      */
     public static function isAboveMinHeight($check, int $height): bool
     {
-        // Non-file uploads also mean the height is too big
-        if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            $file = $check->getStream()->getMetadata('uri');
+        } else {
+            // Non-file uploads also mean the height is too big
+            if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
+                return false;
+            }
+            $file = $check['tmp_name'];
         }
-        [, $imgHeight] = getimagesize($check['tmp_name']);
+        [, $imgHeight] = getimagesize($file);
 
         return $height > 0 && $imgHeight >= $height;
     }
@@ -68,11 +86,16 @@ trait ImageValidationTrait
      */
     public static function isBelowMaxHeight($check, int $height): bool
     {
-        // Non-file uploads also mean the height is too big
-        if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            $file = $check->getStream()->getMetadata('uri');
+        } else {
+            // Non-file uploads also mean the height is too big
+            if (!isset($check['tmp_name']) || !strlen($check['tmp_name'])) {
+                return false;
+            }
+            $file = $check['tmp_name'];
         }
-        [, $imgHeight] = getimagesize($check['tmp_name']);
+        [, $imgHeight] = getimagesize($file);
 
         return $height > 0 && $imgHeight <= $height;
     }

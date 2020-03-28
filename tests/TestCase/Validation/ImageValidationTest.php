@@ -5,6 +5,7 @@ namespace Josegonzalez\Upload\Test\TestCase\Validation;
 
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Validation\ImageValidation;
+use Laminas\Diactoros\UploadedFile;
 use VirtualFileSystem\FileSystem as Vfs;
 
 class ImageValidationTest extends TestCase
@@ -35,6 +36,10 @@ class ImageValidationTest extends TestCase
 
     public function testIsAboveMinWidth()
     {
+        $file = new UploadedFile($this->data['tmp_name'], 200, UPLOAD_ERR_OK, 'sample.txt', 'text/plain');
+        $this->assertTrue(ImageValidation::isAboveMinWidth($file, 10));
+        $this->assertFalse(ImageValidation::isAboveMinWidth($file, 30));
+
         $this->assertTrue(ImageValidation::isAboveMinWidth($this->data, 10));
         $this->assertFalse(ImageValidation::isAboveMinWidth($this->data, 30));
 
@@ -48,6 +53,10 @@ class ImageValidationTest extends TestCase
 
     public function testIsBelowMaxWidth()
     {
+        $file = new UploadedFile($this->data['tmp_name'], 200, UPLOAD_ERR_OK, 'sample.txt', 'text/plain');
+        $this->assertTrue(ImageValidation::isBelowMaxWidth($file, 30));
+        $this->assertFalse(ImageValidation::isBelowMaxWidth($file, 10));
+
         $this->assertTrue(ImageValidation::isBelowMaxWidth($this->data, 30));
         $this->assertFalse(ImageValidation::isBelowMaxWidth($this->data, 10));
 
@@ -61,6 +70,10 @@ class ImageValidationTest extends TestCase
 
     public function testIsAboveMinHeight()
     {
+        $file = new UploadedFile($this->data['tmp_name'], 200, UPLOAD_ERR_OK, 'sample.txt', 'text/plain');
+        $this->assertTrue(ImageValidation::isAboveMinHeight($file, 10));
+        $this->assertFalse(ImageValidation::isAboveMinHeight($file, 30));
+
         $this->assertTrue(ImageValidation::isAboveMinHeight($this->data, 10));
         $this->assertFalse(ImageValidation::isAboveMinHeight($this->data, 30));
 
@@ -74,6 +87,10 @@ class ImageValidationTest extends TestCase
 
     public function testIsBelowMaxHeight()
     {
+        $file = new UploadedFile($this->data['tmp_name'], 200, UPLOAD_ERR_OK, 'sample.txt', 'text/plain');
+        $this->assertTrue(ImageValidation::isBelowMaxHeight($file, 30));
+        $this->assertFalse(ImageValidation::isBelowMaxHeight($file, 10));
+
         $this->assertTrue(ImageValidation::isBelowMaxHeight($this->data, 30));
         $this->assertFalse(ImageValidation::isBelowMaxHeight($this->data, 10));
 
