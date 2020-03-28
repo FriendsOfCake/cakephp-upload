@@ -13,7 +13,7 @@ class DefaultProcessorTest extends TestCase
     {
         $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK);
+        $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename.png');
         $field = 'field';
         $settings = [];
         $processor = new DefaultProcessor($table, $entity, $data, $field, $settings);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Josegonzalez\Upload\Test\TestCase\File\Path\Filename;
 
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Text;
 use Laminas\Diactoros\UploadedFile;
 
 class DefaultTraitTest extends TestCase
@@ -12,15 +13,20 @@ class DefaultTraitTest extends TestCase
     {
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->settings = [];
-        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename');
-        $this->assertEquals('filename', $mock->filename());
+        $mock->data = 'filename.png';
+        $this->assertEquals('filename.png', $mock->filename());
+
+        $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
+        $mock->settings = [];
+        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename.png');
+        $this->assertEquals('filename.png', $mock->filename());
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->settings = [
             'nameCallback' => 'not_callable',
         ];
-        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename');
-        $this->assertEquals('filename', $mock->filename());
+        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename.png');
+        $this->assertEquals('filename.png', $mock->filename());
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->settings = [
@@ -28,8 +34,8 @@ class DefaultTraitTest extends TestCase
                 return $data->getClientFilename();
             },
         ];
-        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename');
-        $this->assertEquals('filename', $mock->filename());
+        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename.png');
+        $this->assertEquals('filename.png', $mock->filename());
 
         $mock = $this->getMockForTrait('Josegonzalez\Upload\File\Path\Filename\DefaultTrait');
         $mock->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
@@ -37,10 +43,13 @@ class DefaultTraitTest extends TestCase
         $mock->field = 'field';
         $mock->settings = [
             'nameCallback' => function ($table, $entity, $data, $field, $settings) {
-                return $data->getClientFilename();
+                $pathparts = pathinfo($data->getClientFilename());
+                $filename = Text::uuid() . '.' . strtolower($pathparts['extension']);
+
+                return $filename;
             },
         ];
-        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename');
-        $this->assertEquals('filename', $mock->filename());
+        $mock->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'filename.png');
+        $this->assertEquals(40, strlen($mock->filename()));
     }
 }

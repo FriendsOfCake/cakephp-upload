@@ -17,8 +17,9 @@ interface TransformerInterface
      * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
+     * @param string           $filename from the processor to use
      */
-    public function __construct(Table $table, EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings);
+    public function __construct(Table $table, EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings, string $filename);
 
     /**
      * Creates a set of files from the initial data and returns them as key/value

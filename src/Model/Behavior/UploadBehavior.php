@@ -113,7 +113,7 @@ class UploadBehavior extends Behavior
             $basepath = $path->basepath();
             $filename = $path->filename();
 
-            $files = $this->constructFiles($entity, $data, $field, $settings, $basepath);
+            $files = $this->constructFiles($entity, $data, $field, $settings, $basepath, $filename);
 
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
@@ -224,6 +224,8 @@ class UploadBehavior extends Behavior
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @param string $basepath a basepath where the files are written to
+     * @param string $filename Filename from processor to use
+     *
      * @return array key/value pairs of temp files mapping to their names
      */
     public function constructFiles(
@@ -231,19 +233,20 @@ class UploadBehavior extends Behavior
         UploadedFileInterface $data,
         string $field,
         array $settings,
-        string $basepath
+        string $basepath,
+        string $filename
     ): array {
         $basepath = substr($basepath, -1) == DS ? $basepath : $basepath . DS;
         $transformerClass = Hash::get($settings, 'transformer', DefaultTransformer::class);
         $results = [];
         if (is_subclass_of($transformerClass, TransformerInterface::class)) {
-            $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
+            $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings, $filename);
             $results = $transformer->transform();
             foreach ($results as $key => $value) {
                 $results[$key] = $basepath . $value;
             }
         } elseif (is_callable($transformerClass)) {
-            $results = $transformerClass($this->_table, $entity, $data, $field, $settings);
+            $results = $transformerClass($this->_table, $entity, $data, $field, $settings, $filename);
             foreach ($results as $key => $value) {
                 $results[$key] = $basepath . $value;
             }

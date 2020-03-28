@@ -25,10 +25,10 @@ class SlugTransformer extends DefaultTransformer
      */
     public function transform(): array
     {
-        $filename = pathinfo($this->data->getClientFilename(), PATHINFO_FILENAME);
+        $filename = pathinfo($this->filename, PATHINFO_FILENAME);
         $filename = Text::slug($filename, '-');
 
-        $ext = pathinfo($this->data->getClientFilename(), PATHINFO_EXTENSION);
+        $ext = pathinfo($this->filename, PATHINFO_EXTENSION);
         if (!empty($ext)) {
             $filename = $filename . '.' . $ext;
         }

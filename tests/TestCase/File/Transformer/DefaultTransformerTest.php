@@ -17,10 +17,10 @@ class DefaultTransformerTest extends TestCase
 
         $field = 'field';
         $settings = [];
-        $this->transformer = new DefaultTransformer($table, $entity, $this->uploadedFile, $field, $settings);
+        $this->transformer = new DefaultTransformer($table, $entity, $this->uploadedFile, $field, $settings, 'foo.txt');
     }
 
-    public function testIsProcessorInterface()
+    public function testIsTransformerInterface()
     {
         $this->assertInstanceOf('Josegonzalez\Upload\File\Transformer\TransformerInterface', $this->transformer);
     }

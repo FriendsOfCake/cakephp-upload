@@ -45,6 +45,13 @@ class DefaultTransformer implements TransformerInterface
     protected $settings;
 
     /**
+     * Processor to get filename from
+     *
+     * @var string
+     */
+    protected $filename;
+
+    /**
      * Constructor
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
@@ -52,14 +59,16 @@ class DefaultTransformer implements TransformerInterface
      * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
+     * @param string           $filename from the processor to use
      */
-    public function __construct(Table $table, EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings)
+    public function __construct(Table $table, EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings, string $filename)
     {
         $this->table = $table;
         $this->entity = $entity;
         $this->data = $data;
         $this->field = $field;
         $this->settings = $settings;
+        $this->filename = $filename;
     }
 
     /**
@@ -76,6 +85,6 @@ class DefaultTransformer implements TransformerInterface
      */
     public function transform(): array
     {
-        return [$this->data->getStream()->getMetadata('uri') => $this->data->getClientFileName()];
+        return [$this->data->getStream()->getMetadata('uri') => $this->filename];
     }
 }

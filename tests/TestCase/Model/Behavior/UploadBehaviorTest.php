@@ -626,42 +626,50 @@ class UploadBehaviorTest extends TestCase
 
     public function testConstructFiles()
     {
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt');
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
+            $data,
             'field',
             [],
-            'path'
+            'path',
+            'file.txt'
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt');
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
+            $data,
             'field',
             [],
-            'some/path'
+            'some/path',
+            'file.txt'
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
 
     public function testConstructFilesWithBasePathEndingDS()
     {
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt');
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
+            $data,
             'field',
             [],
-            'path/'
+            'path/',
+            'file.txt'
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt');
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
+            $data,
             'field',
             [],
-            'some/path/'
+            'some/path/',
+            'file.txt'
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
@@ -671,12 +679,14 @@ class UploadBehaviorTest extends TestCase
         $callable = function () {
             return ['php://temp' => 'file.text'];
         };
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt');
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
+            $data,
             'field',
             ['transformer' => $callable],
-            'some/path'
+            'some/path',
+            'file.txt'
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -686,12 +696,14 @@ class UploadBehaviorTest extends TestCase
         $callable = function () {
             return ['php://temp' => 'file.text'];
         };
+        $data = new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK);
         $files = $this->behavior->constructFiles(
             $this->entity,
-            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK),
+            $data,
             'field',
             ['transformer' => $callable],
-            'some/path/'
+            'some/path/',
+            ''
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -704,7 +716,8 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => 'UnexpectedValueException'],
-            'path'
+            'path',
+            'file.txt'
         );
     }
 
