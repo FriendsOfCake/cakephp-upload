@@ -77,10 +77,11 @@ class DefaultTransformer implements TransformerInterface
      *     '/tmp/path/to/file/on/disk-2' => 'file-preview.png',
      *   ]
      *
+     * @param string $filename Filename.
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function transform(): array
+    public function transform(string $filename): array
     {
-        return [$this->data->getStream()->getMetadata('uri') => $this->data->getClientFileName()];
+        return [$this->data->getStream()->getMetadata('uri') => $filename];
     }
 }

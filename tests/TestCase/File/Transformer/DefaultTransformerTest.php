@@ -27,6 +27,9 @@ class DefaultTransformerTest extends TestCase
 
     public function testTransform()
     {
-        $this->assertEquals([$this->uploadedFile->getStream()->getMetadata('uri') => 'foo.txt'], $this->transformer->transform());
+        $this->assertEquals(
+            [$this->uploadedFile->getStream()->getMetadata('uri') => 'foo.txt'],
+            $this->transformer->transform('foo.txt')
+        );
     }
 }

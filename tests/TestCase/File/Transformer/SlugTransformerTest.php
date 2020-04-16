@@ -21,7 +21,7 @@ class SlugTransformerTest extends TestCase
 
     public function testTransform()
     {
-        $this->assertEquals(['php://temp' => 'foo-e-a.txt'], $this->transformer->transform());
+        $this->assertEquals(['php://temp' => 'foo-e-a.txt'], $this->transformer->transform('foo é À.TXT'));
     }
 
     public function testTransformWithNoFileExt()
@@ -30,6 +30,6 @@ class SlugTransformerTest extends TestCase
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo é À');
         $transformer = new SlugTransformer($table, $entity, $data, 'field', []);
-        $this->assertEquals(['php://temp' => 'foo-e-a'], $transformer->transform());
+        $this->assertEquals(['php://temp' => 'foo-e-a'], $transformer->transform('foo é À'));
     }
 }

@@ -21,14 +21,15 @@ class SlugTransformer extends DefaultTransformer
      *   ]
      * ```
      *
+     * @param string $filename Filename.
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function transform(): array
+    public function transform(string $filename): array
     {
-        $filename = pathinfo($this->data->getClientFilename(), PATHINFO_FILENAME);
-        $filename = Text::slug($filename, '-');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $filename = pathinfo($filename, PATHINFO_FILENAME);
 
-        $ext = pathinfo($this->data->getClientFilename(), PATHINFO_EXTENSION);
+        $filename = Text::slug($filename, '-');
         if (!empty($ext)) {
             $filename = $filename . '.' . $ext;
         }
