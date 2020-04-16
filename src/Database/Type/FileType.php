@@ -23,7 +23,7 @@ class FileType extends BaseType
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function toDatabase($value, DriverInterface $driver)
     {
@@ -31,7 +31,7 @@ class FileType extends BaseType
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function toPHP($value, DriverInterface $driver)
     {

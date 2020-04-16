@@ -18,7 +18,13 @@ interface WriterInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, ?UploadedFileInterface $data = null, string $field, array $settings);
+    public function __construct(
+        Table $table,
+        EntityInterface $entity,
+        ?UploadedFileInterface $data = null,
+        string $field,
+        array $settings
+    );
 
     /**
      * Writes a set of files to an output

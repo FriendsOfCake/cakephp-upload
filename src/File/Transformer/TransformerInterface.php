@@ -18,7 +18,13 @@ interface TransformerInterface
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, UploadedFileInterface $data, string $field, array $settings);
+    public function __construct(
+        Table $table,
+        EntityInterface $entity,
+        UploadedFileInterface $data,
+        string $field,
+        array $settings
+    );
 
     /**
      * Creates a set of files from the initial data and returns them as key/value

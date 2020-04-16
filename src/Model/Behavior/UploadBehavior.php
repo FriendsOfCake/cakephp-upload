@@ -197,8 +197,12 @@ class UploadBehavior extends Behavior
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Writer\WriterInterface
      */
-    public function getWriter(EntityInterface $entity, ?UploadedFileInterface $data = null, string $field, array $settings): WriterInterface
-    {
+    public function getWriter(
+        EntityInterface $entity,
+        ?UploadedFileInterface $data = null,
+        string $field,
+        array $settings
+    ): WriterInterface {
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
         return new $writerClass($this->_table, $entity, $data, $field, $settings);
