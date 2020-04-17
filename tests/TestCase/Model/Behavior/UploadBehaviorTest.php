@@ -5,8 +5,10 @@ namespace Josegonzalez\Upload\Test\TestCase\Model\Behavior;
 
 use ArrayObject;
 use Cake\Event\Event;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Josegonzalez\Upload\File\Transformer\SlugTransformer;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use Josegonzalez\Upload\Test\Stub\ChildBehavior;
 use Laminas\Diactoros\UploadedFile;
@@ -631,7 +633,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'path'
+            ['basepath' => 'path', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
@@ -640,7 +642,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'some/path'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
@@ -652,7 +654,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'path/'
+            ['basepath' => 'path/', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
@@ -661,7 +663,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'some/path/'
+            ['basepath' => 'some/path/', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
@@ -676,7 +678,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => $callable],
-            'some/path'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -691,7 +693,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK),
             'field',
             ['transformer' => $callable],
-            'some/path/'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -704,7 +706,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => 'UnexpectedValueException'],
-            'path'
+            ['basepath' => 'path', 'filename' => 'file.txt']
         );
     }
 
@@ -712,5 +714,31 @@ class UploadBehaviorTest extends TestCase
     {
         $processor = $this->behavior->getPathProcessor($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
+    }
+
+    public function testNameCallback()
+    {
+        $table = TableRegistry::getTableLocator()->get('Files');
+        $behavior = new ChildBehavior($table, [
+            'filename' => [
+                'nameCallback' => function ($table, $entity, $data, $field, $settings) {
+                    return 'Awesome Filename.png';
+                },
+                'transformer' => SlugTransformer::class,
+            ],
+        ]);
+
+        $event = new Event('Model.beforeSave', $table);
+        $entity = new Entity([
+            'filename' => $this->dataOk['field'],
+        ]);
+
+        $behavior->beforeSave($event, $entity, new ArrayObject());
+
+        $expected = [
+            'php://temp' => 'webroot/files/Files/filename/awesome-filename.png',
+        ];
+
+        $this->assertEquals($expected, $behavior->constructedFiles);
     }
 }

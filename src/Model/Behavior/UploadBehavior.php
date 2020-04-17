@@ -111,8 +111,12 @@ class UploadBehavior extends Behavior
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $basepath = $path->basepath();
             $filename = $path->filename();
+            $pathinfo = [
+                'basepath' => $basepath,
+                'filename' => $filename,
+            ];
 
-            $files = $this->constructFiles($entity, $data, $field, $settings, $basepath);
+            $files = $this->constructFiles($entity, $data, $field, $settings, $pathinfo);
 
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
@@ -226,7 +230,7 @@ class UploadBehavior extends Behavior
      * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
-     * @param string $basepath a basepath where the files are written to
+     * @param array $pathinfo Path info.
      * @return array key/value pairs of temp files mapping to their names
      */
     public function constructFiles(
@@ -234,19 +238,22 @@ class UploadBehavior extends Behavior
         UploadedFileInterface $data,
         string $field,
         array $settings,
-        string $basepath
+        array $pathinfo
     ): array {
+        $basepath = $pathinfo['basepath'];
+        $filename = $pathinfo['filename'];
+
         $basepath = substr($basepath, -1) == DS ? $basepath : $basepath . DS;
         $transformerClass = Hash::get($settings, 'transformer', DefaultTransformer::class);
         $results = [];
         if (is_subclass_of($transformerClass, TransformerInterface::class)) {
             $transformer = new $transformerClass($this->_table, $entity, $data, $field, $settings);
-            $results = $transformer->transform();
+            $results = $transformer->transform($filename);
             foreach ($results as $key => $value) {
                 $results[$key] = $basepath . $value;
             }
         } elseif (is_callable($transformerClass)) {
-            $results = $transformerClass($this->_table, $entity, $data, $field, $settings);
+            $results = $transformerClass($this->_table, $entity, $data, $field, $settings, $filename);
             foreach ($results as $key => $value) {
                 $results[$key] = $basepath . $value;
             }
