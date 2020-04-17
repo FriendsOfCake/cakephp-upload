@@ -57,7 +57,7 @@ trait DefaultTrait
                         'Field value for substitution must be a integer, float, string or boolean: %s',
                         $field
                     ));
-                } elseif (strlen($value) < 1) {
+                } elseif (strlen((string)$value) < 1) {
                     throw new LogicException(sprintf(
                         'Field value for substitution must be non-zero in length: %s',
                         $field

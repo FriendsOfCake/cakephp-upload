@@ -72,8 +72,7 @@ class UploadBehavior extends Behavior
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
-
-            if ($dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
+            if (!empty($dataArray[$field]) && $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
             unset($data[$field]);
@@ -96,7 +95,7 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            if (empty($entity->get($field))) {
+            if (empty($entity->get($field)) || !$entity->isDirty($field)) {
                 continue;
             }
 
