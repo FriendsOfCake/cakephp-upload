@@ -2,7 +2,6 @@ language: php
 
 php:
   - 7.2
-  - 7.3
   - 7.4
 
 services:
@@ -32,7 +31,7 @@ matrix:
       env: PREFER_LOWEST=1
 
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION != 7.3 ]]; then phpenv config-rm xdebug.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION != 7.4 ]]; then phpenv config-rm xdebug.ini; fi
 
   - if [[ $PREFER_LOWEST != 1 ]]; then composer update --no-interaction; fi
   - if [[ $PREFER_LOWEST == 1 ]]; then composer update --no-interaction --prefer-lowest --prefer-stable; fi
@@ -44,12 +43,12 @@ before_script:
 
 script:
   - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.3 ]]; then
+      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.4 ]]; then
         mkdir -p build/logs
         vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
       fi
 
-  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.3 ]]; then vendor/bin/phpunit; fi
+  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.4 ]]; then vendor/bin/phpunit; fi
 
   - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
