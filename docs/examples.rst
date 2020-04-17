@@ -35,11 +35,6 @@ Basic example
             $this->setDisplayField('username');
             $this->setPrimaryKey('id');
 
-            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
-            // $this->table('users');
-            // $this->displayField('username');
-            // $this->primaryKey('id');
-
             $this->addBehavior('Josegonzalez/Upload.Upload', [
                 // You can configure as many upload fields as possible,
                 // where the pattern is `field` => `config`
@@ -65,9 +60,6 @@ Basic example
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
         <?php echo $this->Form->control('username'); ?>
         <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
-        // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
-        // <?php echo $this->Form->input('username'); ?>
-        // <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
 
     Note: If you used *bake* to generate MVC structure after creating
@@ -131,11 +123,6 @@ In order to prevent such situations, a field must be added to store the director
             $this->setDisplayField('username');
             $this->setPrimaryKey('id');
 
-            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
-            // $this->table('users');
-            // $this->displayField('username');
-            // $this->primaryKey('id');
-
             $this->addBehavior('Josegonzalez/Upload.Upload', [
                 'photo' => [
                     'fields' => [
@@ -162,8 +149,8 @@ In order to prevent such situations, a field must be added to store the director
     ?>
 
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->input('username'); ?>
-        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+        <?php echo $this->Form->control('username'); ?>
+        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
 
 Using such a setup, the behavior will use the stored path value instead of generating the path dynamically when deleting
@@ -215,11 +202,6 @@ This example uses the Imagine library. It can be installed through composer:
             $this->setDisplayField('username');
             $this->setPrimaryKey('id');
 
-            // for CakePHP 3.0.x-3.3.x, use the following lines instead of the previous:
-            // $this->table('users');
-            // $this->displayField('username');
-            // $this->primaryKey('id');
-
             $this->addBehavior('Josegonzalez/Upload.Upload', [
                 'photo' => [
                     'fields' => [
@@ -230,8 +212,8 @@ This example uses the Imagine library. It can be installed through composer:
                     'nameCallback' => function ($table, $entity, $data, $field, $settings) {
                         return strtolower($data['name']);
                     },
-                    'transformer' =>  function ($table, $entity, $data, $field, $settings) {
-                        $extension = pathinfo($data['name'], PATHINFO_EXTENSION);
+                    'transformer' =>  function ($table, $entity, $data, $field, $settings, $filename) {
+                        $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
                         // Store the thumbnail in a temporary file
                         $tmp = tempnam(sys_get_temp_dir(), 'upload') . '.' . $extension;
@@ -242,14 +224,14 @@ This example uses the Imagine library. It can be installed through composer:
                         $imagine = new \Imagine\Gd\Imagine();
 
                         // Save that modified file to our temp file
-                        $imagine->open($data['tmp_name'])
+                        $imagine->open($this->data->getStream()->getMetadata('uri'))
                             ->thumbnail($size, $mode)
                             ->save($tmp);
 
                         // Now return the original *and* the thumbnail
                         return [
-                            $data['tmp_name'] => $data['name'],
-                            $tmp => 'thumbnail-' . $data['name'],
+                            $this->data->getStream()->getMetadata('uri') => $filename,
+                            $tmp => 'thumbnail-' . $filename,
                         ];
                     },
                     'deleteCallback' => function ($path, $entity, $field, $settings) {
@@ -277,8 +259,8 @@ This example uses the Imagine library. It can be installed through composer:
     */
     ?>
     <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->input('username'); ?>
-        <?php echo $this->Form->input('photo', ['type' => 'file']); ?>
+        <?php echo $this->Form->control('username'); ?>
+        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
     <?php echo $this->Form->end(); ?>
 
 Displaying links to files in your view

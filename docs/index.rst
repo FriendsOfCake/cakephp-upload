@@ -7,12 +7,6 @@ Upload Plugin
 
 The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as MeioUpload , UploadPack and PHP documentation. It uses the excellent `Flysystem <http://flysystem.thephpleague.com/>` library to handle file uploads, and can be easily integrated with any image library to handle thumbnail extraction to your exact specifications.
 
-Requirements
-------------
-
-* CakePHP 3.x
-* PHP 5.4+
-
 What does this plugin do?
 -------------------------
 
