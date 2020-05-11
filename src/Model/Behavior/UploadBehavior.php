@@ -75,7 +75,10 @@ class UploadBehavior extends Behavior
             if (!empty($dataArray[$field]) && $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
                 continue;
             }
-            unset($data[$field]);
+
+            if(isset($data[$field])) {
+                unset($data[$field]);
+            }
         }
     }
 
