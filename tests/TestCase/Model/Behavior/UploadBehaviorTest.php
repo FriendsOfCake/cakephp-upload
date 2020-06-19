@@ -182,12 +182,12 @@ class UploadBehaviorTest extends TestCase
     public function testBeforeMarshalOk()
     {
         $validator = $this->getMockBuilder('Cake\Validation\Validator')->getMock();
-        $validator->expects($this->once())
+        $validator->expects($this->atLeastOnce())
                   ->method('isEmptyAllowed')
                   ->will($this->returnValue(true));
 
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $table->expects($this->once())
+        $table->expects($this->atLeastOnce())
                     ->method('getValidator')
                     ->will($this->returnValue($validator));
 
@@ -203,6 +203,10 @@ class UploadBehaviorTest extends TestCase
         $data = new ArrayObject($this->dataOk);
         $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject($this->dataOk), $data);
+
+        $data = new ArrayObject();
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
+        $this->assertEquals(new ArrayObject([]), $data);
     }
 
     public function testBeforeMarshalError()
