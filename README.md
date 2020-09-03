@@ -6,7 +6,7 @@
 
 # Upload Plugin
 
-The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) , [UploadPack](http://github.com/szajbus/cakephp-uploadpack) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
+The Upload Plugin is an attempt to sanely upload files using techniques garnered from packages such as [MeioUpload](http://github.com/jrbasso/MeioUpload) and [PHP documentation](http://php.net/manual/en/features.file-upload.php).
 
 See [this branch](https://github.com/FriendsOfCake/cakephp-upload/tree/2.x) for CakePHP 2.x documentation.
 
