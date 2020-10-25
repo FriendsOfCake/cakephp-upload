@@ -17,6 +17,10 @@ trait DefaultTrait
     public function filename(): string
     {
         $processor = Hash::get($this->settings, 'nameCallback', null);
+        if (is_object($processor) && method_exists($processor, '__invoke')) {
+            return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
+        }
+
         if (is_callable($processor)) {
             $numberOfParameters = (new \ReflectionFunction($processor))->getNumberOfParameters();
             if ($numberOfParameters == 2) {
