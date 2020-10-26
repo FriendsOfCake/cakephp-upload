@@ -224,13 +224,13 @@ This example uses the Imagine library. It can be installed through composer:
                         $imagine = new \Imagine\Gd\Imagine();
 
                         // Save that modified file to our temp file
-                        $imagine->open($this->data->getStream()->getMetadata('uri'))
+                        $imagine->open($data->getStream()->getMetadata('uri'))
                             ->thumbnail($size, $mode)
                             ->save($tmp);
 
                         // Now return the original *and* the thumbnail
                         return [
-                            $this->data->getStream()->getMetadata('uri') => $filename,
+                            $data->getStream()->getMetadata('uri') => $filename,
                             $tmp => 'thumbnail-' . $filename,
                         ];
                     },
