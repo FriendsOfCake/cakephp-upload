@@ -21,7 +21,7 @@ class ImageValidationTest extends TestCase
         mkdir($this->vfs->path('/tmp'));
 
         // Write sample image with dimensions: 20x20
-        $img = fopen($this->vfs->path('/tmp/tmpimage'), "wb");
+        $img = fopen($this->vfs->path('/tmp/tmpimage'), 'wb');
         fwrite($img, base64_decode('iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH4AMUECwX5I9GIwAAACFJREFUOMtj/P//PwM1ARMDlcGogaMGjho4auCogUPFQABpCwMlgqgSYAAAAABJRU5ErkJggg=='));
         fclose($img);
 

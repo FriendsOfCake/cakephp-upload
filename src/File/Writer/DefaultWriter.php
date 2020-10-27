@@ -177,6 +177,6 @@ class DefaultWriter implements WriterInterface
             ]));
         }
 
-        throw new UnexpectedValueException(sprintf("Invalid Adapter for field %s", $field));
+        throw new UnexpectedValueException(sprintf('Invalid Adapter for field %s', $field));
     }
 }
