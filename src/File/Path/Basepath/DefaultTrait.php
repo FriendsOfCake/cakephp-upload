@@ -6,6 +6,9 @@ namespace Josegonzalez\Upload\File\Path\Basepath;
 use Cake\Utility\Hash;
 use LogicException;
 
+/**
+ * @property \Cake\ORM\Table $table
+ */
 trait DefaultTrait
 {
     /**

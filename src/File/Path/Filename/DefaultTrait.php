@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Josegonzalez\Upload\File\Path\Filename;
 
 use Cake\Utility\Hash;
+use Closure;
+use ReflectionFunction;
 
 trait DefaultTrait
 {
@@ -18,7 +20,8 @@ trait DefaultTrait
     {
         $processor = Hash::get($this->settings, 'nameCallback', null);
         if (is_callable($processor)) {
-            $numberOfParameters = (new \ReflectionFunction($processor))->getNumberOfParameters();
+            $processor = Closure::fromCallable($processor);
+            $numberOfParameters = (new ReflectionFunction($processor))->getNumberOfParameters();
             if ($numberOfParameters == 2) {
                 return $processor($this->data, $this->settings);
             }

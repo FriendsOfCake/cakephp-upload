@@ -50,6 +50,7 @@ class UploadBehavior extends Behavior
         $this->setConfig('className', null);
 
         $schema = $this->_table->getSchema();
+        /** @var string $field */
         foreach (array_keys($this->getConfig()) as $field) {
             $schema->setColumnType($field, 'upload.file');
         }
@@ -68,6 +69,7 @@ class UploadBehavior extends Behavior
     {
         $validator = $this->_table->getValidator();
         $dataArray = $data->getArrayCopy();
+        /** @var string $field */
         foreach (array_keys($this->getConfig(null, [])) as $field) {
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
