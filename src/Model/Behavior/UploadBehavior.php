@@ -95,11 +95,15 @@ class UploadBehavior extends Behavior
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
     {
         foreach ($this->getConfig(null, []) as $field => $settings) {
-            if (in_array($field, $this->protectedFieldNames)) {
+            if (
+                in_array($field, $this->protectedFieldNames, true)
+                || !$entity->isDirty($field)
+            ) {
                 continue;
             }
 
-            if (empty($entity->get($field)) || !$entity->isDirty($field)) {
+            $data = $entity->get($field);
+            if (!$data instanceof UploadedFileInterface) {
                 continue;
             }
 
@@ -111,7 +115,6 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            $data = $entity->get($field);
             $path = $this->getPathProcessor($entity, $data, $field, $settings);
             $basepath = $path->basepath();
             $filename = $path->filename();

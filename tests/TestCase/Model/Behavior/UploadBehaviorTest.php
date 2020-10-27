@@ -383,6 +383,27 @@ class UploadBehaviorTest extends TestCase
         $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
+    public function testBeforeSaveWithFieldValueAsString()
+    {
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
+        /** @var \Josegonzalez\Upload\Model\Behavior\UploadBehavior $behavior */
+        $behavior = $this->getMockBuilder(UploadBehavior::class)
+            ->onlyMethods($methods)
+            ->setConstructorArgs([$this->table, $this->settings])
+            ->getMock();
+
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue('file.jpg'));
+        $this->entity->expects($this->any())
+            ->method('isDirty')
+            ->with('field')
+            ->will($this->returnValue(true));
+
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
+    }
+
     public function testAfterDeleteOk()
     {
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
