@@ -59,7 +59,7 @@ It might come in handy to only use a validation rule when there actually is an u
 
     ?>
 
-More information on conditional validation can be found `here <http://book.cakephp.org/3.0/en/core-libraries/validation.html#conditional-validation>`__.
+More information on conditional validation can be found `here <http://book.cakephp.org/4/en/core-libraries/validation.html#conditional-validation>`__.
 
 UploadValidation
 ----------------

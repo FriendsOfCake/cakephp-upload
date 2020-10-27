@@ -23,13 +23,14 @@ Basic example
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
     */
+    declare(strict_types=1);
 
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
     class UsersTable extends Table
     {
-        public function initialize(array $config)
+        public function initialize(array $config): void
         {
             $this->setTable('users');
             $this->setDisplayField('username');
@@ -57,17 +58,17 @@ Basic example
        src/Template/Users/edit.ctp
     */
     ?>
-    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->control('username'); ?>
-        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
-    <?php echo $this->Form->end(); ?>
+    <?= $this->Form->create($user, ['type' => 'file']); ?>
+        <?= $this->Form->control('username'); ?>
+        <?= $this->Form->control('photo', ['type' => 'file']); ?>
+    <?= $this->Form->end(); ?>
 
     Note: If you used *bake* to generate MVC structure after creating
     the users table, you will need to remove the default scalar validation
     for the photos field.
 
 .. code:: php
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): void
     {
         $validator
             ->integer('id')
@@ -111,13 +112,14 @@ In order to prevent such situations, a field must be added to store the director
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
     */
+    declare(strict_types=1);
 
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
     class UsersTable extends Table
     {
-        public function initialize(array $config)
+        public function initialize(array $config): void
         {
             $this->setTable('users');
             $this->setDisplayField('username');
@@ -148,10 +150,10 @@ In order to prevent such situations, a field must be added to store the director
     */
     ?>
 
-    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->control('username'); ?>
-        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
-    <?php echo $this->Form->end(); ?>
+    <?= $this->Form->create($user, ['type' => 'file']); ?>
+        <?= $this->Form->control('username'); ?>
+        <?= $this->Form->control('photo', ['type' => 'file']); ?>
+    <?= $this->Form->end(); ?>
 
 Using such a setup, the behavior will use the stored path value instead of generating the path dynamically when deleting
 files.
@@ -190,13 +192,14 @@ This example uses the Imagine library. It can be installed through composer:
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
     */
+    declare(strict_types=1);
 
     namespace App\Model\Table;
     use Cake\ORM\Table;
 
     class UsersTable extends Table
     {
-        public function initialize(array $config)
+        public function initialize(array $config): void
         {
             $this->setTable('users');
             $this->setDisplayField('username');
@@ -258,15 +261,16 @@ This example uses the Imagine library. It can be installed through composer:
        src/Template/Users/edit.ctp
     */
     ?>
-    <?php echo $this->Form->create($user, ['type' => 'file']); ?>
-        <?php echo $this->Form->control('username'); ?>
-        <?php echo $this->Form->control('photo', ['type' => 'file']); ?>
-    <?php echo $this->Form->end(); ?>
+    <?= $this->Form->create($user, ['type' => 'file']); ?>
+        <?= $this->Form->control('username'); ?>
+        <?= $this->Form->control('photo', ['type' => 'file']); ?>
+    <?= $this->Form->end(); ?>
 
 Displaying links to files in your view
 --------------------------------------
 
-Once your files have been uploaded you can link to them using the ``HtmlHelper`` by specifying the path and using the file information from the database.
+Once your files have been uploaded you can link to them using the ``HtmlHelper``
+by specifying the path and using the file information from the database.
 
 This example uses the `default behaviour configuration <configuration.html>`__ using the model ``Example``.
 
