@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Josegonzalez\Upload\File\Path\Filename;
 
 use Cake\Utility\Hash;
-use Closure;
-use ReflectionFunction;
 
 trait DefaultTrait
 {
