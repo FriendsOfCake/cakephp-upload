@@ -20,12 +20,6 @@ trait DefaultTrait
     {
         $processor = Hash::get($this->settings, 'nameCallback', null);
         if (is_callable($processor)) {
-            $processor = Closure::fromCallable($processor);
-            $numberOfParameters = (new ReflectionFunction($processor))->getNumberOfParameters();
-            if ($numberOfParameters == 2) {
-                return $processor($this->data, $this->settings);
-            }
-
             return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
         }
 
