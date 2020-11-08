@@ -398,6 +398,8 @@ class UploadBehavior extends ModelBehavior {
 			return false;
 		}
 
+		$this->__foldersToRemove[$model->alias]=array_unique($this->__foldersToRemove[$model->alias]);
+		
 		$folders = $this->__foldersToRemove[$model->alias];
 		foreach ($folders as $folder) {
 			if (strlen((string)$folder) === 0) {
