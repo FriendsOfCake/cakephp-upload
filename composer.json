@@ -12,14 +12,14 @@
         }
     ],
     "require": {
-        "cakephp/cakephp": "^4.0.2",
-        "league/flysystem": "*"
+        "cakephp/orm": "^4.0.2",
+        "league/flysystem": "^1.0"
     },
     "require-dev": {
+        "cakephp/cakephp": "^4.0.2",
         "phpunit/phpunit": "~8.5.0",
         "league/flysystem-vfs": "*",
-        "cakephp/cakephp-codesniffer": "^4.0",
-        "phpstan/phpstan": "^0.12"
+        "cakephp/cakephp-codesniffer": "^4.0"
     },
     "autoload": {
         "psr-4": {
