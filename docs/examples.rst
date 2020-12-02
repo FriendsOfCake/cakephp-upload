@@ -54,8 +54,8 @@ Basic example
     <?php
     /*
        In the present example, these changes would be made in:
-       src/Template/Users/add.ctp
-       src/Template/Users/edit.ctp
+       templates/Users/add.php
+       templates/Users/edit.php
     */
     ?>
     <?= $this->Form->create($user, ['type' => 'file']); ?>
@@ -72,15 +72,15 @@ Basic example
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->scalar('username')
-            ->allowEmpty('username');
+            ->allowEmptyString('username');
 
         $validator
             // remove ->scalar('photo')
-            ->allowEmpty('photo');
+            ->allowEmptyFile('photo');
 
         return $validator;
     }
@@ -145,8 +145,8 @@ In order to prevent such situations, a field must be added to store the director
     <?php
     /*
        In the present example, these changes would be made in:
-       src/Template/Users/add.ctp
-       src/Template/Users/edit.ctp
+       templates/Users/add.php
+       templates/Users/edit.php
     */
     ?>
 
@@ -257,8 +257,8 @@ This example uses the Imagine library. It can be installed through composer:
     <?php
     /*
        In the present example, these changes would be made in:
-       src/Template/Users/add.ctp
-       src/Template/Users/edit.ctp
+       templates/Users/add.php
+       templates/Users/edit.php
     */
     ?>
     <?= $this->Form->create($user, ['type' => 'file']); ?>
@@ -279,8 +279,8 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
     <?php
     /*
        In the present example, variations on these changes would be made in:
-       src/Template/Users/view.ctp
-       src/Template/Users/index.ctp
+       templates/Users/view.php
+       templates/Users/index.php
     */
 
     // assuming an entity that has the following
@@ -303,8 +303,8 @@ For Windows systems you'll have to build a workaround as Windows systems use bac
     <?php
     /*
        In the present example, variations on these changes would be made in:
-       src/Template/Users/view.ctp
-       src/Template/Users/index.ctp
+       templates/Users/view.php
+       templates/Users/index.php
     */
 
     // assuming an entity that has the following
