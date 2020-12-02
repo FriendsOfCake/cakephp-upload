@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Path;
 
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 
 interface ProcessorInterface
@@ -10,24 +12,24 @@ interface ProcessorInterface
      * Constructor
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
-     * @param \Cake\ORM\Entity $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
+     * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
+     * @param \Psr\Http\Message\UploadedFileInterface|string     $data the data being submitted for a save or filename stored in db
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings);
+    public function __construct(Table $table, EntityInterface $entity, $data, string $field, array $settings);
 
     /**
      * Returns the basepath for the current field/data combination
      *
      * @return string
      */
-    public function basepath();
+    public function basepath(): string;
 
     /**
      * Returns the filename for the current field/data combination
      *
      * @return string
      */
-    public function filename();
+    public function filename(): string;
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\Database\Type;
 
 use Cake\TestSuite\TestCase;

@@ -1,5 +1,21 @@
 parameters:
-    level: 5
-    ignoreErrors:
-        - '#Constant ROOT not found#'
-        - '#Parameter \#2 \$options of static method Cake\\Utility\\Text::slug\(\) expects array, string given#'
+	level: 7
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
+	paths:
+		- src
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$field of method Cake\\\\Datasource\\\\EntityInterface\\:\\:get\\(\\) expects string, array\\<string\\>\\|string given\\.$#"
+			count: 1
+			path: src/File/Path/DefaultProcessor.php
+
+		-
+			message: "#^Constant ROOT not found\\.$#"
+			count: 1
+			path: src/File/Writer/DefaultWriter.php
+
+		-
+			message: "#^Cannot instantiate interface Josegonzalez\\\\Upload\\\\File\\\\Transformer\\\\TransformerInterface\\.$#"
+			count: 1
+			path: src/Model/Behavior/UploadBehavior.php

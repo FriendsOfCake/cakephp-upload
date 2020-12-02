@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Transformer;
 
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
-use Josegonzalez\Upload\File\Transformer\TransformerInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class DefaultTransformer implements TransformerInterface
 {
@@ -17,14 +19,14 @@ class DefaultTransformer implements TransformerInterface
     /**
      * Entity instance.
      *
-     * @var \Cake\ORM\Entity
+     * @var \Cake\Datasource\EntityInterface
      */
     protected $entity;
 
     /**
      * Array of uploaded data for this field
      *
-     * @var array
+     * @var \Psr\Http\Message\UploadedFileInterface
      */
     protected $data;
 
@@ -46,13 +48,18 @@ class DefaultTransformer implements TransformerInterface
      * Constructor
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
-     * @param \Cake\ORM\Entity $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
+     * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
+     * @param \Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings)
-    {
+    public function __construct(
+        Table $table,
+        EntityInterface $entity,
+        UploadedFileInterface $data,
+        string $field,
+        array $settings
+    ) {
         $this->table = $table;
         $this->entity = $entity;
         $this->data = $data;
@@ -70,10 +77,11 @@ class DefaultTransformer implements TransformerInterface
      *     '/tmp/path/to/file/on/disk-2' => 'file-preview.png',
      *   ]
      *
+     * @param string $filename Filename.
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function transform()
+    public function transform(string $filename): array
     {
-        return [$this->data['tmp_name'] => $this->data['name']];
+        return [$this->data->getStream()->getMetadata('uri') => $filename];
     }
 }

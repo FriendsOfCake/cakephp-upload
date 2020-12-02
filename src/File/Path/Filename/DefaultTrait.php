@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Path\Filename;
 
 use Cake\Utility\Hash;
@@ -12,18 +14,17 @@ trait DefaultTrait
      *
      * @return string
      */
-    public function filename()
+    public function filename(): string
     {
         $processor = Hash::get($this->settings, 'nameCallback', null);
         if (is_callable($processor)) {
-            $numberOfParameters = (new \ReflectionFunction($processor))->getNumberOfParameters();
-            if ($numberOfParameters == 2) {
-                return $processor($this->data, $this->settings);
-            }
-
             return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
         }
 
-        return $this->data['name'];
+        if (is_string($this->data)) {
+            return $this->data;
+        }
+
+        return $this->data->getClientFilename();
     }
 }

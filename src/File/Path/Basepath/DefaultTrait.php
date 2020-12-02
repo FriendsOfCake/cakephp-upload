@@ -1,9 +1,14 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Path\Basepath;
 
 use Cake\Utility\Hash;
 use LogicException;
 
+/**
+ * @property \Cake\ORM\Table $table
+ */
 trait DefaultTrait
 {
     /**
@@ -12,9 +17,9 @@ trait DefaultTrait
      * the replacement pattern
      *
      * @return string
-     * @throws LogicException if a replacement is not valid for the current dataset
+     * @throws \LogicException if a replacement is not valid for the current dataset
      */
-    public function basepath()
+    public function basepath(): string
     {
         $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
         $path = Hash::get($this->settings, 'path', $defaultPath);
@@ -31,9 +36,9 @@ trait DefaultTrait
             '{model}' => $this->table->getAlias(),
             '{table}' => $this->table->getTable(),
             '{field}' => $this->field,
-            '{year}' => date("Y"),
-            '{month}' => date("m"),
-            '{day}' => date("d"),
+            '{year}' => date('Y'),
+            '{month}' => date('m'),
+            '{day}' => date('d'),
             '{time}' => time(),
             '{microtime}' => microtime(true),
             '{DS}' => DIRECTORY_SEPARATOR,
@@ -46,11 +51,20 @@ trait DefaultTrait
             foreach ($matches[1] as $field) {
                 $value = $this->entity->get($field);
                 if ($value === null) {
-                    throw new LogicException(sprintf('Field value for substitution is missing: %s', $field));
+                    throw new LogicException(sprintf(
+                        'Field value for substitution is missing: %s',
+                        $field
+                    ));
                 } elseif (!is_scalar($value)) {
-                    throw new LogicException(sprintf('Field value for substitution must be a integer, float, string or boolean: %s', $field));
-                } elseif (strlen($value) < 1) {
-                    throw new LogicException(sprintf('Field value for substitution must be non-zero in length: %s', $field));
+                    throw new LogicException(sprintf(
+                        'Field value for substitution must be a integer, float, string or boolean: %s',
+                        $field
+                    ));
+                } elseif (strlen((string)$value) < 1) {
+                    throw new LogicException(sprintf(
+                        'Field value for substitution must be non-zero in length: %s',
+                        $field
+                    ));
                 }
 
                 $replacements[sprintf('{field-value:%s}', $field)] = $value;

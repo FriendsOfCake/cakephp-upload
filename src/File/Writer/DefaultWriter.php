@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Writer;
 
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
-use Josegonzalez\Upload\File\Writer\WriterInterface;
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
 class DefaultWriter implements WriterInterface
@@ -24,14 +26,14 @@ class DefaultWriter implements WriterInterface
     /**
      * Entity instance.
      *
-     * @var \Cake\ORM\Entity
+     * @var \Cake\Datasource\EntityInterface
      */
     protected $entity;
 
     /**
      * Array of uploaded data for this field
      *
-     * @var array
+     * @var \Psr\Http\Message\UploadedFileInterface|null
      */
     protected $data;
 
@@ -53,13 +55,18 @@ class DefaultWriter implements WriterInterface
      * Constructs a writer
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
-     * @param \Cake\ORM\Entity $entity the entity to construct a path for.
-     * @param array            $data the data being submitted for a save
+     * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
+     * @param \Psr\Http\Message\UploadedFileInterface|null $data the data being submitted for a save
      * @param string           $field the field for which data will be saved
      * @param array            $settings the settings for the current field
      */
-    public function __construct(Table $table, Entity $entity, $data, $field, $settings)
-    {
+    public function __construct(
+        Table $table,
+        EntityInterface $entity,
+        ?UploadedFileInterface $data = null,
+        string $field,
+        array $settings
+    ) {
         $this->table = $table;
         $this->entity = $entity;
         $this->data = $data;
@@ -73,7 +80,7 @@ class DefaultWriter implements WriterInterface
      * @param array $files the files being written out
      * @return array array of results
      */
-    public function write(array $files)
+    public function write(array $files): array
     {
         $filesystem = $this->getFilesystem($this->field, $this->settings);
         $results = [];
@@ -90,7 +97,7 @@ class DefaultWriter implements WriterInterface
      * @param array $files the files being written out
      * @return array array of results
      */
-    public function delete(array $files)
+    public function delete(array $files): array
     {
         $filesystem = $this->getFilesystem($this->field, $this->settings);
         $results = [];
@@ -109,8 +116,9 @@ class DefaultWriter implements WriterInterface
      * @param string $path that path to which the file should be written
      * @return bool
      */
-    public function writeFile(FilesystemInterface $filesystem, $file, $path)
+    public function writeFile(FilesystemInterface $filesystem, $file, $path): bool
     {
+        // phpcs:ignore
         $stream = @fopen($file, 'r');
         if ($stream === false) {
             return false;
@@ -136,7 +144,7 @@ class DefaultWriter implements WriterInterface
      * @param string $path the path that should be deleted
      * @return bool
      */
-    public function deletePath(FilesystemInterface $filesystem, $path)
+    public function deletePath(FilesystemInterface $filesystem, string $path): bool
     {
         $success = false;
         try {
@@ -155,7 +163,7 @@ class DefaultWriter implements WriterInterface
      * @param array $settings the settings for the current field
      * @return \League\Flysystem\FilesystemInterface
      */
-    public function getFilesystem($field, array $settings = [])
+    public function getFilesystem(string $field, array $settings = []): FilesystemInterface
     {
         $adapter = new Local(Hash::get($settings, 'filesystem.root', ROOT . DS));
         $adapter = Hash::get($settings, 'filesystem.adapter', $adapter);
@@ -165,10 +173,10 @@ class DefaultWriter implements WriterInterface
 
         if ($adapter instanceof AdapterInterface) {
             return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
-                'visibility' => AdapterInterface::VISIBILITY_PUBLIC
+                'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
             ]));
         }
 
-        throw new UnexpectedValueException(sprintf("Invalid Adapter for field %s", $field));
+        throw new UnexpectedValueException(sprintf('Invalid Adapter for field %s', $field));
     }
 }

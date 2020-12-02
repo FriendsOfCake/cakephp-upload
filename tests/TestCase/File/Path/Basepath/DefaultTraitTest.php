@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Path\Basepath;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
-use Josegonzalez\Upload\File\Path\Basepath\DefaultTrait;
 
 class DefaultTraitTest extends TestCase
 {
@@ -104,7 +103,7 @@ class DefaultTraitTest extends TestCase
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
 
-        $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/', $mock->basepath());
+        $this->assertEquals('webroot/files/' . date('Y') . '/' . date('m') . '/', $mock->basepath());
     }
 
     public function testYearWithMonthAndDayPath()
@@ -116,7 +115,7 @@ class DefaultTraitTest extends TestCase
         $mock->data = ['name' => 'filename'];
         $mock->field = 'field';
 
-        $this->assertEquals('webroot/files/' . date("Y") . '/' . date("m") . '/' . date("d") . '/', $mock->basepath());
+        $this->assertEquals('webroot/files/' . date('Y') . '/' . date('m') . '/' . date('d') . '/', $mock->basepath());
     }
 
     public function testModelFieldYearWithMonthAndDayPath()
@@ -131,7 +130,7 @@ class DefaultTraitTest extends TestCase
         $mock->entity->expects($this->exactly(0))->method('get')->will($this->returnValue(1));
         $mock->table->expects($this->once())->method('getAlias')->will($this->returnValue('Table'));
 
-        $this->assertEquals('webroot/files/Table/field/' . date("Y") . '/' . date("m") . '/' . date("d") . '/', $mock->basepath());
+        $this->assertEquals('webroot/files/Table/field/' . date('Y') . '/' . date('m') . '/' . date('d') . '/', $mock->basepath());
     }
 
     public function testFieldValueMissing()

@@ -1,14 +1,17 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\Model\Behavior;
 
 use ArrayObject;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Josegonzalez\Upload\File\Transformer\SlugTransformer;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use Josegonzalez\Upload\Test\Stub\ChildBehavior;
+use Laminas\Diactoros\UploadedFile;
 use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
@@ -17,29 +20,36 @@ class UploadBehaviorTest extends TestCase
         'plugin.Josegonzalez/Upload.Files',
     ];
 
-    public function setup()
+    public function setUp(): void
     {
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $this->dataOk = [
+            'field' => new UploadedFile(
+                fopen('php://temp', 'wb+'),
+                1,
+                UPLOAD_ERR_OK,
+                'derp',
+                'text/plain'
+            ),
+        ];
+
+        $this->configOk = [
             'field' => [
-                'tmp_name' => 'path/to/file',
-                'name' => 'derp',
-                'error' => UPLOAD_ERR_OK,
-                'size' => 1,
-                'type' => 'text',
                 'keepFilesOnDelete' => false,
-                'deleteCallback' => null
-            ]
+                'deleteCallback' => null,
+            ],
         ];
         $this->dataError = [
-            'field' => [
-                'tmp_name' => 'path/to/file',
-                'name' => 'derp',
-                'error' => UPLOAD_ERR_NO_FILE,
-                'size' => 0,
-                'type' => '',
-            ]
+            'field' => new UploadedFile(
+                fopen('php://temp', 'wb+'),
+                0,
+                UPLOAD_ERR_NO_FILE,
+                'derp'
+            ),
+        ];
+        $this->configError = [
+            'field' => [],
         ];
         $this->field = 'field';
         $this->settings = ['field' => []];
@@ -47,11 +57,11 @@ class UploadBehaviorTest extends TestCase
         $this->behavior = new UploadBehavior($this->table, []);
         $this->processor = $this->getMockBuilder('Josegonzalez\Upload\File\Path\DefaultProcessor')
             ->setMethods([])
-            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk, $this->field, $this->settings])
+            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
             ->setMethods([])
-            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk, $this->field, $this->settings])
+            ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
     }
@@ -59,9 +69,9 @@ class UploadBehaviorTest extends TestCase
     public function testInitialize()
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
                     ->method('setColumnType')
@@ -104,9 +114,9 @@ class UploadBehaviorTest extends TestCase
     {
         $settings = ['field'];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
                ->method('setColumnType')
@@ -136,12 +146,12 @@ class UploadBehaviorTest extends TestCase
     {
         $settings = [
             'className' => 'Josegonzalez\Upload\Model\Behavior\UploadBehavior',
-            'field' => []
+            'field' => [],
         ];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $schema = $this->getMockBuilder('Cake\Database\Schema\Table')
-            ->setMethods([])
-            ->setConstructorArgs([$table, []])
+        $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
+            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
             ->method('setColumnType')
@@ -172,12 +182,12 @@ class UploadBehaviorTest extends TestCase
     public function testBeforeMarshalOk()
     {
         $validator = $this->getMockBuilder('Cake\Validation\Validator')->getMock();
-        $validator->expects($this->once())
+        $validator->expects($this->atLeastOnce())
                   ->method('isEmptyAllowed')
                   ->will($this->returnValue(true));
 
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $table->expects($this->once())
+        $table->expects($this->atLeastOnce())
                     ->method('getValidator')
                     ->will($this->returnValue($validator));
 
@@ -191,8 +201,12 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue($this->settings));
 
         $data = new ArrayObject($this->dataOk);
-        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject($this->dataOk), $data);
+
+        $data = new ArrayObject();
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
+        $this->assertEquals(new ArrayObject([]), $data);
     }
 
     public function testBeforeMarshalError()
@@ -217,8 +231,8 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue($this->settings));
 
         $data = new ArrayObject($this->dataError);
-        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
-        $this->assertEquals(new ArrayObject, $data);
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
+        $this->assertEquals(new ArrayObject(), $data);
     }
 
     public function testBeforeMarshalEmptyAllowed()
@@ -243,11 +257,11 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue($this->settings));
 
         $data = new ArrayObject($this->dataError);
-        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject);
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject($this->dataError), $data);
     }
 
-    public function testBeforeSaveUploadError()
+    public function testBeforeSaveNoUpload()
     {
         $originalValue = rand(1000, 9999);
 
@@ -269,16 +283,16 @@ class UploadBehaviorTest extends TestCase
             ->method('getOriginal')
             ->with('field')
             ->will($this->returnValue($originalValue));
-        $this->entity->expects($this->once())
+        $this->entity->expects($this->never())
             ->method('set')
             ->with('field', $originalValue);
-        $this->entity->expects($this->once())
+        $this->entity->expects($this->never())
             ->method('setDirty')
             ->with('field', false);
-        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
-    public function testBeforeSaveWriteFail()
+    public function testBeforeSaveNoWrite()
     {
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
@@ -303,12 +317,12 @@ class UploadBehaviorTest extends TestCase
                      ->method('write')
                      ->will($this->returnValue([false]));
 
-        $this->assertFalse($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testBeforeSaveOk()
     {
-        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
@@ -327,11 +341,14 @@ class UploadBehaviorTest extends TestCase
         $behavior->expects($this->any())
                  ->method('constructFiles')
                  ->will($this->returnValue([]));
+        $this->processor->expects($this->any())
+                ->method('filename')
+                ->will($this->returnValue('derp'));
         $this->writer->expects($this->any())
                      ->method('write')
                      ->will($this->returnValue([true]));
 
-        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testBeforeSaveDoesNotRestoreOriginalValue()
@@ -348,7 +365,7 @@ class UploadBehaviorTest extends TestCase
         $this->entity->expects($this->never())->method('getOriginal');
         $this->entity->expects($this->never())->method('set');
 
-        $behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject);
+        $behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject());
     }
 
     public function testBeforeSaveWithProtectedFieldName()
@@ -363,7 +380,28 @@ class UploadBehaviorTest extends TestCase
             ->getMock();
         $behavior->setConfig($settings);
 
-        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
+    }
+
+    public function testBeforeSaveWithFieldValueAsString()
+    {
+        $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
+        /** @var \Josegonzalez\Upload\Model\Behavior\UploadBehavior $behavior */
+        $behavior = $this->getMockBuilder(UploadBehavior::class)
+            ->onlyMethods($methods)
+            ->setConstructorArgs([$this->table, $this->settings])
+            ->getMock();
+
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue('file.jpg'));
+        $this->entity->expects($this->any())
+            ->method('isDirty')
+            ->with('field')
+            ->will($this->returnValue(true));
+
+        $this->assertNull($behavior->beforeSave(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testAfterDeleteOk()
@@ -373,7 +411,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $behavior->expects($this->any())
             ->method('getPathProcessor')
@@ -385,7 +423,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('delete')
                      ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testAfterDeleteFail()
@@ -395,7 +433,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $behavior->expects($this->any())
             ->method('getPathProcessor')
@@ -407,7 +445,7 @@ class UploadBehaviorTest extends TestCase
                      ->method('delete')
                      ->will($this->returnValue([false]));
 
-        $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testAfterDeleteSkip()
@@ -417,7 +455,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataError])
             ->getMock();
-        $behavior->setConfig($this->dataError);
+        $behavior->setConfig($this->configError);
 
         $behavior->expects($this->any())
             ->method('getWriter')
@@ -426,7 +464,7 @@ class UploadBehaviorTest extends TestCase
             ->method('delete')
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testAfterDeleteUsesPathProcessorToDetectPathToTheFile()
@@ -439,7 +477,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $this->entity->expects($this->at(0))
             ->method('has')
@@ -457,7 +495,7 @@ class UploadBehaviorTest extends TestCase
         // expecting getPathProcessor to be called with right arguments for dataOk
         $behavior->expects($this->once())
             ->method('getPathProcessor')
-            ->with($this->entity, $field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         // basepath of processor should return our fake path
         $this->processor->expects($this->once())
@@ -466,7 +504,7 @@ class UploadBehaviorTest extends TestCase
         // expecting getWriter to be called with right arguments for dataOk
         $behavior->expects($this->once())
             ->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         // and here we check that file with right path will be deleted
         $this->writer->expects($this->once())
@@ -474,7 +512,7 @@ class UploadBehaviorTest extends TestCase
             ->with([$dir . $field])
             ->willReturn([true]);
 
-        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
     }
 
     public function testAfterDeletePrefersStoredPathOverPathProcessor()
@@ -487,7 +525,7 @@ class UploadBehaviorTest extends TestCase
             ->setMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
 
         $this->entity->expects($this->at(0))
             ->method('has')
@@ -513,7 +551,7 @@ class UploadBehaviorTest extends TestCase
             ->with([$dir . $field])
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testAfterDeleteNoDeleteCallback()
@@ -526,25 +564,25 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
-        $this->dataOk['field']['deleteCallback'] = null;
+        $this->configOk['field']['deleteCallback'] = null;
 
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')
             ->with([
-                $path . $this->entity->field
+                $path . $this->entity->field,
             ])
             ->willReturn([true, true, true]);
 
-        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
     }
 
     public function testAfterDeleteUsesDeleteCallback()
@@ -557,33 +595,33 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
-        $this->dataOk['field']['deleteCallback'] = function ($path, $entity, $field, $settings) {
+        $this->configOk['field']['deleteCallback'] = function ($path, $entity, $field, $settings) {
             return [
                 $path . $entity->{$field},
                 $path . 'sm-' . $entity->{$field},
-                $path . 'lg-' . $entity->{$field}
+                $path . 'lg-' . $entity->{$field},
             ];
         };
 
-        $behavior->setConfig($this->dataOk);
+        $behavior->setConfig($this->configOk);
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->dataOk['field'])
+            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
         $behavior->expects($this->once())->method('getWriter')
-            ->with($this->entity, [], 'field', $this->dataOk['field'])
+            ->with($this->entity, null, 'field', $this->configOk['field'])
             ->willReturn($this->writer);
         $this->writer->expects($this->once())
             ->method('delete')
             ->with([
                 $path . $this->entity->field,
                 $path . 'sm-' . $this->entity->field,
-                $path . 'lg-' . $this->entity->field
+                $path . 'lg-' . $this->entity->field,
             ])
             ->willReturn([true, true, true]);
 
-        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject);
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
     }
 
     public function testAfterDeleteWithProtectedFieldName()
@@ -604,91 +642,85 @@ class UploadBehaviorTest extends TestCase
             ->method('delete')
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject));
+        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
     public function testGetWriter()
     {
-        $processor = $this->behavior->getWriter($this->entity, [], 'field', []);
+        $processor = $this->behavior->getWriter($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'), 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Writer\WriterInterface', $processor);
-    }
-
-    public function testGetWriterException()
-    {
-        $this->expectException('UnexpectedValueException', "'writer' not set to instance of WriterInterface: UnexpectedValueException");
-        $this->behavior->getWriter($this->entity, [], 'field', ['writer' => 'UnexpectedValueException']);
     }
 
     public function testConstructFiles()
     {
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'path'
+            ['basepath' => 'path', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'some/path'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
 
     public function testConstructFilesWithBasePathEndingDS()
     {
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'path/'
+            ['basepath' => 'path/', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            'some/path/'
+            ['basepath' => 'some/path/', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/file/on/disk' => 'some/path/file.txt'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
 
     public function testConstructFilesWithCallable()
     {
         $callable = function () {
-            return ['path/to/callable/file/on/disk' => 'file.text'];
+            return ['php://temp' => 'file.text'];
         };
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => $callable],
-            'some/path'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
 
     public function testConstructFilesWithCallableAndBasePathEndingDS()
     {
         $callable = function () {
-            return ['path/to/callable/file/on/disk' => 'file.text'];
+            return ['php://temp' => 'file.text'];
         };
         $files = $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK),
             'field',
             ['transformer' => $callable],
-            'some/path/'
+            ['basepath' => 'some/path', 'filename' => 'file.txt']
         );
-        $this->assertEquals(['path/to/callable/file/on/disk' => 'some/path/file.text'], $files);
+        $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
 
     public function testConstructFilesException()
@@ -696,22 +728,42 @@ class UploadBehaviorTest extends TestCase
         $this->expectException('UnexpectedValueException', "'transformer' not set to instance of TransformerInterface: UnexpectedValueException");
         $this->behavior->constructFiles(
             $this->entity,
-            ['tmp_name' => 'path/to/file/on/disk', 'name' => 'file.txt'],
+            new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => 'UnexpectedValueException'],
-            'path'
+            ['basepath' => 'path', 'filename' => 'file.txt']
         );
     }
 
     public function testGetPathProcessor()
     {
-        $processor = $this->behavior->getPathProcessor($this->entity, [], 'field', []);
+        $processor = $this->behavior->getPathProcessor($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
     }
 
-    public function testGetPathProcessorException()
+    public function testNameCallback()
     {
-        $this->expectException('UnexpectedValueException', "'pathProcessor' not set to instance of ProcessorInterface: UnexpectedValueException");
-        $this->behavior->getPathProcessor($this->entity, [], 'field', ['pathProcessor' => 'UnexpectedValueException']);
+        $table = TableRegistry::getTableLocator()->get('Files');
+        $behavior = new ChildBehavior($table, [
+            'filename' => [
+                'nameCallback' => function ($table, $entity, $data, $field, $settings) {
+                    return 'Awesome Filename.png';
+                },
+                'transformer' => SlugTransformer::class,
+            ],
+        ]);
+
+        $event = new Event('Model.beforeSave', $table);
+        $entity = new Entity([
+            'filename' => $this->dataOk['field'],
+        ]);
+
+        $behavior->beforeSave($event, $entity, new ArrayObject());
+
+        $expected = [
+            'php://temp' => 'webroot/files/Files/filename/awesome-filename.png',
+        ];
+
+        $this->assertEquals($expected, $behavior->constructedFiles);
     }
 }

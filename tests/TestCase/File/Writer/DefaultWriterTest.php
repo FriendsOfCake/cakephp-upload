@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\Test\TestCase\File\Writer;
 
-use Cake\ORM\Entity;
-use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
+use Laminas\Diactoros\UploadedFile;
 use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Vfs\VfsAdapter;
 use VirtualFileSystem\FileSystem as Vfs;
 
@@ -20,18 +20,18 @@ class DefaultWriterTest extends TestCase
     protected $field;
     protected $settings;
 
-    public function setup()
+    public function setUp(): void
     {
         $this->entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
         $this->table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $this->data = ['tmp_name' => 'path/to/file', 'name' => 'foo.txt'];
+        $this->data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo.txt');
         $this->field = 'field';
         $this->settings = [
             'filesystem' => [
                 'adapter' => function () {
-                    return new VfsAdapter(new Vfs);
-                }
-            ]
+                    return new VfsAdapter(new Vfs());
+                },
+            ],
         ];
         $this->writer = new DefaultWriter(
             $this->table,
@@ -41,7 +41,7 @@ class DefaultWriterTest extends TestCase
             $this->settings
         );
 
-        $this->vfs = new Vfs;
+        $this->vfs = new Vfs();
         mkdir($this->vfs->path('/tmp'));
         file_put_contents($this->vfs->path('/tmp/tempfile'), 'content');
     }
@@ -55,11 +55,11 @@ class DefaultWriterTest extends TestCase
     {
         $this->assertEquals([], $this->writer->write([]));
         $this->assertEquals([true], $this->writer->write([
-            $this->vfs->path('/tmp/tempfile') => 'file.txt'
+            $this->vfs->path('/tmp/tempfile') => 'file.txt',
         ], 'field', []));
 
         $this->assertEquals([false], $this->writer->write([
-            $this->vfs->path('/tmp/invalid.txt') => 'file.txt'
+            $this->vfs->path('/tmp/invalid.txt') => 'file.txt',
         ], 'field', []));
     }
 
@@ -76,11 +76,11 @@ class DefaultWriterTest extends TestCase
 
         $this->assertEquals([], $writer->delete([]));
         $this->assertEquals([true], $writer->delete([
-            $this->vfs->path('/tmp/tempfile')
+            $this->vfs->path('/tmp/tempfile'),
         ]));
 
         $this->assertEquals([false], $writer->delete([
-            $this->vfs->path('/tmp/invalid.txt')
+            $this->vfs->path('/tmp/invalid.txt'),
         ]));
     }
 
@@ -120,19 +120,19 @@ class DefaultWriterTest extends TestCase
     {
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', []));
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
-            'key' => 'value'
+            'key' => 'value',
         ]));
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
             'filesystem' => [
-                'adapter' => new NullAdapter
-            ]
+                'adapter' => new NullAdapter(),
+            ],
         ]));
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
             'filesystem' => [
                 'adapter' => function () {
-                    return new NullAdapter;
+                    return new NullAdapter();
                 },
-            ]
+            ],
         ]));
     }
 
@@ -142,8 +142,8 @@ class DefaultWriterTest extends TestCase
 
         $this->writer->getFilesystem('field', [
             'filesystem' => [
-                'adapter' => 'invalid_adapter'
-            ]
+                'adapter' => 'invalid_adapter',
+            ],
         ]);
     }
 }

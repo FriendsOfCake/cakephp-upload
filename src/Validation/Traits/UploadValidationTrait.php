@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Validation\Traits;
 
 use Cake\Utility\Hash;
+use Psr\Http\Message\UploadedFileInterface;
 
 trait UploadValidationTrait
 {
@@ -13,8 +15,12 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderPhpSizeLimit($check)
+    public static function isUnderPhpSizeLimit($check): bool
     {
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getError() !== UPLOAD_ERR_INI_SIZE;
+        }
+
         return Hash::get($check, 'error') !== UPLOAD_ERR_INI_SIZE;
     }
 
@@ -25,8 +31,12 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderFormSizeLimit($check)
+    public static function isUnderFormSizeLimit($check): bool
     {
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getError() !== UPLOAD_ERR_FORM_SIZE;
+        }
+
         return Hash::get($check, 'error') !== UPLOAD_ERR_FORM_SIZE;
     }
 
@@ -36,8 +46,12 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isCompletedUpload($check)
+    public static function isCompletedUpload($check): bool
     {
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getError() !== UPLOAD_ERR_PARTIAL;
+        }
+
         return Hash::get($check, 'error') !== UPLOAD_ERR_PARTIAL;
     }
 
@@ -47,8 +61,12 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isFileUpload($check)
+    public static function isFileUpload($check): bool
     {
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getError() !== UPLOAD_ERR_NO_FILE;
+        }
+
         return Hash::get($check, 'error') !== UPLOAD_ERR_NO_FILE;
     }
 
@@ -58,8 +76,12 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isSuccessfulWrite($check)
+    public static function isSuccessfulWrite($check): bool
     {
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getError() !== UPLOAD_ERR_CANT_WRITE;
+        }
+
         return Hash::get($check, 'error') !== UPLOAD_ERR_CANT_WRITE;
     }
 
@@ -70,14 +92,13 @@ trait UploadValidationTrait
      * @param int $size Minimum file size
      * @return bool Success
      */
-    public static function isAboveMinSize($check, $size)
+    public static function isAboveMinSize($check, $size): bool
     {
-        // Non-file uploads also mean the size is too small
-        if (!isset($check['size']) || !strlen($check['size'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getSize() >= $size;
         }
 
-        return $check['size'] >= $size;
+        return !empty($check['size']) && $check['size'] >= $size;
     }
 
     /**
@@ -87,13 +108,12 @@ trait UploadValidationTrait
      * @param int $size Maximum file size
      * @return bool Success
      */
-    public static function isBelowMaxSize($check, $size)
+    public static function isBelowMaxSize($check, $size): bool
     {
-        // Non-file uploads also mean the size is too small
-        if (!isset($check['size']) || !strlen($check['size'])) {
-            return false;
+        if ($check instanceof UploadedFileInterface) {
+            return $check->getSize() <= $size;
         }
 
-        return $check['size'] <= $size;
+        return !empty($check['size']) && $check['size'] <= $size;
     }
 }

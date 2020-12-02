@@ -16,7 +16,7 @@ class FilesFixture extends TestFixture
         'id' => ['type' => 'integer'],
         'filename' => ['type' => 'string'],
         'created' => ['type' => 'datetime', 'null' => true],
-        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
+        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
 
     /**
@@ -30,7 +30,7 @@ class FilesFixture extends TestFixture
         ['filename' => 'FileThree'],
     ];
 
-    public function init()
+    public function init(): void
     {
         $created = $modified = date('Y-m-d H:i:s');
         array_walk($this->records, function (&$record) use ($created, $modified) {

@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Josegonzalez\Upload\File\Transformer;
 
 use Cake\Utility\Text;
-use Josegonzalez\Upload\File\Transformer\DefaultTransformer;
 
 class SlugTransformer extends DefaultTransformer
 {
@@ -20,18 +21,19 @@ class SlugTransformer extends DefaultTransformer
      *   ]
      * ```
      *
+     * @param string $filename Filename.
      * @return array key/value pairs of temp files mapping to their names
      */
-    public function transform()
+    public function transform(string $filename): array
     {
-        $filename = pathinfo($this->data['name'], PATHINFO_FILENAME);
-        $filename = Text::slug($filename, '-');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $filename = pathinfo($filename, PATHINFO_FILENAME);
 
-        $ext = pathinfo($this->data['name'], PATHINFO_EXTENSION);
+        $filename = Text::slug($filename, '-');
         if (!empty($ext)) {
             $filename = $filename . '.' . $ext;
         }
 
-        return [$this->data['tmp_name'] => strtolower($filename)];
+        return [$this->data->getStream()->getMetadata('uri') => strtolower($filename)];
     }
 }
