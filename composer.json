@@ -13,7 +13,7 @@
     ],
     "require": {
         "cakephp/orm": "^3.5",
-        "league/flysystem": "*"
+        "league/flysystem": "^1.0"
     },
     "require-dev": {
         "cakephp/cakephp": "^3.5",
