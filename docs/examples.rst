@@ -43,7 +43,7 @@ Basic example
                 // Keep in mind that while this plugin does not have any limits in terms of
                 // number of files uploaded per request, you should keep this down in order
                 // to decrease the ability of your users to block other requests.
-                'photo' => []
+                'photo' => [],
             ]);
         }
     }
@@ -210,12 +210,12 @@ This example uses the Imagine library. It can be installed through composer:
                     'fields' => [
                         'dir' => 'photo_dir',
                         'size' => 'photo_size',
-                        'type' => 'photo_type'
+                        'type' => 'photo_type',
                     ],
                     'nameCallback' => function ($table, $entity, $data, $field, $settings) {
                         return strtolower($data['name']);
                     },
-                    'transformer' =>  function ($table, $entity, $data, $field, $settings, $filename) {
+                    'transformer' => function ($table, $entity, $data, $field, $settings, $filename) {
                         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
                         // Store the thumbnail in a temporary file
@@ -242,10 +242,10 @@ This example uses the Imagine library. It can be installed through composer:
                         // when keepFilesOnDelete is set to false
                         return [
                             $path . $entity->{$field},
-                            $path . 'thumbnail-' . $entity->{$field}
+                            $path . 'thumbnail-' . $entity->{$field},
                         ];
                     },
-                    'keepFilesOnDelete' => false
+                    'keepFilesOnDelete' => false,
                 ]
             ]);
         }
@@ -287,7 +287,7 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
     // data that was set from your controller to your view
     $entity = new Entity([
         'photo' => 'imageFile.jpg',
-        'photo_dir' => '7'
+        'photo_dir' => '7',
     ]);
     $this->set('entity', $entity);
 
@@ -311,7 +311,7 @@ For Windows systems you'll have to build a workaround as Windows systems use bac
     // data that was set from your controller to your view
     $entity = new Entity([
         'photo' => 'imageFile.jpg',
-        'photo_dir' => '7'
+        'photo_dir' => '7',
     ]);
     $this->set('entity', $entity);
 
