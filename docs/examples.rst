@@ -213,7 +213,7 @@ This example uses the Imagine library. It can be installed through composer:
                         'type' => 'photo_type',
                     ],
                     'nameCallback' => function ($table, $entity, $data, $field, $settings) {
-                        return strtolower($data['name']);
+                        return strtolower($data->getClientFilename());
                     },
                     'transformer' => function ($table, $entity, $data, $field, $settings, $filename) {
                         $extension = pathinfo($filename, PATHINFO_EXTENSION);
