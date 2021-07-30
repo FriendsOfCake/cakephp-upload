@@ -6,11 +6,12 @@ namespace Josegonzalez\Upload\File\Writer;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\FilesystemOperationFailed;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\Visibility;
 use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
@@ -111,12 +112,12 @@ class DefaultWriter implements WriterInterface
     /**
      * Writes a set of files to an output
      *
-     * @param \League\Flysystem\FilesystemInterface $filesystem a filesystem wrapper
+     * @param \League\Flysystem\FilesystemOperator $filesystem a filesystem wrapper
      * @param string $file a full path to a temp file
      * @param string $path that path to which the file should be written
      * @return bool
      */
-    public function writeFile(FilesystemInterface $filesystem, $file, $path): bool
+    public function writeFile(FilesystemOperator $filesystem, $file, $path): bool
     {
         // phpcs:ignore
         $stream = @fopen($file, 'r');
@@ -129,7 +130,7 @@ class DefaultWriter implements WriterInterface
         $this->deletePath($filesystem, $tempPath);
         if ($filesystem->writeStream($tempPath, $stream)) {
             $this->deletePath($filesystem, $path);
-            $success = $filesystem->rename($tempPath, $path);
+            $success = $filesystem->move($tempPath, $path);
         }
         $this->deletePath($filesystem, $tempPath);
         is_resource($stream) && fclose($stream);
@@ -140,16 +141,17 @@ class DefaultWriter implements WriterInterface
     /**
      * Deletes a path from a filesystem
      *
-     * @param \League\Flysystem\FilesystemInterface $filesystem a filesystem writer
+     * @param \League\Flysystem\FilesystemOperator $filesystem a filesystem writer
      * @param string $path the path that should be deleted
      * @return bool
      */
-    public function deletePath(FilesystemInterface $filesystem, string $path): bool
+    public function deletePath(FilesystemOperator $filesystem, string $path): bool
     {
-        $success = false;
+        $success = true;
         try {
-            $success = $filesystem->delete($path);
-        } catch (FileNotFoundException $e) {
+            $filesystem->delete($path);
+        } catch (FilesystemOperationFailed $e) {
+            $success = false;
             // TODO: log this?
         }
 
@@ -161,19 +163,19 @@ class DefaultWriter implements WriterInterface
      *
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
-     * @return \League\Flysystem\FilesystemInterface
+     * @return \League\Flysystem\FilesystemOperator
      */
-    public function getFilesystem(string $field, array $settings = []): FilesystemInterface
+    public function getFilesystem(string $field, array $settings = []): FilesystemOperator
     {
-        $adapter = new Local(Hash::get($settings, 'filesystem.root', ROOT . DS));
+        $adapter = new LocalFilesystemAdapter(Hash::get($settings, 'filesystem.root', ROOT . DS));
         $adapter = Hash::get($settings, 'filesystem.adapter', $adapter);
         if (is_callable($adapter)) {
             $adapter = $adapter();
         }
 
-        if ($adapter instanceof AdapterInterface) {
+        if ($adapter instanceof FilesystemAdapter) {
             return new Filesystem($adapter, Hash::get($settings, 'filesystem.options', [
-                'visibility' => AdapterInterface::VISIBILITY_PUBLIC,
+                'visibility' => Visibility::PUBLIC,
             ]));
         }
 

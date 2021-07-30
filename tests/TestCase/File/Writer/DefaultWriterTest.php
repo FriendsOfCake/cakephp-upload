@@ -6,9 +6,7 @@ namespace Josegonzalez\Upload\Test\TestCase\File\Writer;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Laminas\Diactoros\UploadedFile;
-use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\Vfs\VfsAdapter;
-use VirtualFileSystem\FileSystem as Vfs;
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 
 class DefaultWriterTest extends TestCase
 {
@@ -29,7 +27,7 @@ class DefaultWriterTest extends TestCase
         $this->settings = [
             'filesystem' => [
                 'adapter' => function () {
-                    return new VfsAdapter(new Vfs());
+                    return new InMemoryFilesystemAdapter();
                 },
             ],
         ];
@@ -40,10 +38,6 @@ class DefaultWriterTest extends TestCase
             $this->field,
             $this->settings
         );
-
-        $this->vfs = new Vfs();
-        mkdir($this->vfs->path('/tmp'));
-        file_put_contents($this->vfs->path('/tmp/tempfile'), 'content');
     }
 
     public function testIsWriterInterface()
@@ -55,17 +49,17 @@ class DefaultWriterTest extends TestCase
     {
         $this->assertEquals([], $this->writer->write([]));
         $this->assertEquals([true], $this->writer->write([
-            $this->vfs->path('/tmp/tempfile') => 'file.txt',
+            '/tmp/tempfile' => 'file.txt',
         ], 'field', []));
 
         $this->assertEquals([false], $this->writer->write([
-            $this->vfs->path('/tmp/invalid.txt') => 'file.txt',
+            '/tmp/invalid.txt' => 'file.txt',
         ], 'field', []));
     }
 
     public function testDelete()
     {
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->at(0))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->at(1))->method('delete')->will($this->returnValue(false));
         $writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
@@ -76,61 +70,61 @@ class DefaultWriterTest extends TestCase
 
         $this->assertEquals([], $writer->delete([]));
         $this->assertEquals([true], $writer->delete([
-            $this->vfs->path('/tmp/tempfile'),
+            '/tmp/tempfile',
         ]));
 
         $this->assertEquals([false], $writer->delete([
-            $this->vfs->path('/tmp/invalid.txt'),
+            '/tmp/invalid.txt',
         ]));
     }
 
     public function testWriteFile()
     {
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->once())->method('rename')->will($this->returnValue(true));
-        $this->assertTrue($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
+        $filesystem->expects($this->once())->method('move')->will($this->returnValue(true));
+        $this->assertTrue($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
 
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(false));
         $filesystem->expects($this->exactly(2))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->never())->method('rename');
-        $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
+        $filesystem->expects($this->never())->method('move');
+        $this->assertFalse($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
 
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->once())->method('rename')->will($this->returnValue(false));
-        $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
+        $filesystem->expects($this->once())->method('move')->will($this->returnValue(false));
+        $this->assertFalse($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
     }
 
     public function testDeletePath()
     {
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->any())->method('delete')->will($this->returnValue(true));
         $this->assertTrue($this->writer->deletePath($filesystem, 'path'));
 
-        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemInterface')->getMock();
+        $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->any())->method('delete')->will($this->returnValue(false));
         $this->assertFalse($this->writer->deletePath($filesystem, 'path'));
     }
 
     public function testGetFilesystem()
     {
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', []));
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->writer->getFilesystem('field', []));
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->writer->getFilesystem('field', [
             'key' => 'value',
         ]));
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->writer->getFilesystem('field', [
             'filesystem' => [
-                'adapter' => new NullAdapter(),
+                'adapter' => new InMemoryFilesystemAdapter(),
             ],
         ]));
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->writer->getFilesystem('field', [
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->writer->getFilesystem('field', [
             'filesystem' => [
                 'adapter' => function () {
-                    return new NullAdapter();
+                    return new InMemoryFilesystemAdapter();
                 },
             ],
         ]));
