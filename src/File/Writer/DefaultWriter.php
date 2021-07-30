@@ -8,7 +8,7 @@ use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
-use League\Flysystem\FilesystemOperationFailed;
+use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\Visibility;
@@ -128,10 +128,19 @@ class DefaultWriter implements WriterInterface
         $success = false;
         $tempPath = $path . '.temp';
         $this->deletePath($filesystem, $tempPath);
-        if ($filesystem->writeStream($tempPath, $stream)) {
+        try {
+            $filesystem->writeStream($tempPath, $stream);
             $this->deletePath($filesystem, $path);
-            $success = $filesystem->move($tempPath, $path);
+            try {
+                $filesystem->move($tempPath, $path);
+                $success = true;
+            } catch (FilesystemException $e) {
+                // noop
+            }
+        } catch (FilesystemException $e) {
+            // noop
         }
+
         $this->deletePath($filesystem, $tempPath);
         is_resource($stream) && fclose($stream);
 
@@ -150,7 +159,7 @@ class DefaultWriter implements WriterInterface
         $success = true;
         try {
             $filesystem->delete($path);
-        } catch (FilesystemOperationFailed $e) {
+        } catch (FilesystemException $e) {
             $success = false;
             // TODO: log this?
         }

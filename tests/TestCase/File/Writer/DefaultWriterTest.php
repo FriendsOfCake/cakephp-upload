@@ -7,6 +7,9 @@ use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Laminas\Diactoros\UploadedFile;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToMoveFile;
+use League\Flysystem\UnableToWriteFile;
 use VirtualFileSystem\FileSystem as Vfs;
 
 class DefaultWriterTest extends TestCase
@@ -65,8 +68,8 @@ class DefaultWriterTest extends TestCase
     public function testDelete()
     {
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->at(0))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->at(1))->method('delete')->will($this->returnValue(false));
+        $filesystem->expects($this->at(0))->method('delete');
+        $filesystem->expects($this->at(1))->method('delete')->will($this->throwException(new UnableToDeleteFile()));
         $writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
             ->setMethods(['getFilesystem'])
             ->setConstructorArgs([$this->table, $this->entity, $this->data, $this->field, $this->settings])
@@ -86,32 +89,32 @@ class DefaultWriterTest extends TestCase
     public function testWriteFile()
     {
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
-        $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->once())->method('move')->will($this->returnValue(true));
+        $filesystem->expects($this->once())->method('writeStream');
+        $filesystem->expects($this->exactly(3))->method('delete');
+        $filesystem->expects($this->once())->method('move');
         $this->assertTrue($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(false));
-        $filesystem->expects($this->exactly(2))->method('delete')->will($this->returnValue(true));
+        $filesystem->expects($this->once())->method('writeStream')->will($this->throwException(new UnableToWriteFile()));
+        $filesystem->expects($this->exactly(2))->method('delete');
         $filesystem->expects($this->never())->method('move');
         $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
-        $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
-        $filesystem->expects($this->once())->method('move')->will($this->returnValue(false));
+        $filesystem->expects($this->once())->method('writeStream');
+        $filesystem->expects($this->exactly(3))->method('delete');
+        $filesystem->expects($this->once())->method('move')->will($this->throwException(new UnableToMoveFile()));
         $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
     }
 
     public function testDeletePath()
     {
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->any())->method('delete')->will($this->returnValue(true));
+        $filesystem->expects($this->any())->method('delete');
         $this->assertTrue($this->writer->deletePath($filesystem, 'path'));
 
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
-        $filesystem->expects($this->any())->method('delete')->will($this->returnValue(false));
+        $filesystem->expects($this->any())->method('delete')->will($this->throwException(new UnableToDeleteFile()));
         $this->assertFalse($this->writer->deletePath($filesystem, 'path'));
     }
 
