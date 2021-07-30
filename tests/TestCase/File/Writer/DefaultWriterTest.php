@@ -7,6 +7,7 @@ use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Writer\DefaultWriter;
 use Laminas\Diactoros\UploadedFile;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use VirtualFileSystem\FileSystem as Vfs;
 
 class DefaultWriterTest extends TestCase
 {
@@ -38,6 +39,10 @@ class DefaultWriterTest extends TestCase
             $this->field,
             $this->settings
         );
+
+        $this->vfs = new Vfs();
+        mkdir($this->vfs->path('/tmp'));
+        file_put_contents($this->vfs->path('/tmp/tempfile'), 'content');
     }
 
     public function testIsWriterInterface()
@@ -49,11 +54,11 @@ class DefaultWriterTest extends TestCase
     {
         $this->assertEquals([], $this->writer->write([]));
         $this->assertEquals([true], $this->writer->write([
-            '/tmp/tempfile' => 'file.txt',
+            $this->vfs->path('/tmp/tempfile') => 'file.txt',
         ], 'field', []));
 
         $this->assertEquals([false], $this->writer->write([
-            '/tmp/invalid.txt' => 'file.txt',
+            $this->vfs->path('/tmp/invalid.txt') => 'file.txt',
         ], 'field', []));
     }
 
@@ -70,11 +75,11 @@ class DefaultWriterTest extends TestCase
 
         $this->assertEquals([], $writer->delete([]));
         $this->assertEquals([true], $writer->delete([
-            '/tmp/tempfile',
+            $this->vfs->path('/tmp/tempfile'),
         ]));
 
         $this->assertEquals([false], $writer->delete([
-            '/tmp/invalid.txt',
+            $this->vfs->path('/tmp/invalid.txt'),
         ]));
     }
 
@@ -84,19 +89,19 @@ class DefaultWriterTest extends TestCase
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->once())->method('move')->will($this->returnValue(true));
-        $this->assertTrue($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
+        $this->assertTrue($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(false));
         $filesystem->expects($this->exactly(2))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->never())->method('move');
-        $this->assertFalse($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
+        $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
 
         $filesystem = $this->getMockBuilder('League\Flysystem\FilesystemOperator')->getMock();
         $filesystem->expects($this->once())->method('writeStream')->will($this->returnValue(true));
         $filesystem->expects($this->exactly(3))->method('delete')->will($this->returnValue(true));
         $filesystem->expects($this->once())->method('move')->will($this->returnValue(false));
-        $this->assertFalse($this->writer->writeFile($filesystem, '/tmp/tempfile', 'path'));
+        $this->assertFalse($this->writer->writeFile($filesystem, $this->vfs->path('/tmp/tempfile'), 'path'));
     }
 
     public function testDeletePath()
