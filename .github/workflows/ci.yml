@@ -79,9 +79,9 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '7.4'
-        extension: mbstring, intl
+        extensions: mbstring, intl
         coverage: none
-        tools: cs2pr, phpstan:^0.12
+        tools: cs2pr, phpstan:0.12
 
     - name: Composer Install
       run: composer install
