@@ -14,8 +14,3 @@ parameters:
 			message: "#^Constant ROOT not found\\.$#"
 			count: 1
 			path: src/File/Writer/DefaultWriter.php
-
-		-
-			message: "#^Cannot instantiate interface Josegonzalez\\\\Upload\\\\File\\\\Transformer\\\\TransformerInterface\\.$#"
-			count: 1
-			path: src/Model/Behavior/UploadBehavior.php
