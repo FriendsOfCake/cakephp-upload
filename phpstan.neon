@@ -14,3 +14,18 @@ parameters:
 			message: "#^Constant ROOT not found\\.$#"
 			count: 1
 			path: src/File/Writer/DefaultWriter.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Cake\\\\ORM\\\\Behavior\\:\\:setConfig\\(\\) expects array\\<string, mixed\\>\\|string, array\\<int\\|string, mixed\\> given\\.$#"
+			count: 1
+			path: src/Model/Behavior/UploadBehavior.php
+
+		-
+			message: "#^Cannot use array destructuring on array\\|false\\.$#"
+			count: 4
+			path: src/Validation/DefaultValidation.php
+
+		-
+			message: "#^Cannot use array destructuring on array\\|false\\.$#"
+			count: 4
+			path: src/Validation/ImageValidation.php

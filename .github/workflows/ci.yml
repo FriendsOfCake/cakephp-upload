@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '7.4']
-        db-type: [sqlite, mysql, pgsql]
+        php-version: ['7.4', '8.0', '8.1']
+        db-type: [mysql, pgsql]
         prefer-lowest: ['']
         include:
           - php-version: '7.2'
@@ -25,9 +25,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v2
 
     - name: Setup Service
       if: matrix.db-type == 'mysql'
@@ -56,24 +54,22 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mysql' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '7.4' && ${{ matrix.db-type }} == 'sqlite' ]]; then
+        if [[ ${{ matrix.php-version }} == '7.4' && ${{ matrix.db-type }} == 'mysql' ]]; then
           vendor/bin/phpunit --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit
         fi
 
     - name: Code Coverage Report
-      if: success() && matrix.php-version == '7.4' && matrix.db-type == 'sqlite'
-      uses: codecov/codecov-action@v1
+      if: success() && matrix.php-version == '7.4' && matrix.db-type == 'mysql'
+      uses: codecov/codecov-action@v2
 
   cs-stan:
     name: Coding Standard & Static Analysis
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v2
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -81,7 +77,7 @@ jobs:
         php-version: '7.4'
         extensions: mbstring, intl
         coverage: none
-        tools: cs2pr, phpstan:0.12
+        tools: cs2pr, phpstan:1.2
 
     - name: Composer Install
       run: composer install

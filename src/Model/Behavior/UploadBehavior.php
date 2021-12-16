@@ -193,6 +193,7 @@ class UploadBehavior extends Behavior
      */
     public function getPathProcessor(EntityInterface $entity, $data, string $field, array $settings): ProcessorInterface
     {
+        /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
 
         return new $processorClass($this->_table, $entity, $data, $field, $settings);
@@ -213,6 +214,7 @@ class UploadBehavior extends Behavior
         string $field,
         array $settings
     ): WriterInterface {
+        /** @var class-string<\Josegonzalez\Upload\File\Writer\WriterInterface> $writerClass */
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
 
         return new $writerClass($this->_table, $entity, $data, $field, $settings);
