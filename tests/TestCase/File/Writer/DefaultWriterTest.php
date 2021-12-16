@@ -71,7 +71,7 @@ class DefaultWriterTest extends TestCase
         $filesystem->expects($this->at(0))->method('delete');
         $filesystem->expects($this->at(1))->method('delete')->will($this->throwException(new UnableToDeleteFile()));
         $writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
-            ->setMethods(['getFilesystem'])
+            ->onlyMethods(['getFilesystem'])
             ->setConstructorArgs([$this->table, $this->entity, $this->data, $this->field, $this->settings])
             ->getMock();
         $writer->expects($this->any())->method('getFilesystem')->will($this->returnValue($filesystem));

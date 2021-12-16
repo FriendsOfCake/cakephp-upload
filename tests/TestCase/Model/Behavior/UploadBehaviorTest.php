@@ -6,7 +6,6 @@ namespace Josegonzalez\Upload\Test\TestCase\Model\Behavior;
 use ArrayObject;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\File\Transformer\SlugTransformer;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
@@ -16,7 +15,7 @@ use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
 {
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.Josegonzalez/Upload.Files',
     ];
 
@@ -56,11 +55,9 @@ class UploadBehaviorTest extends TestCase
 
         $this->behavior = new UploadBehavior($this->table, []);
         $this->processor = $this->getMockBuilder('Josegonzalez\Upload\File\Path\DefaultProcessor')
-            ->setMethods([])
             ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->writer = $this->getMockBuilder('Josegonzalez\Upload\File\Writer\DefaultWriter')
-            ->setMethods([])
             ->setConstructorArgs([$this->table, $this->entity, $this->dataOk[$this->field], $this->field, $this->settings])
             ->getMock();
         $this->behaviorMethods = get_class_methods('Josegonzalez\Upload\Model\Behavior\UploadBehavior');
@@ -70,7 +67,7 @@ class UploadBehaviorTest extends TestCase
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
@@ -85,7 +82,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['initialize']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->disableOriginalConstructor()
             ->getMock();
         $reflection = new ReflectionClass($behavior);
@@ -102,7 +99,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testInheritedConfig()
     {
-        $table = TableRegistry::get('Josegonzales/Upload.Files');
+        $table = $this->getTableLocator()->get('Josegonzales/Upload.Files');
         $behavior = new ChildBehavior($table, []);
 
         $result = $behavior->getConfig();
@@ -115,7 +112,7 @@ class UploadBehaviorTest extends TestCase
         $settings = ['field'];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
@@ -130,7 +127,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->disableOriginalConstructor()
             ->getMock();
         $reflection = new ReflectionClass($behavior);
@@ -150,7 +147,7 @@ class UploadBehaviorTest extends TestCase
         ];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->setMethods(['setColumnType', 'getSchema', 'setSchema'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
         $schema->expects($this->once())
@@ -166,7 +163,7 @@ class UploadBehaviorTest extends TestCase
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
         //$behavior = $this->getMock('Josegonzalez\Upload\Model\Behavior\UploadBehavior', $methods, [$table, $settings], '', false);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -193,7 +190,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$table, $this->settings])
             ->getMock();
         $behavior->expects($this->any())
@@ -223,7 +220,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$table, $this->settings])
             ->getMock();
         $behavior->expects($this->any())
@@ -249,7 +246,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$table, $this->settings])
             ->getMock();
         $behavior->expects($this->any())
@@ -267,7 +264,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($this->settings);
@@ -296,7 +293,7 @@ class UploadBehaviorTest extends TestCase
     {
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($this->settings);
@@ -324,7 +321,7 @@ class UploadBehaviorTest extends TestCase
     {
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($this->settings);
@@ -358,7 +355,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($settings);
@@ -375,7 +372,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['beforeSave', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->settings])
             ->getMock();
         $behavior->setConfig($settings);
@@ -408,7 +405,7 @@ class UploadBehaviorTest extends TestCase
     {
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
@@ -430,7 +427,7 @@ class UploadBehaviorTest extends TestCase
     {
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
@@ -452,7 +449,7 @@ class UploadBehaviorTest extends TestCase
     {
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataError])
             ->getMock();
         $behavior->setConfig($this->configError);
@@ -474,7 +471,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
@@ -522,7 +519,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
@@ -560,7 +557,7 @@ class UploadBehaviorTest extends TestCase
         $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
@@ -591,7 +588,7 @@ class UploadBehaviorTest extends TestCase
         $path = rand(1000, 9999) . DIRECTORY_SEPARATOR;
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
 
@@ -631,7 +628,7 @@ class UploadBehaviorTest extends TestCase
 
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->setMethods($methods)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$this->table, $settings])
             ->getMock();
 
@@ -743,7 +740,7 @@ class UploadBehaviorTest extends TestCase
 
     public function testNameCallback()
     {
-        $table = TableRegistry::getTableLocator()->get('Files');
+        $table = $this->getTableLocator()->get('Files');
         $behavior = new ChildBehavior($table, [
             'filename' => [
                 'nameCallback' => function ($table, $entity, $data, $field, $settings) {
