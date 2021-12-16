@@ -37,6 +37,8 @@ class UploadBehavior extends Behavior
      */
     public function initialize(array $config): void
     {
+        unset($config['className']);
+
         $configs = [];
         foreach ($config as $field => $settings) {
             if (is_int($field)) {
@@ -46,8 +48,7 @@ class UploadBehavior extends Behavior
             }
         }
 
-        $this->setConfig($configs);
-        $this->setConfig('className', null);
+        $this->setConfig($configs, null, false);
 
         $schema = $this->_table->getSchema();
         /** @var string $field */

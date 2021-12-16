@@ -743,12 +743,12 @@ class UploadBehaviorTest extends TestCase
         $table = $this->getTableLocator()->get('Files');
         $behavior = new ChildBehavior($table, [
             'filename' => [
-                'nameCallback' => function ($table, $entity, $data, $field, $settings) {
-                    return 'Awesome Filename.png';
-                },
+                'nameCallback' => [$this, 'nameCallback'],
                 'transformer' => SlugTransformer::class,
             ],
         ]);
+
+        $this->assertSame([$this, 'nameCallback'], $behavior->getConfig('filename.nameCallback'));
 
         $event = new Event('Model.beforeSave', $table);
         $entity = new Entity([
@@ -762,5 +762,10 @@ class UploadBehaviorTest extends TestCase
         ];
 
         $this->assertEquals($expected, $behavior->constructedFiles);
+    }
+
+    public function nameCallback($table, $entity, $data, $field, $settings)
+    {
+        return 'Awesome Filename.png';
     }
 }
