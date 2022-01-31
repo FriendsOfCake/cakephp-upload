@@ -21,7 +21,7 @@ interface WriterInterface
     public function __construct(
         Table $table,
         EntityInterface $entity,
-        ?UploadedFileInterface $data = null,
+        ?UploadedFileInterface $data,
         string $field,
         array $settings
     );
