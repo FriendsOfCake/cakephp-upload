@@ -210,7 +210,7 @@ class UploadBehavior extends Behavior
      */
     public function getWriter(
         EntityInterface $entity,
-        ?UploadedFileInterface $data = null,
+        ?UploadedFileInterface $data,
         string $field,
         array $settings
     ): WriterInterface {
