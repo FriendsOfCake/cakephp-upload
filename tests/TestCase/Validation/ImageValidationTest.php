@@ -6,7 +6,7 @@ namespace Josegonzalez\Upload\Test\TestCase\Validation;
 use Cake\TestSuite\TestCase;
 use Josegonzalez\Upload\Validation\ImageValidation;
 use Laminas\Diactoros\UploadedFile;
-use VirtualFileSystem\FileSystem as Vfs;
+use org\bovigo\vfs\vfsStream as Vfs;
 
 class ImageValidationTest extends TestCase
 {
@@ -17,18 +17,17 @@ class ImageValidationTest extends TestCase
     {
         parent::setUp();
 
-        $this->vfs = new Vfs();
-        mkdir($this->vfs->path('/tmp'));
+        $this->vfs = Vfs::setup('tmp');
 
         // Write sample image with dimensions: 20x20
-        $img = fopen($this->vfs->path('/tmp/tmpimage'), 'wb');
+        $img = fopen($this->vfs->url() . '/tmpimage', 'wb');
         fwrite($img, base64_decode('iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH4AMUECwX5I9GIwAAACFJREFUOMtj/P//PwM1ARMDlcGogaMGjho4auCogUPFQABpCwMlgqgSYAAAAABJRU5ErkJggg=='));
         fclose($img);
 
         $this->data = [
             'name' => 'sample.txt',
             'type' => 'text/plain',
-            'tmp_name' => $this->vfs->path('/tmp/tmpimage'),
+            'tmp_name' => $this->vfs->url() . '/tmpimage',
             'size' => 200,
             'error' => UPLOAD_ERR_OK,
         ];
