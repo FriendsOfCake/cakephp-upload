@@ -76,7 +76,10 @@ class UploadBehavior extends Behavior
             }
             if (
                 !empty($dataArray[$field]) &&
-                ($dataArray[$field] instanceof UploadedFileInterface ? $dataArray[$field]->getError() : $dataArray[$field]['error']) !== UPLOAD_ERR_NO_FILE
+                ($dataArray[$field] instanceof UploadedFileInterface
+                    ? $dataArray[$field]->getError()
+                    : $dataArray[$field]['error']
+                ) !== UPLOAD_ERR_NO_FILE
             ) {
                 continue;
             }

@@ -803,11 +803,11 @@ class UploadBehaviorTest extends TestCase
     {
         return array_map(
             fn(UploadedFileInterface $file) => [
-                "tmp_name" => "",
-                "error" => $file->getError(),
-                "name" => $file->getClientFilename(),
-                "type" => $file->getClientMediaType(),
-                "size" => $file->getSize()
+                'tmp_name' => '',
+                'error' => $file->getError(),
+                'name' => $file->getClientFilename(),
+                'type' => $file->getClientMediaType(),
+                'size' => $file->getSize(),
             ],
             $data
         );
