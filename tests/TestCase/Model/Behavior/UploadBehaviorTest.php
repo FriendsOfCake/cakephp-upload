@@ -11,6 +11,7 @@ use Josegonzalez\Upload\File\Transformer\SlugTransformer;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 use Josegonzalez\Upload\Test\Stub\ChildBehavior;
 use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
@@ -256,6 +257,40 @@ class UploadBehaviorTest extends TestCase
         $data = new ArrayObject($this->dataError);
         $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject($this->dataError), $data);
+    }
+
+    public function testBeforeMarshalDataAsArray()
+    {
+        $validator = $this->getMockBuilder('Cake\Validation\Validator')->getMock();
+        $validator->expects($this->atLeastOnce())
+                  ->method('isEmptyAllowed')
+                  ->will($this->returnValue(true));
+
+        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
+        $table->expects($this->atLeastOnce())
+                    ->method('getValidator')
+                    ->will($this->returnValue($validator));
+
+        $methods = array_diff($this->behaviorMethods, ['beforeMarshal']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->onlyMethods($methods)
+            ->setConstructorArgs([$table, $this->settings])
+            ->getMock();
+        $behavior->expects($this->any())
+                 ->method('getConfig')
+                 ->will($this->returnValue($this->settings));
+
+        $data = new ArrayObject(
+            $this->transformUploadedFilesToArray($this->dataOk)
+        );
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
+        $this->assertEquals(new ArrayObject($this->transformUploadedFilesToArray($this->dataOk)), $data);
+
+        $data = new ArrayObject(
+            $this->transformUploadedFilesToArray($this->dataError)
+        );
+        $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
+        $this->assertEquals(new ArrayObject([]), $data);
     }
 
     public function testBeforeSaveNoUpload()
@@ -762,5 +797,21 @@ class UploadBehaviorTest extends TestCase
         ];
 
         $this->assertEquals($expected, $behavior->constructedFiles);
+    }
+
+    private function transformUploadedFilesToArray(array $data): array
+    {
+        return array_map(
+            function (UploadedFileInterface $file) {
+                return [
+                    'tmp_name' => '',
+                    'error' => $file->getError(),
+                    'name' => $file->getClientFilename(),
+                    'type' => $file->getClientMediaType(),
+                    'size' => $file->getSize(),
+                ];
+            },
+            $data
+        );
     }
 }

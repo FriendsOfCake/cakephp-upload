@@ -74,7 +74,13 @@ class UploadBehavior extends Behavior
             if (!$validator->isEmptyAllowed($field, false)) {
                 continue;
             }
-            if (!empty($dataArray[$field]) && $dataArray[$field]->getError() !== UPLOAD_ERR_NO_FILE) {
+            if (
+                !empty($dataArray[$field]) &&
+                ($dataArray[$field] instanceof UploadedFileInterface
+                    ? $dataArray[$field]->getError()
+                    : $dataArray[$field]['error']
+                ) !== UPLOAD_ERR_NO_FILE
+            ) {
                 continue;
             }
             if (isset($data[$field])) {
