@@ -802,13 +802,15 @@ class UploadBehaviorTest extends TestCase
     private function transformUploadedFilesToArray(array $data): array
     {
         return array_map(
-            fn(UploadedFileInterface $file) => [
-                'tmp_name' => '',
-                'error' => $file->getError(),
-                'name' => $file->getClientFilename(),
-                'type' => $file->getClientMediaType(),
-                'size' => $file->getSize(),
-            ],
+            function (UploadedFileInterface $file) {
+                return [
+                    'tmp_name' => '',
+                    'error' => $file->getError(),
+                    'name' => $file->getClientFilename(),
+                    'type' => $file->getClientMediaType(),
+                    'size' => $file->getSize(),
+                ];
+            },
             $data
         );
     }
