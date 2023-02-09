@@ -16,7 +16,7 @@ use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.Josegonzalez/Upload.Files',
     ];
 

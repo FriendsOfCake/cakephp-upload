@@ -5,7 +5,7 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class FilesFixture extends TestFixture
 {
-    public $table = 'files';
+    public string $table = 'files';
 
     /**
      * fields property
@@ -24,7 +24,7 @@ class FilesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         ['filename' => 'FileOne'],
         ['filename' => 'FileTwo'],
         ['filename' => 'FileThree'],

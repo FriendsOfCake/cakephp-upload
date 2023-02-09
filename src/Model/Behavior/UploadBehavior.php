@@ -25,7 +25,7 @@ class UploadBehavior extends Behavior
      *
      * @var array
      */
-    private $protectedFieldNames = [
+    private array $protectedFieldNames = [
         'priority',
     ];
 
@@ -65,7 +65,7 @@ class UploadBehavior extends Behavior
      * @param \ArrayObject $options options for the current event
      * @return void
      */
-    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
         $validator = $this->_table->getValidator();
         $dataArray = $data->getArrayCopy();
@@ -153,7 +153,7 @@ class UploadBehavior extends Behavior
      * @param \ArrayObject $options the options passed to the delete method
      * @return bool
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): bool
     {
         $result = true;
 
@@ -192,12 +192,12 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Psr\Http\Message\UploadedFileInterface|string $data the data being submitted for a save or the filename
+     * @param string|\Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save or the filename
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
-    public function getPathProcessor(EntityInterface $entity, $data, string $field, array $settings): ProcessorInterface
+    public function getPathProcessor(EntityInterface $entity, string|UploadedFileInterface $data, string $field, array $settings): ProcessorInterface
     {
         /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);

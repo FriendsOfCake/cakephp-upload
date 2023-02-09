@@ -22,35 +22,35 @@ class DefaultWriter implements WriterInterface
      *
      * @var \Cake\ORM\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
      * Entity instance.
      *
      * @var \Cake\Datasource\EntityInterface
      */
-    protected $entity;
+    protected EntityInterface $entity;
 
     /**
      * Array of uploaded data for this field
      *
      * @var \Psr\Http\Message\UploadedFileInterface|null
      */
-    protected $data;
+    protected ?UploadedFileInterface $data;
 
     /**
      * Name of field
      *
      * @var string
      */
-    protected $field;
+    protected string $field;
 
     /**
      * Settings for processing a path
      *
      * @var array
      */
-    protected $settings;
+    protected array $settings;
 
     /**
      * Constructs a writer
@@ -117,7 +117,7 @@ class DefaultWriter implements WriterInterface
      * @param string $path that path to which the file should be written
      * @return bool
      */
-    public function writeFile(FilesystemOperator $filesystem, $file, $path): bool
+    public function writeFile(FilesystemOperator $filesystem, string $file, string $path): bool
     {
         // phpcs:ignore
         $stream = @fopen($file, 'r');

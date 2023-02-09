@@ -11,7 +11,7 @@ use Josegonzalez\Upload\Database\Type\FileType;
 /**
  * Plugin class.
  */
-class Plugin extends BasePlugin
+class UploadPlugin extends BasePlugin
 {
     /**
      * Plugin bootstrap.

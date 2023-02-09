@@ -9,7 +9,7 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class ChildBehavior extends UploadBehavior
 {
-    protected $_defaultConfig = ['key' => 'value'];
+    protected array $_defaultConfig = ['key' => 'value'];
 
     public function constructFiles(
         EntityInterface $entity,

@@ -14,35 +14,35 @@ class DefaultTransformer implements TransformerInterface
      *
      * @var \Cake\ORM\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
      * Entity instance.
      *
      * @var \Cake\Datasource\EntityInterface
      */
-    protected $entity;
+    protected EntityInterface $entity;
 
     /**
      * Array of uploaded data for this field
      *
      * @var \Psr\Http\Message\UploadedFileInterface
      */
-    protected $data;
+    protected UploadedFileInterface $data;
 
     /**
      * Name of field
      *
      * @var string
      */
-    protected $field;
+    protected string $field;
 
     /**
      * Settings for processing a path
      *
      * @var array
      */
-    protected $settings;
+    protected array $settings;
 
     /**
      * Constructor
