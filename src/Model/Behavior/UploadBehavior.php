@@ -173,7 +173,10 @@ class UploadBehavior extends Behavior
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {
-                $files = [$path . $entity->get($field)];
+                /** @var UploadedFileInterface $uploaded */
+                $uploaded = $entity->get($field);
+
+                $files = [$path . $uploaded->getClientFilename()];
             }
 
             $writer = $this->getWriter($entity, null, $field, $settings);

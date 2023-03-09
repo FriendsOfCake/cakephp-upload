@@ -5,20 +5,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class FilesFixture extends TestFixture
 {
-    public string $table = 'files';
-
-    /**
-     * fields property
-     *
-     * @var array
-     */
-    public $fields = [
-        'id' => ['type' => 'integer'],
-        'filename' => ['type' => 'string'],
-        'created' => ['type' => 'datetime', 'null' => true],
-        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
-    ];
-
     /**
      * records property
      *

@@ -18,10 +18,11 @@
     },
     "require-dev": {
         "cakephp/cakephp": "5.x-dev",
-        "phpunit/phpunit": "^8.5 || ^9.3",
+        "phpunit/phpunit": "^9.5.19",
         "cakephp/cakephp-codesniffer": "^5.0",
         "league/flysystem-memory": "^2.0|^3.0",
-        "mikey179/vfsstream": "^1.6.10"
+        "mikey179/vfsstream": "^1.6.10",
+        "cakephp/migrations": "4.x-dev"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
