@@ -54,11 +54,11 @@ class DefaultProcessor implements ProcessorInterface
      *
      * @param \Cake\ORM\Table $table the instance managing the entity
      * @param \Cake\Datasource\EntityInterface $entity the entity to construct a path for.
-     * @param string|\Psr\Http\Message\UploadedFileInterface|array $data the data being submitted for a save or filename stored in db
+     * @param string|\Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save or filename stored in db
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      */
-    public function __construct(Table $table, EntityInterface $entity, string|UploadedFileInterface|array $data, string $field, array $settings)
+    public function __construct(Table $table, EntityInterface $entity, string|UploadedFileInterface $data, string $field, array $settings)
     {
         $this->table = $table;
         $this->entity = $entity;

@@ -18,41 +18,6 @@ use UnexpectedValueException;
 class DefaultWriter implements WriterInterface
 {
     /**
-     * Table instance.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected Table $table;
-
-    /**
-     * Entity instance.
-     *
-     * @var \Cake\Datasource\EntityInterface
-     */
-    protected EntityInterface $entity;
-
-    /**
-     * Array of uploaded data for this field
-     *
-     * @var \Psr\Http\Message\UploadedFileInterface|null
-     */
-    protected ?UploadedFileInterface $data;
-
-    /**
-     * Name of field
-     *
-     * @var string
-     */
-    protected string $field;
-
-    /**
-     * Settings for processing a path
-     *
-     * @var array
-     */
-    protected array $settings;
-
-    /**
      * Constructs a writer
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
@@ -62,17 +27,12 @@ class DefaultWriter implements WriterInterface
      * @param array            $settings the settings for the current field
      */
     public function __construct(
-        Table $table,
-        EntityInterface $entity,
-        ?UploadedFileInterface $data,
-        string $field,
-        array $settings
+        protected Table $table,
+        protected EntityInterface $entity,
+        protected ?UploadedFileInterface $data,
+        protected string $field,
+        protected array $settings
     ) {
-        $this->table = $table;
-        $this->entity = $entity;
-        $this->data = $data;
-        $this->field = $field;
-        $this->settings = $settings;
     }
 
     /**
