@@ -14,13 +14,13 @@
     "require": {
         "php": ">=8.1",
         "cakephp/orm": "5.x-dev",
-        "league/flysystem": "^2.2|^3.0"
+        "league/flysystem": "^3.15.1.0"
     },
     "require-dev": {
         "cakephp/cakephp": "5.x-dev",
-        "phpunit/phpunit": "^9.5.19",
+        "phpunit/phpunit": "^10.1.0",
         "cakephp/cakephp-codesniffer": "^5.0",
-        "league/flysystem-memory": "^2.0|^3.0",
+        "league/flysystem-memory": "^3.15",
         "mikey179/vfsstream": "^1.6.10",
         "cakephp/migrations": "4.x-dev"
     },

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\Fixture\SchemaLoader;
+use function Cake\Core\env;
 
 /**
  * Test suite bootstrap.
@@ -19,20 +21,23 @@ $findRoot = function ($root) {
             return $root;
         }
     } while ($root !== $lastRoot);
-
     throw new Exception('Cannot find the root of the application, unable to run tests');
 };
 $root = $findRoot(__FILE__);
 unset($findRoot);
-
 chdir($root);
-if (file_exists($root . '/config/bootstrap.php')) {
-    require $root . '/config/bootstrap.php';
 
-    return;
+require_once 'vendor/autoload.php';
+
+define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
+define('APP', ROOT . 'App' . DS);
+define('TMP', sys_get_temp_dir() . DS);
+define('CONFIG', ROOT . DS . 'config' . DS);
+
+if (!getenv('DB_URL')) {
+    putenv('DB_URL=sqlite:///:memory:');
 }
-
-require $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
+ConnectionManager::setConfig('test', ['url' => getenv('DB_URL')]);
 
 Configure::write('App.namespace', 'Josegonzalez\Upload\Test\TestApp');
 

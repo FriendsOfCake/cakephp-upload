@@ -94,10 +94,10 @@ class DefaultWriter implements WriterInterface
             try {
                 $filesystem->move($tempPath, $path);
                 $success = true;
-            } catch (FilesystemException $e) {
+            } catch (FilesystemException) {
                 // noop
             }
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             // noop
         }
 
@@ -119,7 +119,7 @@ class DefaultWriter implements WriterInterface
         $success = true;
         try {
             $filesystem->delete($path);
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             $success = false;
             // TODO: log this?
         }

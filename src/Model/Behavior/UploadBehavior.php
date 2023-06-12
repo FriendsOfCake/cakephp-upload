@@ -47,7 +47,7 @@ class UploadBehavior extends Behavior
         }
 
         $this->setConfig($configs);
-        $this->setConfig('className', null);
+        $this->setConfig('className');
 
         $schema = $this->_table->getSchema();
         /** @var string $field */
@@ -169,7 +169,7 @@ class UploadBehavior extends Behavior
                 $path = $this->getPathProcessor($entity, $entity->get($field), $field, $settings)->basepath();
             }
 
-            $callback = Hash::get($settings, 'deleteCallback', null);
+            $callback = Hash::get($settings, 'deleteCallback');
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {

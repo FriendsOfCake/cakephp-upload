@@ -74,11 +74,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
                     ->method('setColumnType')
                     ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
                     ->method('getSchema')
-                    ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-                    ->method('setSchema')
                     ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize']);
@@ -119,11 +116,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
                ->method('setColumnType')
                ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
               ->method('getSchema')
-              ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-              ->method('setSchema')
               ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
@@ -154,11 +148,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
             ->method('setColumnType')
             ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
             ->method('getSchema')
-            ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-            ->method('setSchema')
             ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
@@ -522,15 +513,12 @@ class UploadBehaviorTest extends TestCase
             ->getMock();
         $behavior->setConfig($this->configOk);
 
-        $this->entity->expects($this->at(0))
+        $this->entity->expects($this->once())
             ->method('has')
             ->with('dir')
             ->will($this->returnValue(false));
-        $this->entity->expects($this->at(1))
-            ->method('get')
-            ->with('field')
-            ->will($this->returnValue($field));
-        $this->entity->expects($this->at(2))
+
+        $this->entity->expects($this->exactly(2))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -576,19 +564,16 @@ class UploadBehaviorTest extends TestCase
             ->getMock();
         $behavior->setConfig($this->configOk);
 
-        $this->entity->expects($this->at(0))
+        $this->entity->expects($this->once())
             ->method('has')
             ->with('dir')
             ->will($this->returnValue(true));
-        $this->entity->expects($this->at(1))
-            ->method('get')
-            ->with('dir')
-            ->will($this->returnValue($dir));
-        $this->entity->expects($this->at(2))
-            ->method('get')
-            ->with('field')
-            ->will($this->returnValue($field));
 
+        $this->entity->method('get')
+            ->will($this->returnValueMap([
+                ['dir', $dir],
+                ['field', $field]
+            ]));
         $behavior->expects($this->never())
             ->method('getPathProcessor');
         $behavior->expects($this->once())
