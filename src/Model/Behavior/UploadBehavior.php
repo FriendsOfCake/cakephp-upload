@@ -18,6 +18,9 @@ use Josegonzalez\Upload\File\Writer\WriterInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
+/**
+ * UploadBehavior
+ */
 class UploadBehavior extends Behavior
 {
     /**
@@ -96,9 +99,9 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @param \ArrayObject $options the options passed to the save method
-     * @return void|false
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         foreach ($this->getConfig(null, []) as $field => $settings) {
             if (
@@ -134,7 +137,7 @@ class UploadBehavior extends Behavior
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
             if ((new Collection($success))->contains(false)) {
-                return false;
+                return;
             }
 
             $entity->set($field, $filename);
@@ -173,7 +176,7 @@ class UploadBehavior extends Behavior
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {
-                /** @var UploadedFileInterface $uploaded */
+                /** @var \Psr\Http\Message\UploadedFileInterface $uploaded */
                 $uploaded = $entity->get($field);
 
                 $files = [$path . $uploaded->getClientFilename()];
@@ -195,7 +198,7 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param string|\Psr\Http\Message\UploadedFileInterface $data the data being submitted for a save or the filename
+     * @param \Psr\Http\Message\UploadedFileInterface|string $data the data being submitted for a save or the filename
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface

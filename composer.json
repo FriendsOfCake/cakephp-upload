@@ -22,7 +22,8 @@
         "cakephp/cakephp-codesniffer": "^5.0",
         "league/flysystem-memory": "^3.15",
         "mikey179/vfsstream": "^1.6.10",
-        "cakephp/migrations": "4.x-dev"
+        "cakephp/migrations": "4.x-dev",
+        "vimeo/psalm": "^5.12"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

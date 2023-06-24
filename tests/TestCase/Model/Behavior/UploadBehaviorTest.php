@@ -572,7 +572,7 @@ class UploadBehaviorTest extends TestCase
         $this->entity->method('get')
             ->will($this->returnValueMap([
                 ['dir', $dir],
-                ['field', $field]
+                ['field', $field],
             ]));
         $behavior->expects($this->never())
             ->method('getPathProcessor');
