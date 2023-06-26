@@ -16,7 +16,7 @@ use ReflectionClass;
 
 class UploadBehaviorTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.Josegonzalez/Upload.Files',
     ];
 
@@ -74,11 +74,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
                     ->method('setColumnType')
                     ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
                     ->method('getSchema')
-                    ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-                    ->method('setSchema')
                     ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize']);
@@ -119,11 +116,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
                ->method('setColumnType')
                ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
               ->method('getSchema')
-              ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-              ->method('setSchema')
               ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
@@ -154,11 +148,8 @@ class UploadBehaviorTest extends TestCase
         $schema->expects($this->once())
             ->method('setColumnType')
             ->with('field', 'upload.file');
-        $table->expects($this->at(0))
+        $table->expects($this->any())
             ->method('getSchema')
-            ->will($this->returnValue($schema));
-        $table->expects($this->at(1))
-            ->method('setSchema')
             ->will($this->returnValue($schema));
 
         $methods = array_diff($this->behaviorMethods, ['initialize', 'setConfig', 'getConfig']);
@@ -444,7 +435,10 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
-
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($this->dataOk['field']));
         $behavior->expects($this->any())
             ->method('getPathProcessor')
             ->willReturn($this->processor);
@@ -466,7 +460,10 @@ class UploadBehaviorTest extends TestCase
             ->setConstructorArgs([$this->table, $this->dataOk])
             ->getMock();
         $behavior->setConfig($this->configOk);
-
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($this->dataOk['field']));
         $behavior->expects($this->any())
             ->method('getPathProcessor')
             ->willReturn($this->processor);
@@ -476,7 +473,6 @@ class UploadBehaviorTest extends TestCase
         $this->writer->expects($this->any())
                      ->method('delete')
                      ->will($this->returnValue([false]));
-
         $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
@@ -502,7 +498,13 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeleteUsesPathProcessorToDetectPathToTheFile()
     {
         $dir = '/some/path/';
-        $field = 'file.txt';
+        $field = new UploadedFile(
+            fopen('php://temp', 'wb+'),
+            1,
+            UPLOAD_ERR_OK,
+            'file.txt',
+            'text/plain'
+        );
 
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
@@ -511,15 +513,12 @@ class UploadBehaviorTest extends TestCase
             ->getMock();
         $behavior->setConfig($this->configOk);
 
-        $this->entity->expects($this->at(0))
+        $this->entity->expects($this->once())
             ->method('has')
             ->with('dir')
             ->will($this->returnValue(false));
-        $this->entity->expects($this->at(1))
-            ->method('get')
-            ->with('field')
-            ->will($this->returnValue($field));
-        $this->entity->expects($this->at(2))
+
+        $this->entity->expects($this->exactly(2))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -541,7 +540,7 @@ class UploadBehaviorTest extends TestCase
         // and here we check that file with right path will be deleted
         $this->writer->expects($this->once())
             ->method('delete')
-            ->with([$dir . $field])
+            ->with([$dir . $field->getClientFilename()])
             ->willReturn([true]);
 
         $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
@@ -550,7 +549,13 @@ class UploadBehaviorTest extends TestCase
     public function testAfterDeletePrefersStoredPathOverPathProcessor()
     {
         $dir = '/some/path/';
-        $field = 'file.txt';
+        $field = new UploadedFile(
+            fopen('php://temp', 'wb+'),
+            1,
+            UPLOAD_ERR_OK,
+            'file.txt',
+            'text/plain'
+        );
 
         $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
         $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
@@ -559,19 +564,16 @@ class UploadBehaviorTest extends TestCase
             ->getMock();
         $behavior->setConfig($this->configOk);
 
-        $this->entity->expects($this->at(0))
+        $this->entity->expects($this->once())
             ->method('has')
             ->with('dir')
             ->will($this->returnValue(true));
-        $this->entity->expects($this->at(1))
-            ->method('get')
-            ->with('dir')
-            ->will($this->returnValue($dir));
-        $this->entity->expects($this->at(2))
-            ->method('get')
-            ->with('field')
-            ->will($this->returnValue($field));
 
+        $this->entity->method('get')
+            ->will($this->returnValueMap([
+                ['dir', $dir],
+                ['field', $field],
+            ]));
         $behavior->expects($this->never())
             ->method('getPathProcessor');
         $behavior->expects($this->once())
@@ -580,7 +582,7 @@ class UploadBehaviorTest extends TestCase
 
         $this->writer->expects($this->once())
             ->method('delete')
-            ->with([$dir . $field])
+            ->with([$dir . $field->getClientFilename()])
             ->will($this->returnValue([true]));
 
         $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
@@ -599,8 +601,12 @@ class UploadBehaviorTest extends TestCase
         $this->configOk['field']['deleteCallback'] = null;
 
         $behavior->setConfig($this->configOk);
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($this->dataOk['field']));
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
+            ->with($this->entity, $this->dataOk['field'], 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);
@@ -610,7 +616,7 @@ class UploadBehaviorTest extends TestCase
         $this->writer->expects($this->once())
             ->method('delete')
             ->with([
-                $path . $this->entity->field,
+                $path . $this->entity->field . $this->dataOk['field']->getClientFilename(),
             ])
             ->willReturn([true, true, true]);
 
@@ -636,8 +642,12 @@ class UploadBehaviorTest extends TestCase
         };
 
         $behavior->setConfig($this->configOk);
+        $this->entity->expects($this->any())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue($this->dataOk['field']));
         $behavior->expects($this->once())->method('getPathProcessor')
-            ->with($this->entity, $this->entity->field, 'field', $this->configOk['field'])
+            ->with($this->entity, $this->dataOk['field'], 'field', $this->configOk['field'])
             ->willReturn($this->processor);
         $this->processor->expects($this->once())->method('basepath')
             ->willReturn($path);

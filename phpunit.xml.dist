@@ -1,40 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><phpunit
-    colors="true"
-    processIsolation="false"
-    stopOnFailure="false"
-    bootstrap="./tests/bootstrap.php"
-    convertDeprecationsToExceptions="true"
-    >
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" processIsolation="false" stopOnFailure="false" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd" cacheDirectory=".phpunit.cache">
+    <coverage/>
     <php>
         <ini name="memory_limit" value="-1"/>
-        <!-- E_ALL & ~E_USER_DEPRECATED (16383)-->
-        <!-- E_ALL (32767) -->
-        <ini name="error_reporting" value="32767"/>
         <ini name="apc.enable_cli" value="1"/>
+        <env name="FIXTURE_SCHEMA_METADATA" value="./tests/schema.php"/>
     </php>
-
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="Version Test Suite">
-            <directory>./tests/TestCase</directory>
+        <testsuite name="cakephp-upload">
+            <directory>tests/TestCase/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
-
-    <!-- Setup a listener for fixtures -->
-    <listeners>
-        <listener
-        class="\Cake\TestSuite\Fixture\FixtureInjector"
-        file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
-            <arguments>
-                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
-            </arguments>
-        </listener>
-    </listeners>
-
+    <extensions>
+        <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
+    </extensions>
+    <source>
+        <include>
+            <directory suffix=".php">src/</directory>
+        </include>
+    </source>
 </phpunit>

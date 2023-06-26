@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Josegonzalez\Upload\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
 use Cake\Database\Type\BaseType;
 
 class FileType extends BaseType
@@ -17,7 +17,7 @@ class FileType extends BaseType
      * @param mixed $value The value to convert.
      * @return mixed Converted value.
      */
-    public function marshal($value)
+    public function marshal(mixed $value): mixed
     {
         return $value;
     }
@@ -25,7 +25,7 @@ class FileType extends BaseType
     /**
      * @inheritDoc
      */
-    public function toDatabase($value, DriverInterface $driver)
+    public function toDatabase(mixed $value, Driver $driver): mixed
     {
         return $value;
     }
@@ -33,7 +33,7 @@ class FileType extends BaseType
     /**
      * @inheritDoc
      */
-    public function toPHP($value, DriverInterface $driver)
+    public function toPHP(mixed $value, Driver $driver): mixed
     {
         return $value;
     }

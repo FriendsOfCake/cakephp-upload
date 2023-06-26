@@ -18,6 +18,9 @@ use Josegonzalez\Upload\File\Writer\WriterInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use UnexpectedValueException;
 
+/**
+ * UploadBehavior
+ */
 class UploadBehavior extends Behavior
 {
     /**
@@ -25,7 +28,7 @@ class UploadBehavior extends Behavior
      *
      * @var array
      */
-    private $protectedFieldNames = [
+    private array $protectedFieldNames = [
         'priority',
     ];
 
@@ -47,7 +50,7 @@ class UploadBehavior extends Behavior
         }
 
         $this->setConfig($configs);
-        $this->setConfig('className', null);
+        $this->setConfig('className');
 
         $schema = $this->_table->getSchema();
         /** @var string $field */
@@ -65,7 +68,7 @@ class UploadBehavior extends Behavior
      * @param \ArrayObject $options options for the current event
      * @return void
      */
-    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
         $validator = $this->_table->getValidator();
         $dataArray = $data->getArrayCopy();
@@ -96,9 +99,9 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @param \ArrayObject $options the options passed to the save method
-     * @return void|false
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         foreach ($this->getConfig(null, []) as $field => $settings) {
             if (
@@ -134,7 +137,7 @@ class UploadBehavior extends Behavior
             $writer = $this->getWriter($entity, $data, $field, $settings);
             $success = $writer->write($files);
             if ((new Collection($success))->contains(false)) {
-                return false;
+                return;
             }
 
             $entity->set($field, $filename);
@@ -153,7 +156,7 @@ class UploadBehavior extends Behavior
      * @param \ArrayObject $options the options passed to the delete method
      * @return bool
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): bool
     {
         $result = true;
 
@@ -169,11 +172,14 @@ class UploadBehavior extends Behavior
                 $path = $this->getPathProcessor($entity, $entity->get($field), $field, $settings)->basepath();
             }
 
-            $callback = Hash::get($settings, 'deleteCallback', null);
+            $callback = Hash::get($settings, 'deleteCallback');
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {
-                $files = [$path . $entity->get($field)];
+                /** @var \Psr\Http\Message\UploadedFileInterface $uploaded */
+                $uploaded = $entity->get($field);
+
+                $files = [$path . $uploaded->getClientFilename()];
             }
 
             $writer = $this->getWriter($entity, null, $field, $settings);
@@ -197,8 +203,12 @@ class UploadBehavior extends Behavior
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
-    public function getPathProcessor(EntityInterface $entity, $data, string $field, array $settings): ProcessorInterface
-    {
+    public function getPathProcessor(
+        EntityInterface $entity,
+        string|UploadedFileInterface $data,
+        string $field,
+        array $settings
+    ): ProcessorInterface {
         /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
 

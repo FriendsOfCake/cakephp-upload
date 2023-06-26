@@ -15,7 +15,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderPhpSizeLimit($check): bool
+    public static function isUnderPhpSizeLimit(mixed $check): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getError() !== UPLOAD_ERR_INI_SIZE;
@@ -31,7 +31,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isUnderFormSizeLimit($check): bool
+    public static function isUnderFormSizeLimit(mixed $check): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getError() !== UPLOAD_ERR_FORM_SIZE;
@@ -46,7 +46,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isCompletedUpload($check): bool
+    public static function isCompletedUpload(mixed $check): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getError() !== UPLOAD_ERR_PARTIAL;
@@ -61,7 +61,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isFileUpload($check): bool
+    public static function isFileUpload(mixed $check): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getError() !== UPLOAD_ERR_NO_FILE;
@@ -76,7 +76,7 @@ trait UploadValidationTrait
      * @param mixed $check Value to check
      * @return bool Success
      */
-    public static function isSuccessfulWrite($check): bool
+    public static function isSuccessfulWrite(mixed $check): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getError() !== UPLOAD_ERR_CANT_WRITE;
@@ -92,7 +92,7 @@ trait UploadValidationTrait
      * @param int $size Minimum file size
      * @return bool Success
      */
-    public static function isAboveMinSize($check, $size): bool
+    public static function isAboveMinSize(mixed $check, int $size): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getSize() >= $size;
@@ -108,7 +108,7 @@ trait UploadValidationTrait
      * @param int $size Maximum file size
      * @return bool Success
      */
-    public static function isBelowMaxSize($check, $size): bool
+    public static function isBelowMaxSize(mixed $check, int $size): bool
     {
         if ($check instanceof UploadedFileInterface) {
             return $check->getSize() <= $size;
