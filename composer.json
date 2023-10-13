@@ -12,15 +12,30 @@
         }
     ],
     "require": {
-        "cakephp/orm": "^4.0.2",
-        "league/flysystem": "^2.2|^3.0"
+        "cakephp/orm": "^5.0",
+        "league/flysystem": "^3.15.1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "^4.0.2",
-        "phpunit/phpunit": "^8.5 || ^9.3",
-        "cakephp/cakephp-codesniffer": "^4.0",
-        "league/flysystem-memory": "^2.0|^3.0",
-        "mikey179/vfsstream": "^1.6.10"
+        "cakephp/cakephp": "^5.0",
+        "phpunit/phpunit": "^10.1.0",
+        "cakephp/cakephp-codesniffer": "^5.0",
+        "league/flysystem-memory": "^3.15",
+        "mikey179/vfsstream": "^1.6.10",
+        "cakephp/migrations": "^4.1"
+    },
+    "scripts": {
+        "cs-check": "phpcs --colors --parallel=16 -p src/ tests/",
+        "cs-fix": "phpcbf --colors --parallel=16 -p src/ tests/",
+        "phpstan": "tools/phpstan analyse",
+        "psalm": "tools/psalm --show-info=false",
+        "stan": [
+            "@phpstan",
+            "@psalm"
+        ],
+        "stan-baseline": "tools/phpstan --generate-baseline",
+        "psalm-baseline": "tools/psalm  --set-baseline=psalm-baseline.xml",
+        "stan-setup": "phive install",
+        "test": "phpunit"
     },
     "autoload": {
         "psr-4": {

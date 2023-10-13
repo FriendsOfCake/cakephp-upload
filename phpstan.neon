@@ -1,5 +1,5 @@
 parameters:
-	level: 7
+	level: 8
 	checkMissingIterableValueType: false
 	checkGenericClassInNonGenericObjectType: false
 	paths:
@@ -21,11 +21,11 @@ parameters:
 			path: src/Model/Behavior/UploadBehavior.php
 
 		-
-			message: "#^Cannot use array destructuring on array\\|false\\.$#"
+			message: "#^Cannot use array destructuring on array\\<int\\|string, int\\|string\\>\\|false\\.$#"
 			count: 4
 			path: src/Validation/DefaultValidation.php
 
 		-
-			message: "#^Cannot use array destructuring on array\\|false\\.$#"
+			message: "#^Cannot use array destructuring on array\\<int\\|string, int\\|string\\>\\|false\\.$#"
 			count: 4
 			path: src/Validation/ImageValidation.php

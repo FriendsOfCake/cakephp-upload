@@ -14,7 +14,7 @@ trait ImageValidationTrait
      * @param int $width Width of Image
      * @return bool Success
      */
-    public static function isAboveMinWidth($check, int $width): bool
+    public static function isAboveMinWidth(mixed $check, int $width): bool
     {
         if ($check instanceof UploadedFileInterface) {
             $file = $check->getStream()->getMetadata('uri');
@@ -37,7 +37,7 @@ trait ImageValidationTrait
      * @param int $width Width of Image
      * @return bool Success
      */
-    public static function isBelowMaxWidth($check, int $width): bool
+    public static function isBelowMaxWidth(mixed $check, int $width): bool
     {
         if ($check instanceof UploadedFileInterface) {
             $file = $check->getStream()->getMetadata('uri');
@@ -61,7 +61,7 @@ trait ImageValidationTrait
      * @param int $height Height of Image
      * @return bool Success
      */
-    public static function isAboveMinHeight($check, int $height): bool
+    public static function isAboveMinHeight(mixed $check, int $height): bool
     {
         if ($check instanceof UploadedFileInterface) {
             $file = $check->getStream()->getMetadata('uri');
@@ -84,7 +84,7 @@ trait ImageValidationTrait
      * @param int $height Height of Image
      * @return bool Success
      */
-    public static function isBelowMaxHeight($check, int $height): bool
+    public static function isBelowMaxHeight(mixed $check, int $height): bool
     {
         if ($check instanceof UploadedFileInterface) {
             $file = $check->getStream()->getMetadata('uri');

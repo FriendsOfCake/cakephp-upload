@@ -23,7 +23,7 @@ trait DefaultTrait
     {
         $defaultPath = 'webroot{DS}files{DS}{model}{DS}{field}{DS}';
         $path = Hash::get($this->settings, 'path', $defaultPath);
-        if (strpos($path, '{primaryKey}') !== false) {
+        if (str_contains($path, '{primaryKey}')) {
             if ($this->entity->isNew()) {
                 throw new LogicException('{primaryKey} substitution not allowed for new entities');
             }
@@ -43,7 +43,7 @@ trait DefaultTrait
             '{microtime}' => microtime(true),
             '{DS}' => DIRECTORY_SEPARATOR,
         ];
-        if (strpos($path, '{primaryKey}') !== false) {
+        if (str_contains($path, '{primaryKey}')) {
             $replacements['{primaryKey}'] = $this->entity->get($this->table->getPrimaryKey());
         }
 

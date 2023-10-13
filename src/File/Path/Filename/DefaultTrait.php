@@ -16,15 +16,21 @@ trait DefaultTrait
      */
     public function filename(): string
     {
-        $processor = Hash::get($this->settings, 'nameCallback', null);
+        $processor = Hash::get($this->settings, 'nameCallback');
         if (is_callable($processor)) {
-            return $processor($this->table, $this->entity, $this->data, $this->field, $this->settings);
+            return $processor(
+                $this->table,
+                $this->entity,
+                $this->data,
+                $this->field,
+                $this->settings
+            );
         }
 
         if (is_string($this->data)) {
             return $this->data;
         }
 
-        return $this->data->getClientFilename();
+        return (string)$this->data->getClientFilename();
     }
 }

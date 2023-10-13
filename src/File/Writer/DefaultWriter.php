@@ -18,41 +18,6 @@ use UnexpectedValueException;
 class DefaultWriter implements WriterInterface
 {
     /**
-     * Table instance.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $table;
-
-    /**
-     * Entity instance.
-     *
-     * @var \Cake\Datasource\EntityInterface
-     */
-    protected $entity;
-
-    /**
-     * Array of uploaded data for this field
-     *
-     * @var \Psr\Http\Message\UploadedFileInterface|null
-     */
-    protected $data;
-
-    /**
-     * Name of field
-     *
-     * @var string
-     */
-    protected $field;
-
-    /**
-     * Settings for processing a path
-     *
-     * @var array
-     */
-    protected $settings;
-
-    /**
      * Constructs a writer
      *
      * @param \Cake\ORM\Table  $table the instance managing the entity
@@ -62,17 +27,12 @@ class DefaultWriter implements WriterInterface
      * @param array            $settings the settings for the current field
      */
     public function __construct(
-        Table $table,
-        EntityInterface $entity,
-        ?UploadedFileInterface $data,
-        string $field,
-        array $settings
+        protected Table $table,
+        protected EntityInterface $entity,
+        protected ?UploadedFileInterface $data,
+        protected string $field,
+        protected array $settings
     ) {
-        $this->table = $table;
-        $this->entity = $entity;
-        $this->data = $data;
-        $this->field = $field;
-        $this->settings = $settings;
     }
 
     /**
@@ -117,7 +77,7 @@ class DefaultWriter implements WriterInterface
      * @param string $path that path to which the file should be written
      * @return bool
      */
-    public function writeFile(FilesystemOperator $filesystem, $file, $path): bool
+    public function writeFile(FilesystemOperator $filesystem, string $file, string $path): bool
     {
         // phpcs:ignore
         $stream = @fopen($file, 'r');
@@ -134,10 +94,10 @@ class DefaultWriter implements WriterInterface
             try {
                 $filesystem->move($tempPath, $path);
                 $success = true;
-            } catch (FilesystemException $e) {
+            } catch (FilesystemException) {
                 // noop
             }
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             // noop
         }
 
@@ -159,7 +119,7 @@ class DefaultWriter implements WriterInterface
         $success = true;
         try {
             $filesystem->delete($path);
-        } catch (FilesystemException $e) {
+        } catch (FilesystemException) {
             $success = false;
             // TODO: log this?
         }
