@@ -31,6 +31,6 @@ trait DefaultTrait
             return $this->data;
         }
 
-        return $this->data->getClientFilename();
+        return (string)$this->data->getClientFilename();
     }
 }
