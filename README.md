@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/github/workflow/status/FriendsOfCake/cakephp-upload/CI/master?style=flat-square)](https://github.com/FriendsOfCake/cakephp-upload/actions?query=workflow%3ACI+branch%3Amaster)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/FriendsOfCake/cakephp-upload/ci.yml?style=flat-square)](https://github.com/FriendsOfCake/cakephp-upload/actions?query=workflow%3ACI+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/codecov/c/github/FriendsOfCake/cakephp-upload/master?style=flat-square)](https://codecov.io/gh/FriendsOfCake/cakephp-upload)
 [![Total Downloads](https://img.shields.io/packagist/dt/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
 [![Latest Stable Version](https://img.shields.io/packagist/v/josegonzalez/cakephp-upload.svg?style=flat-square)](https://packagist.org/packages/josegonzalez/cakephp-upload)
