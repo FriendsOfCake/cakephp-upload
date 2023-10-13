@@ -14,6 +14,27 @@ use Josegonzalez\Upload\Database\Type\FileType;
 class UploadPlugin extends BasePlugin
 {
     /**
+     * The name of this plugin
+     *
+     * @var string|null
+     */
+    protected ?string $name = 'Upload';
+
+    /**
+     * Console middleware
+     *
+     * @var bool
+     */
+    protected bool $consoleEnabled = false;
+
+    /**
+     * Load routes or not
+     *
+     * @var bool
+     */
+    protected bool $routesEnabled = false;
+
+    /**
      * Plugin bootstrap.
      *
      * @param \Cake\Core\PluginApplicationInterface $app Application instance.
