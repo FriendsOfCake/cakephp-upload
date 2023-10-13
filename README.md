@@ -8,6 +8,8 @@
 
 The Upload Plugin is an attempt to easily handle file uploads with CakePHP.
 
+See [7.x branch](https://github.com/FriendsOfCake/cakephp-upload/tree/7.x) for CakePHP 4.x documentation.
+
 See [4.x branch](https://github.com/FriendsOfCake/cakephp-upload/tree/4.x) for CakePHP 3.x documentation.
 
 See [2.x branch](https://github.com/FriendsOfCake/cakephp-upload/tree/2.x) for CakePHP 2.x documentation.
