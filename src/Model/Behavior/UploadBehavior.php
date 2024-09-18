@@ -8,6 +8,7 @@ use Cake\Collection\Collection;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 use Josegonzalez\Upload\File\Path\DefaultProcessor;
 use Josegonzalez\Upload\File\Path\ProcessorInterface;
@@ -55,7 +56,7 @@ class UploadBehavior extends Behavior
         $schema = $this->_table->getSchema();
         /** @var string $field */
         foreach (array_keys($this->getConfig()) as $field) {
-            $schema->setColumnType($field, 'upload.file');
+            $schema->addColumn($field, ['type' => 'upload.file']);
         }
         $this->_table->setSchema($schema);
     }
@@ -90,6 +91,20 @@ class UploadBehavior extends Behavior
                 unset($data[$field]);
             }
         }
+    }
+
+    /**
+     * Prevents virtual fields from being added to the query
+     *
+     * @param EventInterface $event
+     * @param SelectQuery $query
+     * @param ArrayObject $options
+     * @param bool $primary
+     * @return void
+     */
+    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary)
+    {
+        $query->selectAllExcept($this->_table, array_keys($this->getConfig()));
     }
 
     /**
