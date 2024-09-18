@@ -96,15 +96,15 @@ class UploadBehavior extends Behavior
     /**
      * Prevents virtual fields from being added to the query
      *
-     * @param EventInterface $event
-     * @param SelectQuery $query
-     * @param ArrayObject $options
+     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\ORM\Query\SelectQuery $query
+     * @param \ArrayObject $options
      * @param bool $primary
      * @return void
      */
-    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary)
+    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary): void
     {
-        $query->selectAllExcept($this->_table, array_keys($this->getConfig()));
+        $query->selectAllExcept($this->_table, array_map(fn ($f) => (string)$f, array_keys($this->getConfig())));
     }
 
     /**
