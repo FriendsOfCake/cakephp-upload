@@ -68,12 +68,12 @@ class UploadBehaviorTest extends TestCase
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['addColumn'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
-        $schema->expects($this->once())
-                    ->method('addColumn')
-                    ->with('field', ['type' => 'upload.file']);
+        $schema->expects($this->any())
+                    ->method('setColumnType')
+                    ->with('field', 'upload.file');
         $table->expects($this->any())
                     ->method('getSchema')
                     ->will($this->returnValue($schema));
@@ -110,12 +110,12 @@ class UploadBehaviorTest extends TestCase
         $settings = ['field'];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['addColumn'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
-        $schema->expects($this->once())
-               ->method('addColumn')
-               ->with('field', ['type' => 'upload.file']);
+        $schema->expects($this->any())
+               ->method('setColumnType')
+               ->with('field', 'upload.file');
         $table->expects($this->any())
               ->method('getSchema')
               ->will($this->returnValue($schema));
@@ -142,12 +142,12 @@ class UploadBehaviorTest extends TestCase
         ];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['addColumn'])
+            ->onlyMethods(['setColumnType'])
             ->disableOriginalConstructor()
             ->getMock();
-        $schema->expects($this->once())
-            ->method('addColumn')
-            ->with('field', ['type' => 'upload.file']);
+        $schema->expects($this->any())
+            ->method('setColumnType')
+            ->with('field', 'upload.file');
         $table->expects($this->any())
             ->method('getSchema')
             ->will($this->returnValue($schema));
