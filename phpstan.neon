@@ -5,10 +5,12 @@ parameters:
 	ignoreErrors:
 		-
 			identifier: missingType.iterableValue
+
 		-
 			identifier: missingType.generics
+
 		-
-			message: "#^Parameter \\#1 \\$field of method Cake\\\\Datasource\\\\EntityInterface\\:\\:get\\(\\) expects string, array\\<string\\>\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$field of method Cake\\\\Datasource\\\\EntityInterface\\:\\:get\\(\\) expects string, array\\<int, string\\>\\|string given\\.$#"
 			count: 1
 			path: src/File/Path/DefaultProcessor.php
 
