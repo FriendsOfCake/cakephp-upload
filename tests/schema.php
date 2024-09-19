@@ -7,6 +7,7 @@ return [
         'columns' => [
             'id' => ['type' => 'integer'],
             'filename' => ['type' => 'string'],
+            'field' => ['type' => 'string'],
             'created' => ['type' => 'datetime', 'null' => true],
         ],
         'constraints' => [

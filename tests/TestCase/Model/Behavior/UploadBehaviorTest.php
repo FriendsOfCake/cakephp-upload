@@ -68,9 +68,13 @@ class UploadBehaviorTest extends TestCase
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['setColumnType'])
+            ->onlyMethods(['setColumnType', 'hasColumn'])
             ->disableOriginalConstructor()
             ->getMock();
+        $schema->expects($this->once())
+            ->method('hasColumn')
+            ->with('field')
+            ->willReturn(true);
         $schema->expects($this->once())
                     ->method('setColumnType')
                     ->with('field', 'upload.file');
@@ -110,9 +114,13 @@ class UploadBehaviorTest extends TestCase
         $settings = ['field'];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['setColumnType'])
+            ->onlyMethods(['setColumnType', 'hasColumn'])
             ->disableOriginalConstructor()
             ->getMock();
+        $schema->expects($this->once())
+            ->method('hasColumn')
+            ->with('field')
+            ->willReturn(true);
         $schema->expects($this->once())
                ->method('setColumnType')
                ->with('field', 'upload.file');
@@ -142,9 +150,13 @@ class UploadBehaviorTest extends TestCase
         ];
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
         $schema = $this->getMockBuilder('Cake\Database\Schema\TableSchema')
-            ->onlyMethods(['setColumnType'])
+            ->onlyMethods(['setColumnType', 'hasColumn'])
             ->disableOriginalConstructor()
             ->getMock();
+        $schema->expects($this->once())
+            ->method('hasColumn')
+            ->with('field')
+            ->willReturn(true);
         $schema->expects($this->once())
             ->method('setColumnType')
             ->with('field', 'upload.file');
