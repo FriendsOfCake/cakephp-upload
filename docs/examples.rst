@@ -8,7 +8,7 @@ Basic example
     Translate Behavior as they have been known to conflict with each
     other.
 
-.. code:: sql
+.. code-block:: sql
 
     CREATE table users (
         id int(10) unsigned NOT NULL auto_increment,
@@ -16,7 +16,7 @@ Basic example
         photo varchar(255)
     );
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -49,7 +49,7 @@ Basic example
     }
     ?>
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -67,7 +67,7 @@ Basic example
     the users table, you will need to remove the default scalar validation
     for the photos field.
 
-.. code:: php
+.. code-block:: php
     public function validationDefault(Validator $validator): void
     {
         $validator
@@ -95,7 +95,7 @@ over time, and files cannot be deleted anymore at a later point.
 
 In order to prevent such situations, a field must be added to store the directory of the file as follows:
 
-.. code:: sql
+.. code-block:: sql
 
     CREATE table users (
         `id` int(10) unsigned NOT NULL auto_increment,
@@ -105,7 +105,7 @@ In order to prevent such situations, a field must be added to store the director
         PRIMARY KEY (`id`)
     );
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -140,7 +140,7 @@ In order to prevent such situations, a field must be added to store the director
     }
     ?>
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -170,11 +170,11 @@ In this example we'll cover:
 
 This example uses the Imagine library. It can be installed through composer:
 
-.. code::
+.. code-block::
 
     composer require imagine/imagine
 
-.. code:: sql
+.. code-block:: sql
 
     CREATE table users (
         id int(10) unsigned NOT NULL auto_increment,
@@ -185,7 +185,7 @@ This example uses the Imagine library. It can be installed through composer:
         photo_type varchar(255)
     );
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -252,7 +252,7 @@ This example uses the Imagine library. It can be installed through composer:
     }
     ?>
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -274,7 +274,7 @@ by specifying the path and using the file information from the database.
 
 This example uses the `default behaviour configuration <configuration.html>`__ using the model ``Example``.
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
@@ -298,7 +298,7 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
 
 For Windows systems you'll have to build a workaround as Windows systems use backslashes as directory separator which isn't useable in URLs.
 
-.. code:: php
+.. code-block:: php
 
     <?php
     /*
