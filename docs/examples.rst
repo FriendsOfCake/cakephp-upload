@@ -170,7 +170,7 @@ In this example we'll cover:
 
 This example uses the Imagine library. It can be installed through composer:
 
-.. code-block::
+.. code-block:: bash
 
     composer require imagine/imagine
 
