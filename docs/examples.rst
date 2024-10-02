@@ -68,6 +68,7 @@ Basic example
     for the photos field.
 
 .. code-block:: php
+
     public function validationDefault(Validator $validator): void
     {
         $validator
@@ -84,7 +85,6 @@ Basic example
 
         return $validator;
     }
-    ?>
 
 Deleting files
 --------------
