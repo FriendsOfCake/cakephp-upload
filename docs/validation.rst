@@ -16,7 +16,7 @@ At this point there are 3 validation providers:
 
 Since by default, no validation rules are loaded, you should start with that:
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -30,7 +30,7 @@ Since by default, no validation rules are loaded, you should start with that:
 
 Afterwards, you can use its rules like:
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -44,7 +44,7 @@ Afterwards, you can use its rules like:
 
 It might come in handy to only use a validation rule when there actually is an uploaded file:
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -68,7 +68,7 @@ UploadValidation
 
 Check that the file does not exceed the max file size specified by PHP
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -85,7 +85,7 @@ Check that the file does not exceed the max file size specified by PHP
 Check that the file does not exceed the max file size specified in the
 HTML Form
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -101,7 +101,7 @@ HTML Form
 
 Check that the file was completely uploaded
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -117,7 +117,7 @@ Check that the file was completely uploaded
 
 Check that a file was uploaded
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -133,7 +133,7 @@ Check that a file was uploaded
 
 Check that the file was successfully written to the server
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -150,7 +150,7 @@ Check that the file was successfully written to the server
 Check that the file is below the maximum file upload size (checked in
 bytes)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -167,7 +167,7 @@ bytes)
 Check that the file is above the minimum file upload size (checked in
 bytes)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -187,7 +187,7 @@ ImageValidation
 Check that the file is above the minimum height requirement (checked in
 pixels)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -204,7 +204,7 @@ pixels)
 Check that the file is below the maximum height requirement (checked in
 pixels)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -221,7 +221,7 @@ pixels)
 Check that the file is above the minimum width requirement (checked in
 pixels)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
@@ -238,7 +238,7 @@ pixels)
 Check that the file is below the maximum width requirement (checked in
 pixels)
 
-.. code:: php
+.. code-block::  php
 
     <?php
 
