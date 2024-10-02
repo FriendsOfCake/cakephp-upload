@@ -18,7 +18,6 @@ Basic example
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
@@ -47,21 +46,18 @@ Basic example
             ]);
         }
     }
-    ?>
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        templates/Users/add.php
        templates/Users/edit.php
     */
-    ?>
-    <?= $this->Form->create($user, ['type' => 'file']); ?>
-        <?= $this->Form->control('username'); ?>
-        <?= $this->Form->control('photo', ['type' => 'file']); ?>
-    <?= $this->Form->end(); ?>
+    echo $this->Form->create($user, ['type' => 'file']);
+        echo $this->Form->control('username');
+        echo $this->Form->control('photo', ['type' => 'file']);
+    echo $this->Form->end();
 
     Note: If you used *bake* to generate MVC structure after creating
     the users table, you will need to remove the default scalar validation
@@ -107,7 +103,6 @@ In order to prevent such situations, a field must be added to store the director
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
@@ -138,22 +133,19 @@ In order to prevent such situations, a field must be added to store the director
             ]);
         }
     }
-    ?>
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        templates/Users/add.php
        templates/Users/edit.php
     */
-    ?>
 
-    <?= $this->Form->create($user, ['type' => 'file']); ?>
-        <?= $this->Form->control('username'); ?>
-        <?= $this->Form->control('photo', ['type' => 'file']); ?>
-    <?= $this->Form->end(); ?>
+    echo $this->Form->create($user, ['type' => 'file']);
+        echo $this->Form->control('username');
+        echo $this->Form->control('photo', ['type' => 'file']);
+    echo $this->Form->end();
 
 Using such a setup, the behavior will use the stored path value instead of generating the path dynamically when deleting
 files.
@@ -187,7 +179,6 @@ This example uses the Imagine library. It can be installed through composer:
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        src/Model/Table/UsersTable.php
@@ -250,21 +241,19 @@ This example uses the Imagine library. It can be installed through composer:
             ]);
         }
     }
-    ?>
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, these changes would be made in:
        templates/Users/add.php
        templates/Users/edit.php
     */
-    ?>
-    <?= $this->Form->create($user, ['type' => 'file']); ?>
-        <?= $this->Form->control('username'); ?>
-        <?= $this->Form->control('photo', ['type' => 'file']); ?>
-    <?= $this->Form->end(); ?>
+
+    echo $this->Form->create($user, ['type' => 'file']);
+        echo $this->Form->control('username');
+        echo $this->Form->control('photo', ['type' => 'file']);
+    echo $this->Form->end();
 
 Displaying links to files in your view
 --------------------------------------
@@ -276,7 +265,6 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, variations on these changes would be made in:
        templates/Users/view.php
@@ -294,13 +282,11 @@ This example uses the `default behaviour configuration <configuration.html>`__ u
     // You could use the following to create a link to
     // the image (with default settings in place of course)
     echo $this->Html->link('../files/example/image/' . $entity->photo_dir . '/' . $entity->photo);
-    ?>
 
 For Windows systems you'll have to build a workaround as Windows systems use backslashes as directory separator which isn't useable in URLs.
 
 .. code-block:: php
 
-    <?php
     /*
        In the present example, variations on these changes would be made in:
        templates/Users/view.php
@@ -318,6 +304,5 @@ For Windows systems you'll have to build a workaround as Windows systems use bac
     // You could use the following to create a link to
     // the image (with default settings in place of course)
     echo $this->Html->link('../files/example/image/' . str_replace('\', '/', $entity->photo_dir) . '/' . $entity->photo);
-    ?>
 
 You can optionally create a custom helper to handle url generation, or contain that within your entity. As it is impossible to detect what the actual url for a file should be, such functionality will *never* be made available via this plugin.
