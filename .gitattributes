@@ -11,3 +11,4 @@ docs export-ignore
 phpcs.xml export-ignore
 psalm.xml export-ignore
 phpstan.neon export-ignore
+.readthedocs.yml export-ignore
