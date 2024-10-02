@@ -14,8 +14,8 @@ maintainer = u'josegonzalez'
 project = u'cakephp-upload'
 project_pretty_name = u'CakePHP Upload'
 copyright = u'%d, Jose Diaz-Gonzalez' % datetime.datetime.now().year
-version = '3.0.0'
-release = '3.0.0'
+version = '8.0'
+release = '8.0'
 html_title = 'CakePHP Upload'
 html_context = {
     'maintainer': maintainer,
