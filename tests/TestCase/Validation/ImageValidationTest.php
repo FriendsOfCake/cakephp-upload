@@ -13,7 +13,7 @@ class ImageValidationTest extends TestCase
     private $data;
     private $vfs;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
