@@ -197,19 +197,23 @@ class UploadBehavior extends Behavior
      * for a given file upload
      *
      * @param \Cake\Datasource\EntityInterface $entity an entity
-     * @param \Psr\Http\Message\UploadedFileInterface|string $data the data being submitted for a save or the filename
+     * @param \Psr\Http\Message\UploadedFileInterface|string|null $data the data being submitted for a save or the filename
      * @param string $field the field for which data will be saved
      * @param array $settings the settings for the current field
      * @return \Josegonzalez\Upload\File\Path\ProcessorInterface
      */
     public function getPathProcessor(
         EntityInterface $entity,
-        string|UploadedFileInterface $data,
+        string|UploadedFileInterface|null $data,
         string $field,
         array $settings
     ): ProcessorInterface {
         /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
+
+        if ($data === null) {
+            $data = "";
+        }
 
         return new $processorClass($this->_table, $entity, $data, $field, $settings);
     }
