@@ -206,7 +206,7 @@ class UploadBehavior extends Behavior
         EntityInterface $entity,
         string|UploadedFileInterface|null $data,
         string $field,
-        array $settings
+        array $settings,
     ): ProcessorInterface {
         /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
