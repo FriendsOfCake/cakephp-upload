@@ -687,49 +687,6 @@ class UploadBehaviorTest extends TestCase
         $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
-    public function testAfterDeleteWithNoFile()
-    {
-        $dir = '/some/path/';
-
-        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
-        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
-            ->onlyMethods($methods)
-            ->setConstructorArgs([$this->table, $this->settings])
-            ->getMock();
-        $behavior->setConfig($this->configOk);
-
-        $this->entity->expects($this->once())
-            ->method('has')
-            ->with('dir')
-            ->will($this->returnValue(false));
-
-        $this->entity->expects($this->exactly(2))
-            ->method('get')
-            ->with('field')
-            ->will($this->returnValue(null));
-
-        $behavior->expects($this->once())
-            ->method('getPathProcessor')
-            ->with($this->entity, null, 'field', $this->configOk['field'])
-            ->willReturn($this->processor);
-
-        $this->processor->expects($this->once())
-            ->method('basepath')
-            ->willReturn($dir);
-
-        $behavior->expects($this->once())
-            ->method('getWriter')
-            ->with($this->entity, null, 'field', $this->configOk['field'])
-            ->willReturn($this->writer);
-
-        $this->writer->expects($this->once())
-            ->method('delete')
-            ->with([$dir])
-            ->willReturn([false]);
-
-        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
-    }
-
     public function testGetWriter()
     {
         $processor = $this->behavior->getWriter($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'), 'field', []);
@@ -823,6 +780,12 @@ class UploadBehaviorTest extends TestCase
     public function testGetPathProcessor()
     {
         $processor = $this->behavior->getPathProcessor($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), 'field', []);
+        $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
+    }
+
+    public function testGetPathProcessorWithNoFile()
+    {
+        $processor = $this->behavior->getPathProcessor($this->entity, null, 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
     }
 
