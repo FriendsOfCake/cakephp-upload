@@ -524,7 +524,7 @@ class UploadBehaviorTest extends TestCase
             ->with('dir')
             ->will($this->returnValue(false));
 
-        $this->entity->expects($this->exactly(2))
+        $this->entity->expects($this->exactly(3))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -601,7 +601,7 @@ class UploadBehaviorTest extends TestCase
         $this->configOk['field']['deleteCallback'] = null;
 
         $behavior->setConfig($this->configOk);
-        $this->entity->expects($this->exactly(2))
+        $this->entity->expects($this->exactly(3))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -642,7 +642,7 @@ class UploadBehaviorTest extends TestCase
         };
 
         $behavior->setConfig($this->configOk);
-        $this->entity->expects($this->exactly(4))
+        $this->entity->expects($this->exactly(5))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -685,6 +685,26 @@ class UploadBehaviorTest extends TestCase
             ->will($this->returnValue([true]));
 
         $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+    }
+
+    public function testAfterDeleteWithNullableFileField()
+    {
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->onlyMethods($methods)
+            ->setConstructorArgs([$this->table, $this->settings])
+            ->getMock();
+        $behavior->setConfig($this->configOk);
+
+        $this->entity->expects($this->once())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue(null));
+
+        $behavior->expects($this->never())
+            ->method('getPathProcessor');
+
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
     }
 
     public function testGetWriter()
@@ -780,12 +800,6 @@ class UploadBehaviorTest extends TestCase
     public function testGetPathProcessor()
     {
         $processor = $this->behavior->getPathProcessor($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK), 'field', []);
-        $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
-    }
-
-    public function testGetPathProcessorWithNoFile()
-    {
-        $processor = $this->behavior->getPathProcessor($this->entity, null, 'field', []);
         $this->assertInstanceOf('Josegonzalez\Upload\File\Path\ProcessorInterface', $processor);
     }
 
