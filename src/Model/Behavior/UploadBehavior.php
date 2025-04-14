@@ -113,14 +113,14 @@ class UploadBehavior extends Behavior
                 continue;
             }
 
-            $data = $entity->get((string)$field);
+            $data = $entity->get($field);
             if (!$data instanceof UploadedFileInterface) {
                 continue;
             }
 
-            if ($entity->get((string)$field)->getError() !== UPLOAD_ERR_OK) {
+            if ($entity->get($field)->getError() !== UPLOAD_ERR_OK) {
                 if (Hash::get($settings, 'restoreValueOnFailure', true)) {
-                    $entity->set($field, $entity->getOriginal((string)$field));
+                    $entity->set($field, $entity->getOriginal($field));
                     $entity->setDirty($field, false);
                 }
                 continue;
@@ -166,7 +166,7 @@ class UploadBehavior extends Behavior
             if (
                 in_array($field, $this->protectedFieldNames)
                 || Hash::get($settings, 'keepFilesOnDelete', true)
-                || $entity->get((string)$field) === null
+                || $entity->get($field) === null
             ) {
                 continue;
             }
@@ -175,14 +175,14 @@ class UploadBehavior extends Behavior
             if ($entity->has($dirField)) {
                 $path = $entity->get($dirField);
             } else {
-                $path = $this->getPathProcessor($entity, $entity->get((string)$field), $field, $settings)->basepath();
+                $path = $this->getPathProcessor($entity, $entity->get($field), $field, $settings)->basepath();
             }
 
             $callback = Hash::get($settings, 'deleteCallback');
             if ($callback && is_callable($callback)) {
                 $files = $callback($path, $entity, $field, $settings);
             } else {
-                $files = [$path . $entity->get((string)$field)];
+                $files = [$path . $entity->get($field)];
             }
 
             $writer = $this->getWriter($entity, null, $field, $settings);
