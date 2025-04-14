@@ -30,7 +30,7 @@ class UploadBehaviorTest extends TestCase
                 1,
                 UPLOAD_ERR_OK,
                 'derp',
-                'text/plain'
+                'text/plain',
             ),
         ];
 
@@ -45,7 +45,7 @@ class UploadBehaviorTest extends TestCase
                 fopen('php://temp', 'wb+'),
                 0,
                 UPLOAD_ERR_NO_FILE,
-                'derp'
+                'derp',
             ),
         ];
         $this->configError = [
