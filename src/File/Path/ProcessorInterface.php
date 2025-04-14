@@ -23,7 +23,7 @@ interface ProcessorInterface
         EntityInterface $entity,
         string|UploadedFileInterface $data,
         string $field,
-        array $settings
+        array $settings,
     );
 
     /**

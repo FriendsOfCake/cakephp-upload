@@ -23,7 +23,7 @@ class DefaultTransformer implements TransformerInterface
         protected EntityInterface $entity,
         protected UploadedFileInterface $data,
         protected string $field,
-        protected array $settings
+        protected array $settings,
     ) {
     }
 

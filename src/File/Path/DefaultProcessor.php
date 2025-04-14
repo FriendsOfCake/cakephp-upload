@@ -63,7 +63,7 @@ class DefaultProcessor implements ProcessorInterface
         EntityInterface $entity,
         UploadedFileInterface|string $data,
         string $field,
-        array $settings
+        array $settings,
     ) {
         $this->table = $table;
         $this->entity = $entity;
