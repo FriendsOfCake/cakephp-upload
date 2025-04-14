@@ -163,7 +163,11 @@ class UploadBehavior extends Behavior
         $result = true;
 
         foreach ($this->getConfig(null, []) as $field => $settings) {
-            if (in_array($field, $this->protectedFieldNames) || Hash::get($settings, 'keepFilesOnDelete', true)) {
+            if (
+                in_array($field, $this->protectedFieldNames)
+                || Hash::get($settings, 'keepFilesOnDelete', true)
+                || $entity->get($field) === null
+            ) {
                 continue;
             }
 
@@ -206,7 +210,7 @@ class UploadBehavior extends Behavior
         EntityInterface $entity,
         string|UploadedFileInterface $data,
         string $field,
-        array $settings
+        array $settings,
     ): ProcessorInterface {
         /** @var class-string<\Josegonzalez\Upload\File\Path\ProcessorInterface> $processorClass */
         $processorClass = Hash::get($settings, 'pathProcessor', DefaultProcessor::class);
@@ -227,7 +231,7 @@ class UploadBehavior extends Behavior
         EntityInterface $entity,
         ?UploadedFileInterface $data,
         string $field,
-        array $settings
+        array $settings,
     ): WriterInterface {
         /** @var class-string<\Josegonzalez\Upload\File\Writer\WriterInterface> $writerClass */
         $writerClass = Hash::get($settings, 'writer', DefaultWriter::class);
@@ -262,7 +266,7 @@ class UploadBehavior extends Behavior
         UploadedFileInterface $data,
         string $field,
         array $settings,
-        array $pathinfo
+        array $pathinfo,
     ): array {
         $basepath = $pathinfo['basepath'];
         $filename = $pathinfo['filename'];
@@ -284,7 +288,7 @@ class UploadBehavior extends Behavior
         } else {
             throw new UnexpectedValueException(sprintf(
                 "'transformer' not set to instance of TransformerInterface: %s",
-                $transformerClass
+                $transformerClass,
             ));
         }
 

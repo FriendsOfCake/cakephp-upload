@@ -53,17 +53,17 @@ trait DefaultTrait
                 if ($value === null) {
                     throw new LogicException(sprintf(
                         'Field value for substitution is missing: %s',
-                        $field
+                        $field,
                     ));
                 } elseif (!is_scalar($value)) {
                     throw new LogicException(sprintf(
                         'Field value for substitution must be a integer, float, string or boolean: %s',
-                        $field
+                        $field,
                     ));
                 } elseif (strlen((string)$value) < 1) {
                     throw new LogicException(sprintf(
                         'Field value for substitution must be non-zero in length: %s',
-                        $field
+                        $field,
                     ));
                 }
 
@@ -74,7 +74,7 @@ trait DefaultTrait
         return str_replace(
             array_keys($replacements),
             array_values($replacements),
-            $path
+            $path,
         );
     }
 }

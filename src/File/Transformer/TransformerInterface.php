@@ -23,7 +23,7 @@ interface TransformerInterface
         EntityInterface $entity,
         UploadedFileInterface $data,
         string $field,
-        array $settings
+        array $settings,
     );
 
     /**

@@ -16,7 +16,7 @@ class ChildBehavior extends UploadBehavior
         UploadedFileInterface $data,
         string $field,
         array $settings,
-        array $pathinfo
+        array $pathinfo,
     ): array {
         $files = parent::constructFiles($entity, $data, $field, $settings, $pathinfo);
         $this->constructedFiles = $files;

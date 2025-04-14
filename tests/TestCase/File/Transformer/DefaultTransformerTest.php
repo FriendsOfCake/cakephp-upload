@@ -29,7 +29,7 @@ class DefaultTransformerTest extends TestCase
     {
         $this->assertEquals(
             [$this->uploadedFile->getStream()->getMetadata('uri') => 'foo.txt'],
-            $this->transformer->transform('foo.txt')
+            $this->transformer->transform('foo.txt'),
         );
     }
 }

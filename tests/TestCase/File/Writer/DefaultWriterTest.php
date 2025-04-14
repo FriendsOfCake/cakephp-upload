@@ -40,7 +40,7 @@ class DefaultWriterTest extends TestCase
             $this->entity,
             $this->data,
             $this->field,
-            $this->settings
+            $this->settings,
         );
 
         $this->vfs = Vfs::setup('tmp');

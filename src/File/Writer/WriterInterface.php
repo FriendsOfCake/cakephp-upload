@@ -23,7 +23,7 @@ interface WriterInterface
         EntityInterface $entity,
         ?UploadedFileInterface $data,
         string $field,
-        array $settings
+        array $settings,
     );
 
     /**

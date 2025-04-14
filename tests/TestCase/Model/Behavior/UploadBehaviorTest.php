@@ -30,7 +30,7 @@ class UploadBehaviorTest extends TestCase
                 1,
                 UPLOAD_ERR_OK,
                 'derp',
-                'text/plain'
+                'text/plain',
             ),
         ];
 
@@ -45,7 +45,7 @@ class UploadBehaviorTest extends TestCase
                 fopen('php://temp', 'wb+'),
                 0,
                 UPLOAD_ERR_NO_FILE,
-                'derp'
+                'derp',
             ),
         ];
         $this->configError = [
@@ -284,13 +284,13 @@ class UploadBehaviorTest extends TestCase
                  ->will($this->returnValue($this->settings));
 
         $data = new ArrayObject(
-            $this->transformUploadedFilesToArray($this->dataOk)
+            $this->transformUploadedFilesToArray($this->dataOk),
         );
         $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject($this->transformUploadedFilesToArray($this->dataOk)), $data);
 
         $data = new ArrayObject(
-            $this->transformUploadedFilesToArray($this->dataError)
+            $this->transformUploadedFilesToArray($this->dataError),
         );
         $behavior->beforeMarshal(new Event('fake.event'), $data, new ArrayObject());
         $this->assertEquals(new ArrayObject([]), $data);
@@ -524,7 +524,7 @@ class UploadBehaviorTest extends TestCase
             ->with('dir')
             ->will($this->returnValue(false));
 
-        $this->entity->expects($this->exactly(2))
+        $this->entity->expects($this->exactly(3))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -601,7 +601,7 @@ class UploadBehaviorTest extends TestCase
         $this->configOk['field']['deleteCallback'] = null;
 
         $behavior->setConfig($this->configOk);
-        $this->entity->expects($this->exactly(2))
+        $this->entity->expects($this->exactly(3))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -642,7 +642,7 @@ class UploadBehaviorTest extends TestCase
         };
 
         $behavior->setConfig($this->configOk);
-        $this->entity->expects($this->exactly(4))
+        $this->entity->expects($this->exactly(5))
             ->method('get')
             ->with('field')
             ->will($this->returnValue($field));
@@ -687,6 +687,26 @@ class UploadBehaviorTest extends TestCase
         $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
     }
 
+    public function testAfterDeleteWithNullableFileField()
+    {
+        $methods = array_diff($this->behaviorMethods, ['afterDelete', 'config', 'setConfig', 'getConfig']);
+        $behavior = $this->getMockBuilder('Josegonzalez\Upload\Model\Behavior\UploadBehavior')
+            ->onlyMethods($methods)
+            ->setConstructorArgs([$this->table, $this->settings])
+            ->getMock();
+        $behavior->setConfig($this->configOk);
+
+        $this->entity->expects($this->once())
+            ->method('get')
+            ->with('field')
+            ->will($this->returnValue(null));
+
+        $behavior->expects($this->never())
+            ->method('getPathProcessor');
+
+        $behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject());
+    }
+
     public function testGetWriter()
     {
         $processor = $this->behavior->getWriter($this->entity, new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'), 'field', []);
@@ -700,7 +720,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            ['basepath' => 'path', 'filename' => 'file.txt']
+            ['basepath' => 'path', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
@@ -709,7 +729,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            ['basepath' => 'some/path', 'filename' => 'file.txt']
+            ['basepath' => 'some/path', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
@@ -721,7 +741,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            ['basepath' => 'path/', 'filename' => 'file.txt']
+            ['basepath' => 'path/', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'path/file.txt'], $files);
 
@@ -730,7 +750,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             [],
-            ['basepath' => 'some/path/', 'filename' => 'file.txt']
+            ['basepath' => 'some/path/', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'some/path/file.txt'], $files);
     }
@@ -745,7 +765,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => $callable],
-            ['basepath' => 'some/path', 'filename' => 'file.txt']
+            ['basepath' => 'some/path', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -760,7 +780,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK),
             'field',
             ['transformer' => $callable],
-            ['basepath' => 'some/path', 'filename' => 'file.txt']
+            ['basepath' => 'some/path', 'filename' => 'file.txt'],
         );
         $this->assertEquals(['php://temp' => 'some/path/file.text'], $files);
     }
@@ -773,7 +793,7 @@ class UploadBehaviorTest extends TestCase
             new UploadedFile(fopen('php://temp', 'rw+'), 1, UPLOAD_ERR_OK, 'file.txt'),
             'field',
             ['transformer' => 'UnexpectedValueException'],
-            ['basepath' => 'path', 'filename' => 'file.txt']
+            ['basepath' => 'path', 'filename' => 'file.txt'],
         );
     }
 
@@ -821,7 +841,7 @@ class UploadBehaviorTest extends TestCase
                     'size' => $file->getSize(),
                 ];
             },
-            $data
+            $data,
         );
     }
 }
