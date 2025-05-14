@@ -156,9 +156,9 @@ class UploadBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event The afterDelete event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that was deleted
      * @param \ArrayObject $options the options passed to the delete method
-     * @return bool
+     * @return void
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): bool
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         $result = true;
 
@@ -193,7 +193,7 @@ class UploadBehavior extends Behavior
             }
         }
 
-        return $result;
+        $event->setResult($result);
     }
 
     /**
