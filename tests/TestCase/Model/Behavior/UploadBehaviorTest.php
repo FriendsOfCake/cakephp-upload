@@ -460,8 +460,9 @@ class UploadBehaviorTest extends TestCase
         $this->writer->expects($this->any())
                      ->method('delete')
                      ->will($this->returnValue([true]));
-
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $event = new Event('fake.event');
+        $behavior->afterDelete($event, $this->entity, new ArrayObject());
+        $this->assertTrue($event->getResult());
     }
 
     public function testAfterDeleteFail()
@@ -485,7 +486,9 @@ class UploadBehaviorTest extends TestCase
         $this->writer->expects($this->any())
                      ->method('delete')
                      ->will($this->returnValue([false]));
-        $this->assertFalse($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $event = new Event('fake.event');
+        $behavior->afterDelete($event, $this->entity, new ArrayObject());
+        $this->assertFalse($event->getResult());
     }
 
     public function testAfterDeleteSkip()
@@ -504,7 +507,9 @@ class UploadBehaviorTest extends TestCase
             ->method('delete')
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $event = new Event('fake.event');
+        $behavior->afterDelete($event, $this->entity, new ArrayObject());
+        $this->assertTrue($event->getResult());
     }
 
     public function testAfterDeleteUsesPathProcessorToDetectPathToTheFile()
@@ -585,7 +590,9 @@ class UploadBehaviorTest extends TestCase
             ->with([$dir . $field])
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $event = new Event('fake.event');
+        $behavior->afterDelete($event, $this->entity, new ArrayObject());
+        $this->assertTrue($event->getResult());
     }
 
     public function testAfterDeleteNoDeleteCallback()
@@ -684,7 +691,9 @@ class UploadBehaviorTest extends TestCase
             ->method('delete')
             ->will($this->returnValue([true]));
 
-        $this->assertTrue($behavior->afterDelete(new Event('fake.event'), $this->entity, new ArrayObject()));
+        $event = new Event('fake.event');
+        $behavior->afterDelete($event, $this->entity, new ArrayObject());
+        $this->assertTrue($event->getResult());
     }
 
     public function testAfterDeleteWithNullableFileField()
