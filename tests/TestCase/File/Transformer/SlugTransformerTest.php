@@ -9,10 +9,12 @@ use Laminas\Diactoros\UploadedFile;
 
 class SlugTransformerTest extends TestCase
 {
+    protected SlugTransformer $transformer;
+
     public function setUp(): void
     {
-        $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
-        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
+        $entity = $this->createStub('Cake\ORM\Entity');
+        $table = $this->createStub('Cake\ORM\Table');
         $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo é À.TXT');
         $field = 'field';
         $settings = [];
@@ -26,8 +28,8 @@ class SlugTransformerTest extends TestCase
 
     public function testTransformWithNoFileExt()
     {
-        $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
-        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
+        $entity = $this->createStub('Cake\ORM\Entity');
+        $table = $this->createStub('Cake\ORM\Table');
         $data = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo é À');
         $transformer = new SlugTransformer($table, $entity, $data, 'field', []);
         $this->assertEquals(['php://temp' => 'foo-e-a'], $transformer->transform('foo é À'));
