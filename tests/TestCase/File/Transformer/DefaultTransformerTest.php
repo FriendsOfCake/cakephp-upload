@@ -9,10 +9,13 @@ use Laminas\Diactoros\UploadedFile;
 
 class DefaultTransformerTest extends TestCase
 {
+    protected UploadedFile $uploadedFile;
+    protected DefaultTransformer $transformer;
+
     public function setUp(): void
     {
-        $entity = $this->getMockBuilder('Cake\ORM\Entity')->getMock();
-        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
+        $entity = $this->createStub('Cake\ORM\Entity');
+        $table = $this->createStub('Cake\ORM\Table');
         $this->uploadedFile = new UploadedFile(fopen('php://temp', 'wb+'), 150, UPLOAD_ERR_OK, 'foo.txt');
 
         $field = 'field';

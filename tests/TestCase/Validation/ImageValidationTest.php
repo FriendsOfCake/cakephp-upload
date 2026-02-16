@@ -10,7 +10,7 @@ use org\bovigo\vfs\vfsStream as Vfs;
 
 class ImageValidationTest extends TestCase
 {
-    private $data;
+    private array $data;
     private $vfs;
 
     protected function setUp(): void

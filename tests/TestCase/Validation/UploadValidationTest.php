@@ -9,7 +9,7 @@ use Laminas\Diactoros\UploadedFile;
 
 class UploadValidationTest extends TestCase
 {
-    private $data;
+    private array $data;
 
     protected function setUp(): void
     {
